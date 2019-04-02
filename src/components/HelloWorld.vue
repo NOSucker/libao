@@ -99,6 +99,13 @@ export default {
   name: "HelloWorld",
   props: {
     msg: String
+  },
+  mounted() {
+    this.$notify({
+      title: "成功",
+      message: "这是一条Element UI的成功提示消息",
+      type: "success"
+    });
   }
 };
 </script>
