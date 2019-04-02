@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "dev": "vue-cli-service serve --open",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
@@ -23,6 +24,7 @@
     "@vue/cli-service": "^3.5.0",
     "@vue/eslint-config-prettier": "^4.0.1",
     "@vue/test-utils": "1.0.0-beta.29",
+    "axios-mock-adapter": "^1.16.0",
     "babel-eslint": "^10.0.1",
     "chai": "^4.1.2",
     "eslint": "^5.8.0",

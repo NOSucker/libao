@@ -1,59 +1,95 @@
 import axios from "axios";
-// import { Message } from 'element-ui'
+import { Message } from "element-ui";
 
-const config = {};
+const config = {
+  sdd: {
+    baseURL: "",
+    baseCode: "/baseCode/search/{codeType}"
+  },
+  saa: {
+    baseURL: "",
+    login: "/login"
+  },
+  businessDataQuery: "/businessData/query"
+};
 axios.config = config;
+axios.defaults.timeout = 10000; // 请求超时时间
+axios.defaults.baseURL = process.env.VUE_APP_BASE_URL; // 根据环境变量设置默认请求后台地址
 
-// // http request 拦截器
-// axios.interceptors.request.use(
-//     config => {
-//         let headers = config.headers.common
-//         if (!headers) {
-//             headers = {}
-//         }
-//         let headToken = localStorage.getItem('loginToken')
-//         if (!headToken) {
-//             headToken = getCookie('theToken')
-//             if (!headToken) {
-//                 // 需要跳转到登陆页面
-//             }
-//         }
-//         headers['TOKEN'] = headToken || ''
-//         config.headers.common = headers
-//         return config
-//     },
-//     error => {
-//         return Promise.reject(error)
-//     })
-// // http response 拦截器
-// axios.interceptors.response.use(
-//     response => {
-//         if (!response.data) {
-//             return response
-//         } else {
-//             if (response.data.status === 0) {
-//                 return response
-//             } else {
-//                 if (response.data.status === -1 || response.data.status === -2) {
-//                     const MSG = response.data.statusText ? response.data.statusText : '操作失败,系统发生错误！'
-//                     Message.error(MSG)
-//                 }
-//                 return response
-//             }
-//         }
-//     },
-//     error => {
-//         if (error.response) {
-//             switch (error.response.status) {
-//                 case 401:
-//                     break
-//                 case 403:
-//                     break
-//             }
-//         }
-//         Message.error({message: error.message})
-//         return Promise.reject(error)
-//     })
+// 请求拦截器
+axios.interceptors.request.use(
+  // config => {
+  //   // 在请求发送之前做一些处理，让每个请求携带JWT token-- ['Authorization'] 请根据实际情况自行修改
+  //   config.headers["Authorization"] = "Bearer " + localStorage.getItem("token");
+  //   return config;
+  // },
+  error => {
+    // 发送失败
+    console.log(error);
+    Promise.reject(error);
+  }
+);
+
+// 响应拦截器
+axios.interceptors.response.use(
+  // response => {
+  //     // 这个“status状态码”和“statusText错误信息”是和后端约定的
+  //    if(response.data && response.data.status !== 0){
+  //        Message({
+  //            message: response.data.statusText ? response.data.statusText : '请求后台服务出错，请重试或者联系管理员！',
+  //            type: "error",
+  //            duration: 5000
+  //        });
+  //    }
+  // },
+  error => {
+    if (error && error.response) {
+      switch (error.response.status) {
+        case 400:
+          error.message = "请求错误";
+          break;
+        case 401:
+          error.message = "未授权，请登录";
+          break;
+        case 403:
+          error.message = "拒绝访问";
+          break;
+        case 404:
+          error.message = `请求地址出错: ${error.response.config.url}`;
+          break;
+        case 408:
+          error.message = "请求超时";
+          break;
+        case 500:
+          error.message = "服务器内部错误";
+          break;
+        case 501:
+          error.message = "服务未实现";
+          break;
+        case 502:
+          error.message = "网关错误";
+          break;
+        case 503:
+          error.message = "服务不可用";
+          break;
+        case 504:
+          error.message = "网关超时";
+          break;
+        case 505:
+          error.message = "HTTP版本不受支持";
+          break;
+        default:
+          break;
+      }
+    }
+    Message({
+      message: error.message,
+      type: "error",
+      duration: 5000
+    });
+    return Promise.reject(error);
+  }
+);
 
 export default axios;
 export { config };
