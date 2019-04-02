@@ -16,7 +16,9 @@ axios.config = config;
 axios.defaults.timeout = 10000; // 请求超时时间
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL; // 根据环境变量设置默认请求后台地址
 
-// 请求拦截器
+/**
+ * 请求拦截器
+ */
 axios.interceptors.request.use(
   config => {
     // 在请求发送之前做一些处理，让每个请求携带JWT token-- ['Authorization'] 请根据实际情况自行修改
@@ -30,7 +32,9 @@ axios.interceptors.request.use(
   }
 );
 
-// 响应拦截器
+/**
+ * 响应拦截器
+ */
 axios.interceptors.response.use(
   response => {
     // 这个“status状态码”和“statusText状态信息”是和后端约定的，需前后端严格按照规范来处理
@@ -44,7 +48,7 @@ axios.interceptors.response.use(
     return response;
   },
   error => {
-    // HTTP 请求错误处理，这里可以埋点
+    // 后台请求错误处理，这里可以埋点
     if (error && error.response) {
       switch (error.response.status) {
         case 400:
@@ -94,4 +98,4 @@ axios.interceptors.response.use(
 );
 
 export default axios;
-export { config };
+export { config }; // 后台接口配置信息导出，方便配置Mock使用
