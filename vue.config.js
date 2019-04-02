@@ -7,6 +7,6 @@ module.exports = {
   lintOnSave: false,
   publicPath: publicPath,
   devServer: {
-    publicPath
+    publicPath: publicPath
   }
 };

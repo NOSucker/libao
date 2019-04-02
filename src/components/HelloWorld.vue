@@ -1,6 +1,16 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
+    <template>
+      <el-table :data="tableData" style="width: 100%">
+        <el-table-column prop="comCode" label="组织机构代码"> </el-table-column>
+        <el-table-column prop="comName" label="组织机构名"> </el-table-column>
+        <el-table-column prop="personCode" label="操作员代码">
+        </el-table-column>
+        <el-table-column prop="personName" label="操作员姓名">
+        </el-table-column>
+      </el-table>
+    </template>
     <p>
       For a guide and recipes on how to configure / customize this project,<br />
       check out the
@@ -98,13 +108,17 @@
 export default {
   name: "HelloWorld",
   props: {
-    msg: String
+    msg: String,
+    tableData: []
   },
   mounted() {
     this.$notify({
       title: "成功",
       message: "这是一条Element UI的成功提示消息",
       type: "success"
+    });
+    this.$axios.get(this.$axios.config.businessDataQuery).then(response => {
+      this.tableData = response.data.table;
     });
   }
 };
