@@ -11,6 +11,15 @@
       <el-table-column prop="personCode" label="操作员代码"> </el-table-column>
       <el-table-column prop="personName" label="操作员姓名"> </el-table-column>
     </el-table>
+    <el-select v-model="selectModel" placeholder="请选择">
+      <el-option
+        v-for="item in $store.getters.baseCodeData('abc')"
+        :key="item.code"
+        :label="item.value"
+        :value="item.code"
+      >
+      </el-option>
+    </el-select>
     <HelloWorld msg="Welcome to Your Vue.js App" />
   </div>
 </template>
@@ -26,7 +35,8 @@ export default {
   },
   data() {
     return {
-      tableData: []
+      tableData: [],
+      selectModel: ""
     };
   },
   mounted() {
@@ -35,9 +45,11 @@ export default {
       message: "这是一条Element UI的成功提示消息",
       type: "success"
     });
-    this.$axios.get(this.$axios.config.businessDataQuery).then(response => {
-      this.tableData = response.data.table;
-    });
+    this.$axios
+      .post(this.$axios.config.businessDataQuery, {})
+      .then(response => {
+        this.tableData = response.data.table;
+      });
   }
 };
 </script>

@@ -8,7 +8,7 @@ var mock = new MockAdapter(axios);
 // Mock any GET request to /users
 // arguments for reply are (status, data, headers)
 mock
-  .onGet(new RegExp(axios.defaults.baseURL + config.businessDataQuery))
+  .onPost(axios.defaults.baseURL + config.businessDataQuery)
   .reply(function() {
     return new Promise(function(resolve) {
       setTimeout(function() {
@@ -34,6 +34,32 @@ mock
                 personCode: "210000001",
                 personName: "操作员1"
               }
+            ],
+            status: 0,
+            statusText: "Success"
+          }
+        ]);
+      }, 100);
+    });
+  });
+
+mock
+  .onGet(
+    new RegExp(
+      config.sdd.baseURL +
+        config.sdd.baseCode.substr(0, config.sdd.baseCode.indexOf("{"))
+    )
+  )
+  .reply(function() {
+    return new Promise(function(resolve) {
+      setTimeout(function() {
+        resolve([
+          200,
+          {
+            list: [
+              { code: "1", value: "基础代码1" },
+              { code: "2", value: "基础代码2" },
+              { code: "3", value: "基础代码3" }
             ],
             status: 0,
             statusText: "Success"
