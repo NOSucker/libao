@@ -39,7 +39,7 @@ mock
             statusText: "Success"
           }
         ]);
-      }, 100);
+      }, 1000);
     });
   });
 

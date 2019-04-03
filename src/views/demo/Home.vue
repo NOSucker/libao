@@ -5,7 +5,7 @@
       <router-link to="/about">About</router-link>
     </div>
     <img alt="Vue logo" src="../../assets/logo.png" />
-    <el-table :data="tableData" style="width: 100%">
+    <el-table v-loading="tableLoading" :data="tableData" style="width: 100%">
       <el-table-column prop="comCode" label="组织机构代码"> </el-table-column>
       <el-table-column prop="comName" label="组织机构名"> </el-table-column>
       <el-table-column prop="personCode" label="操作员代码"> </el-table-column>
@@ -36,19 +36,24 @@ export default {
   data() {
     return {
       tableData: [],
-      selectModel: ""
+      selectModel: "",
+      tableLoading: false
     };
   },
   mounted() {
-    this.$notify({
-      title: "成功",
-      message: "这是一条Element UI的成功提示消息",
-      type: "success"
-    });
+    this.tableLoading = true;
     this.$axios
       .post(this.$axios.config.businessDataQuery, {})
       .then(response => {
+        this.$notify({
+          title: "成功",
+          message: "这是一条Element UI的成功提示消息",
+          type: "success"
+        });
         this.tableData = response.data.table;
+      })
+      .finally(() => {
+        this.tableLoading = false;
       });
   }
 };
