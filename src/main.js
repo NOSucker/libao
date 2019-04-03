@@ -6,6 +6,7 @@ import axios from "./axios.js";
 import ElementUI from "element-ui";
 import "./libs/util.js";
 import "element-ui/lib/theme-chalk/index.css";
+// import "animate.css"
 
 if (process.env.NODE_ENV === "development") {
   require("./mock/index");
