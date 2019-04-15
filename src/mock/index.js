@@ -50,17 +50,36 @@ mock
         config.sdd.baseCode.substr(0, config.sdd.baseCode.indexOf("{"))
     )
   )
-  .reply(function() {
+  .reply(function(request) {
+    let params = new URLSearchParams(
+      request.url.substr(request.url.indexOf("?")).slice(1)
+    );
+    let listData = [
+      { code: "1", value: "基础代码1" },
+      { code: "2", value: "基础代码2" },
+      { code: "3", value: "基础代码3" }
+    ];
+    let total = undefined;
+    if (params.get("pageNo") && params.get("pageSize")) {
+      total = 36;
+      listData = [];
+      for (let i = 1; i <= parseInt(params.get("pageSize")); i++) {
+        let n =
+          i +
+          (parseInt(params.get("pageNo")) - 1) *
+            parseInt(params.get("pageSize"));
+        if (n <= total) {
+          listData.push({ code: n.toString(), value: "基础代码" + n });
+        }
+      }
+    }
     return new Promise(function(resolve) {
       setTimeout(function() {
         resolve([
           200,
           {
-            list: [
-              { code: "1", value: "基础代码1" },
-              { code: "2", value: "基础代码2" },
-              { code: "3", value: "基础代码3" }
-            ],
+            list: listData,
+            total: total,
             status: 0,
             statusText: "Success"
           }

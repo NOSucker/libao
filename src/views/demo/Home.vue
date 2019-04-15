@@ -11,6 +11,10 @@
       <el-table-column prop="personCode" label="操作员代码"> </el-table-column>
       <el-table-column prop="personName" label="操作员姓名"> </el-table-column>
     </el-table>
+    <pager-select
+      v-model="selectModel"
+      :remoteMethod="pagerQuery"
+    ></pager-select>
     <el-select v-model="selectModel" placeholder="请选择">
       <el-option
         v-for="item in $store.getters.baseCodeData('abc')"
@@ -27,18 +31,36 @@
 <script>
 // @ is an alias to /src
 import HelloWorld from "./components/HelloWorld.vue";
+import PagerSelect from "../../components/pager-select";
 
 export default {
   name: "home",
   components: {
-    HelloWorld
+    HelloWorld,
+    PagerSelect
   },
   data() {
     return {
       tableData: [],
-      selectModel: "",
+      selectModel: "1",
       tableLoading: false
     };
+  },
+  methods: {
+    pagerQuery(pageNo, pageSize, filter) {
+      let params = new URLSearchParams();
+      params.append("pageNo", pageNo);
+      params.append("pageSize", pageSize);
+      params.append("filter", filter);
+      return this.$axios.get(
+        this.$axios.config.sdd.baseURL +
+          this.$axios.config.sdd.baseCode.format({
+            codeType: "123"
+          }) +
+          "?" +
+          params.toString()
+      );
+    }
   },
   mounted() {
     this.tableLoading = true;
