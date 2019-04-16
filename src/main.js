@@ -20,10 +20,10 @@ Vue.prototype.$axios = axios;
 new Vue({
   router,
   store,
-  render: h => h(App),
   data() {
     return {
       appVersion: process.env.VUE_APP_VERSION
     };
-  }
+  },
+  render: h => h(App)
 }).$mount("#app");

@@ -1,21 +1,21 @@
 <template>
   <el-select
     ref="select"
+    v-model="selectValue"
     :disabled="inputDisabled"
     clearable
     :title="title"
-    v-model="selectValue"
     :size="size"
-    @change="selectChange"
     placeholder="请选择"
+    @change="selectChange"
   >
     <el-option :disabled="true" value>
       <el-input
         v-model="search"
-        @input="searchInput"
         placeholder="搜索"
         size="mini"
         prefix-icon="el-icon-search"
+        @input="searchInput"
       />
     </el-option>
     <el-option
@@ -30,13 +30,13 @@
     </el-option>
     <el-option v-if="total > 0" :disabled="true" value>
       <el-pagination
-        @current-change="pageChange"
         small
         layout="total, prev, pager, next"
         :current-page="pageNo"
         :page-size="pageSize"
         :total="total"
         style="width: 100%"
+        @current-change="pageChange"
       />
     </el-option>
   </el-select>
@@ -47,6 +47,7 @@ import emitter from "element-ui/lib/mixins/emitter";
 
 export default {
   name: "PagerSelect",
+  mixins: [emitter],
   props: {
     value: String,
     disabled: Boolean,
@@ -70,6 +71,16 @@ export default {
       default: ""
     }
   },
+  data: function() {
+    return {
+      list: [],
+      title: "",
+      search: "",
+      total: 0,
+      pageNo: 1,
+      loading: 0
+    };
+  },
   computed: {
     selectValue: {
       get: function() {
@@ -81,16 +92,23 @@ export default {
       return this.disabled || (this.elForm || {}).disabled;
     }
   },
-  mixins: [emitter],
-  data: function() {
-    return {
-      list: [],
-      title: "",
-      search: "",
-      total: 0,
-      pageNo: 1,
-      loading: 0
-    };
+  watch: {
+    value: function(val) {
+      if (
+        val &&
+        this.list.every(item => {
+          if (item[this.valueField] === val) {
+            return false;
+          }
+          return true;
+        })
+      ) {
+        this.queryData(val);
+      }
+    }
+  },
+  mounted() {
+    this.queryData(this.value);
   },
   methods: {
     selectChange(ev) {
@@ -137,24 +155,6 @@ export default {
       this.pageNo = no;
       this.queryData();
     }
-  },
-  watch: {
-    value: function(val) {
-      if (
-        val &&
-        this.list.every(item => {
-          if (item[this.valueField] === val) {
-            return false;
-          }
-          return true;
-        })
-      ) {
-        this.queryData(val);
-      }
-    }
-  },
-  mounted() {
-    this.queryData(this.value);
   }
 };
 </script>

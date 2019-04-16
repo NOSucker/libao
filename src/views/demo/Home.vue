@@ -13,7 +13,7 @@
     </el-table>
     <pager-select
       v-model="selectModel"
-      :remoteMethod="pagerQuery"
+      :remote-method="pagerQuery"
     ></pager-select>
     <el-select v-model="selectModel" placeholder="请选择">
       <el-option
@@ -45,7 +45,7 @@ import PagerSelect from "../../components/pager-select";
 import TreeSelect from "../../components/tree-select";
 
 export default {
-  name: "home",
+  name: "Home",
   components: {
     HelloWorld,
     PagerSelect,
