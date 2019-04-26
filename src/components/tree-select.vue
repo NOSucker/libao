@@ -78,9 +78,6 @@ export default {
       }
       this.$refs.tree.filter(val);
     },
-    value(val) {
-      this.labelModel = this.queryTree(this.options, val);
-    },
     filterText(val) {
       this.$refs.tree.filter(val);
     },
@@ -101,10 +98,8 @@ export default {
   },
   methods: {
     loadNode(node, resolve) {
-      let _this = this;
       if (node.level == 0) {
-        _this
-          .remoteMethod()
+        this.remoteMethod()
           .then(response => {
             let treeData = [];
             response.data.options.forEach(e => {
@@ -116,8 +111,7 @@ export default {
             resolve([]);
           });
       } else {
-        _this
-          .remoteMethod(node.data.parentId)
+        this.remoteMethod(node.data.parentId)
           .then(response => {
             let childNode = [];
             response.data.options.forEach(e => {
@@ -128,13 +122,6 @@ export default {
           .catch(() => {
             resolve([]);
           });
-      }
-    },
-    queryData() {
-      if (typeof this.remoteMethod === "function") {
-        this.remoteMethod().then(response => {
-          this.options = response.data.options;
-        });
       }
     },
     // 单击节点
@@ -159,30 +146,11 @@ export default {
     filterNode(query, data) {
       if (!query) return true;
       return data[this.props.label].indexOf(query) !== -1;
-    },
-    // 搜索树状数据中的 ID
-    queryTree(tree, id) {
-      let stark = [];
-      stark = stark.concat(tree);
-      while (stark.length) {
-        const temp = stark.shift();
-        if (temp[this.props.children]) {
-          stark = stark.concat(temp[this.props.children]);
-        }
-        if (temp[this.props.value] === id) {
-          return temp[this.props.label];
-        }
-      }
-      return "";
     }
   },
   mounted() {
     // 检测输入框原有值并显示对应 label
     this.$refs.popover.disabled = this.inputDisabled;
-    this.queryData();
-    if (this.value) {
-      this.labelModel = this.queryTree(this.options, this.value);
-    }
   }
 };
 </script>
