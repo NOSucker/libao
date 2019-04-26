@@ -24,6 +24,16 @@
       >
       </el-option>
     </el-select>
+    <el-form inline style="margin-bottom: 200px;">
+      {{ selected }}
+      <el-form-item label="请选择：">
+        <tree-select
+          v-model="selected"
+          :remoteMethod="treeQuery"
+          :props="defaultProps"
+        />
+      </el-form-item>
+    </el-form>
     <HelloWorld msg="Welcome to Your Vue.js App" />
   </div>
 </template>
@@ -32,18 +42,29 @@
 // @ is an alias to /src
 import HelloWorld from "./components/HelloWorld.vue";
 import PagerSelect from "../../components/pager-select";
+import TreeSelect from "../../components/tree-select";
 
 export default {
   name: "home",
   components: {
     HelloWorld,
-    PagerSelect
+    PagerSelect,
+    TreeSelect
   },
   data() {
     return {
       tableData: [],
       selectModel: "1",
-      tableLoading: false
+      tableLoading: false,
+      // 默认选中值
+      selected: "A",
+      // 数据默认字段
+      defaultProps: {
+        parent: "parentId", // 父级唯一标识
+        value: "value", // 唯一标识
+        label: "label", // 标签显示
+        children: "children" // 子级
+      }
     };
   },
   methods: {
@@ -60,6 +81,16 @@ export default {
           "?" +
           params.toString()
       );
+    },
+    treeQuery(node) {
+      let url = "";
+      node
+        ? (url =
+            this.$axios.config.sdd.baseURL +
+            this.$axios.config.treeQuery +
+            `/${node}`)
+        : (url = this.$axios.config.sdd.baseURL + this.$axios.config.treeQuery);
+      return this.$axios.get(url);
     }
   },
   mounted() {

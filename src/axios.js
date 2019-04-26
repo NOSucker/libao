@@ -10,7 +10,8 @@ const config = {
     baseURL: "",
     login: "/login"
   },
-  businessDataQuery: "/businessData/query"
+  businessDataQuery: "/businessData/query",
+  treeQuery: "slectTreeData/query"
 };
 axios.config = config;
 axios.defaults.timeout = 10000; // 请求超时时间
