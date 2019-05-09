@@ -6,18 +6,17 @@
     @show="onShowPopover"
     @hide="onHidePopover"
   >
-    <el-input placeholder="输入关键字进行过滤" v-model="filterText"> </el-input>
+    <el-input v-model="filterText" placeholder="输入关键字进行过滤"> </el-input>
     <el-tree
       ref="tree"
+      v-bind="$attrs"
       class="select-tree"
       :style="`min-width: ${treeWidth}`"
-      :props="props"
       :expand-on-click-node="false"
       :filter-node-method="filterNode"
       :default-expand-all="false"
-      @node-click="onClickNode"
-      :load="loadNode"
       lazy
+      @node-click="onClickNode"
     >
     </el-tree>
     <el-input
@@ -36,53 +35,22 @@
 <script>
 export default {
   name: "Pagination",
-  props: {
-    value: String,
-    width: String,
-    remoteMethod: Function,
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    // 树节点配置选项
-    props: {
-      type: Object,
-      required: false,
-      default: () => ({
-        parent: "parentId",
-        value: "value",
-        label: "label",
-        children: "children"
-      })
-    }
-  },
   // 绑定参数
   model: {
     prop: "value",
     event: "selected"
   },
+  props: {
+    value: String,
+    width: String,
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  },
   inject: {
     elForm: {
       default: ""
-    }
-  },
-  computed: {
-    inputDisabled() {
-      return this.disabled || (this.elForm || {}).disabled;
-    }
-  },
-  watch: {
-    labelModel(val) {
-      if (!val) {
-        this.valueModel = "";
-      }
-      this.$refs.tree.filter(val);
-    },
-    filterText(val) {
-      this.$refs.tree.filter(val);
-    },
-    inputDisabled: function(val) {
-      this.$refs.popover.disabled = val;
     }
   },
   data() {
@@ -96,38 +64,32 @@ export default {
       search: ""
     };
   },
-  methods: {
-    loadNode(node, resolve) {
-      if (node.level == 0) {
-        this.remoteMethod()
-          .then(response => {
-            let treeData = [];
-            response.data.options.forEach(e => {
-              treeData.push(e);
-            });
-            resolve(treeData);
-          })
-          .catch(() => {
-            resolve([]);
-          });
-      } else {
-        this.remoteMethod(node.data.parentId)
-          .then(response => {
-            let childNode = [];
-            response.data.options.forEach(e => {
-              childNode.push(e);
-            });
-            resolve(childNode);
-          })
-          .catch(() => {
-            resolve([]);
-          });
-      }
+  computed: {
+    inputDisabled() {
+      return this.disabled || (this.elForm || {}).disabled;
+    }
+  },
+  watch: {
+    value(val) {
+      this.changeLabelText(val);
     },
+    filterText(val) {
+      this.$refs.tree.filter(val);
+    },
+    inputDisabled: function(val) {
+      this.$refs.popover.disabled = val;
+    }
+  },
+  mounted() {
+    // 检测输入框原有值并显示对应 label
+    this.$refs.popover.disabled = this.inputDisabled;
+    this.changeLabelText(this.value);
+  },
+  methods: {
     // 单击节点
     onClickNode(node) {
-      this.labelModel = node[this.props.label];
-      this.valueModel = node[this.props.value];
+      this.labelModel = node[this.$refs.tree._props.props.label];
+      this.valueModel = node[this.$refs.tree._props.props.value];
       this.onCloseTree();
     },
     // 隐藏树状菜单
@@ -145,12 +107,23 @@ export default {
     // 树节点过滤方法
     filterNode(query, data) {
       if (!query) return true;
-      return data[this.props.label].indexOf(query) !== -1;
+      return data[this.$refs.tree._props.props.label].indexOf(query) !== -1;
+    },
+    changeLabelText(val) {
+      if (!val) {
+        this.labelModel = "请选择";
+        return;
+      }
+      let node = null;
+      if (this.$refs.tree) {
+        node = this.$refs.tree.getNode(val);
+      }
+      if (node) {
+        this.labelModel = node.data[this.$refs.tree._props.props.label];
+      } else {
+        // 这里要调用一个接口 给Value获取Name的
+      }
     }
-  },
-  mounted() {
-    // 检测输入框原有值并显示对应 label
-    this.$refs.popover.disabled = this.inputDisabled;
   }
 };
 </script>
