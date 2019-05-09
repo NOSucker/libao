@@ -2,11 +2,9 @@
   <el-select
     ref="select"
     v-model="selectValue"
+    v-bind="$attrs"
     :disabled="inputDisabled"
-    clearable
     :title="title"
-    :size="size"
-    placeholder="请选择"
     @change="selectChange"
   >
     <el-option :disabled="true" value>
@@ -52,7 +50,6 @@ export default {
     value: String,
     disabled: Boolean,
     remoteMethod: Function,
-    size: String,
     valueField: {
       type: String,
       default: "code"
