@@ -29,11 +29,13 @@
       <el-form-item label="请选择：">
         <tree-select
           v-model="selected"
-          :remoteMethod="treeQuery"
+          node-key="value"
+          :load="loadNode"
           :props="defaultProps"
         />
       </el-form-item>
     </el-form>
+    <el-button @click="selected = 'B'">GGGGG</el-button>
     <HelloWorld msg="Welcome to Your Vue.js App" />
   </div>
 </template>
@@ -67,7 +69,50 @@ export default {
       }
     };
   },
+  mounted() {
+    this.tableLoading = true;
+    this.$axios
+      .post(this.$axios.config.businessDataQuery, {})
+      .then(response => {
+        this.$notify({
+          title: "成功",
+          message: "这是一条Element UI的成功提示消息",
+          type: "success"
+        });
+        this.tableData = response.data.table;
+      })
+      .finally(() => {
+        this.tableLoading = false;
+      });
+  },
   methods: {
+    loadNode(node, resolve) {
+      if (node.level == 0) {
+        this.treeQuery()
+          .then(response => {
+            let treeData = [];
+            response.data.options.forEach(e => {
+              treeData.push(e);
+            });
+            resolve(treeData);
+          })
+          .catch(() => {
+            resolve([]);
+          });
+      } else {
+        this.treeQuery(node.data.parentId)
+          .then(response => {
+            let childNode = [];
+            response.data.options.forEach(e => {
+              childNode.push(e);
+            });
+            resolve(childNode);
+          })
+          .catch(() => {
+            resolve([]);
+          });
+      }
+    },
     pagerQuery(pageNo, pageSize, filter) {
       let params = new URLSearchParams();
       params.append("pageNo", pageNo);
@@ -92,22 +137,6 @@ export default {
         : (url = this.$axios.config.sdd.baseURL + this.$axios.config.treeQuery);
       return this.$axios.get(url);
     }
-  },
-  mounted() {
-    this.tableLoading = true;
-    this.$axios
-      .post(this.$axios.config.businessDataQuery, {})
-      .then(response => {
-        this.$notify({
-          title: "成功",
-          message: "这是一条Element UI的成功提示消息",
-          type: "success"
-        });
-        this.tableData = response.data.table;
-      })
-      .finally(() => {
-        this.tableLoading = false;
-      });
   }
 };
 </script>
