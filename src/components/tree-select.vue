@@ -1,44 +1,54 @@
 <template>
-  <el-popover
-    ref="popover"
-    placement="bottom-start"
-    trigger="click"
-    @show="onShowPopover"
-    @hide="onHidePopover"
-  >
-    <el-input v-model="filterText" placeholder="输入关键字进行过滤"> </el-input>
-    <el-tree
-      ref="tree"
-      v-bind="$attrs"
-      class="select-tree"
-      :style="`min-width: ${treeWidth}`"
-      :expand-on-click-node="false"
-      :filter-node-method="filterNode"
-      :default-expand-all="false"
-      lazy
-      @node-click="onClickNode"
+  <div>
+    <el-popover
+      ref="popover"
+      placement="bottom-start"
+      :style="{ minWidth: treeWidth }"
+      trigger="click"
+      @show="onShowPopover"
+      @hide="onHidePopover"
     >
-    </el-tree>
-    <el-input
-      slot="reference"
-      ref="input"
-      v-model="labelModel"
-      :style="`width: ${width}px`"
-      :class="{ rotate: showStatus }"
-      suffix-icon="el-icon-arrow-down"
-      placeholder="请选择"
-    >
-    </el-input>
-  </el-popover>
+      <el-input v-model="filterText" placeholder="输入关键字进行过滤">
+      </el-input>
+      <el-tree
+        ref="tree"
+        v-bind="$attrs"
+        class="select-tree"
+        :style="{ minWidth: treeWidth }"
+        :expand-on-click-node="false"
+        :filter-node-method="filterNode"
+        :default-expand-all="false"
+        lazy
+        @node-click="onClickNode"
+      >
+      </el-tree>
+      <el-input
+        slot="reference"
+        ref="input"
+        v-model="labelModel"
+        style="width: 100%"
+        :class="{ rotate: showStatus }"
+        suffix-icon="el-icon-arrow-down"
+        placeholder="请选择"
+      >
+      </el-input>
+    </el-popover>
+  </div>
 </template>
 
 <script>
+import {
+  addResizeListener,
+  removeResizeListener
+} from "element-ui/src/utils/resize-event";
+import Emitter from "element-ui/src/mixins/emitter";
 export default {
   name: "Pagination",
-  // 绑定参数
-  model: {
-    prop: "value",
-    event: "selected"
+  mixins: [Emitter],
+  inject: {
+    elForm: {
+      default: ""
+    }
   },
   props: {
     value: String,
@@ -46,11 +56,6 @@ export default {
     disabled: {
       type: Boolean,
       default: false
-    }
-  },
-  inject: {
-    elForm: {
-      default: ""
     }
   },
   data() {
@@ -84,12 +89,25 @@ export default {
     // 检测输入框原有值并显示对应 label
     this.$refs.popover.disabled = this.inputDisabled;
     this.changeLabelText(this.value);
+    addResizeListener(this.$el, this.handleResize);
+    const _INPUT = this.$refs.input;
+    this.$nextTick(() => {
+      if (_INPUT && _INPUT.$el) {
+        this.treeWidth = _INPUT.$el.getBoundingClientRect().width - 24 + "px";
+      }
+    });
+  },
+  beforeDestroy() {
+    if (this.$el && this.handleResize)
+      removeResizeListener(this.$el, this.handleResize);
   },
   methods: {
     // 单击节点
     onClickNode(node) {
       this.labelModel = node[this.$refs.tree._props.props.label];
       this.valueModel = node[this.$refs.tree._props.props.value];
+      this.$emit("input", this.valueModel);
+      this.dispatch("ElFormItem", "el.form.change", node.comCode);
       this.onCloseTree();
     },
     // 隐藏树状菜单
@@ -102,7 +120,6 @@ export default {
     },
     onHidePopover() {
       this.showStatus = false;
-      this.$emit("input", this.valueModel);
     },
     // 树节点过滤方法
     filterNode(query, data) {
@@ -124,6 +141,10 @@ export default {
         // 这里要调用一个接口 给Value获取Name的
       }
       this.$refs.tree.setCurrentKey(val);
+    },
+    handleResize() {
+      this.treeWidth =
+        this.$refs.input.$el.getBoundingClientRect().width - 24 + "px";
     }
   }
 };
