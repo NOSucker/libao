@@ -30,6 +30,7 @@
         <tree-select
           v-model="selected"
           node-key="value"
+          :highlight-current="true"
           :load="loadNode"
           :props="defaultProps"
         />

@@ -102,7 +102,7 @@ export default {
     },
     onHidePopover() {
       this.showStatus = false;
-      this.$emit("selected", this.valueModel);
+      this.$emit("input", this.valueModel);
     },
     // 树节点过滤方法
     filterNode(query, data) {
@@ -123,6 +123,7 @@ export default {
       } else {
         // 这里要调用一个接口 给Value获取Name的
       }
+      this.$refs.tree.setCurrentKey(val);
     }
   }
 };
