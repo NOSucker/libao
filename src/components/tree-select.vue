@@ -5,6 +5,7 @@
       placement="bottom-start"
       :style="{ minWidth: treeWidth }"
       trigger="click"
+      :disabled="inputDisabled"
       @show="onShowPopover"
       @hide="onHidePopover"
     >
@@ -14,10 +15,12 @@
         ref="tree"
         v-bind="$attrs"
         class="select-tree"
+        node-key="value"
         :style="{ minWidth: treeWidth }"
         :expand-on-click-node="false"
         :filter-node-method="filterNode"
         :default-expand-all="false"
+        :load="loadNode"
         lazy
         @node-click="onClickNode"
       >
@@ -26,7 +29,9 @@
         slot="reference"
         ref="input"
         v-model="labelModel"
+        :readonly="true"
         style="width: 100%"
+        :disabled="inputDisabled"
         :class="{ rotate: showStatus }"
         suffix-icon="el-icon-arrow-down"
         placeholder="请选择"
@@ -53,6 +58,8 @@ export default {
   props: {
     value: String,
     width: String,
+    remoteMethod: Function,
+    initLableMethod: Function,
     disabled: {
       type: Boolean,
       default: false
@@ -102,11 +109,39 @@ export default {
       removeResizeListener(this.$el, this.handleResize);
   },
   methods: {
+    loadNode(node, resolve) {
+      if (node.level == 0) {
+        this.remoteMethod()
+          .then(response => {
+            let treeData = [];
+            response.data.options.forEach(e => {
+              treeData.push(e);
+            });
+            resolve(treeData);
+          })
+          .catch(() => {
+            resolve([]);
+          });
+      } else {
+        this.remoteMethod(node.id)
+          .then(response => {
+            let myList = [];
+            response.data.options.forEach(e => {
+              myList.push(e);
+            });
+            resolve(myList);
+          })
+          .catch(() => {
+            resolve([]);
+          });
+      }
+    },
     // 单击节点
     onClickNode(node) {
       this.labelModel = node[this.$refs.tree._props.props.label];
       this.valueModel = node[this.$refs.tree._props.props.value];
       this.$emit("input", this.valueModel);
+      this.$emit("treeChange", node);
       this.dispatch("ElFormItem", "el.form.change", node.comCode);
       this.onCloseTree();
     },
@@ -139,6 +174,9 @@ export default {
         this.labelModel = node.data[this.$refs.tree._props.props.label];
       } else {
         // 这里要调用一个接口 给Value获取Name的
+        this.initLableMethod().then(response => {
+          this.labelModel = response.data.options[0].label;
+        });
       }
       this.$refs.tree.setCurrentKey(val);
     },

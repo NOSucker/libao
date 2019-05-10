@@ -29,9 +29,9 @@
       <el-form-item label="请选择：">
         <tree-select
           v-model="selected"
-          node-key="value"
           :highlight-current="true"
-          :load="loadNode"
+          :remote-method="treeQuery"
+          :init-lable-method="initLabel"
           :props="defaultProps"
         />
       </el-form-item>
@@ -87,33 +87,6 @@ export default {
       });
   },
   methods: {
-    loadNode(node, resolve) {
-      if (node.level == 0) {
-        this.treeQuery()
-          .then(response => {
-            let treeData = [];
-            response.data.options.forEach(e => {
-              treeData.push(e);
-            });
-            resolve(treeData);
-          })
-          .catch(() => {
-            resolve([]);
-          });
-      } else {
-        this.treeQuery(node.data.parentId)
-          .then(response => {
-            let childNode = [];
-            response.data.options.forEach(e => {
-              childNode.push(e);
-            });
-            resolve(childNode);
-          })
-          .catch(() => {
-            resolve([]);
-          });
-      }
-    },
     pagerQuery(pageNo, pageSize, filter) {
       let params = new URLSearchParams();
       params.append("pageNo", pageNo);
@@ -137,6 +110,15 @@ export default {
             `/${node}`)
         : (url = this.$axios.config.sdd.baseURL + this.$axios.config.treeQuery);
       return this.$axios.get(url);
+    },
+    initLabel() {
+      let node = "2";
+      this.selected = node;
+      return this.$axios.get(
+        this.$axios.config.sdd.baseURL +
+          this.$axios.config.treeQuery +
+          `/${node}`
+      );
     }
   }
 };
