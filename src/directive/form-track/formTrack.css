@@ -1,0 +1,8 @@
+.el-form-item__track{
+  color: #e6a23c
+}
+
+.el-form-item.is-track .el-input__inner, .el-form-item.is-track .el-input__inner:focus, .el-form-item.is-track .el-textarea__inner, .el-form-item.is-track .el-textarea__inner:focus {
+  border-color: #e6a23c;
+  background: lightyellow;
+}
