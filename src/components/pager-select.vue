@@ -7,7 +7,7 @@
     :title="title"
     @change="selectChange"
   >
-    <el-option :disabled="true" value>
+    <el-option v-if="showSearchBar" :disabled="true" value>
       <el-input
         v-model="search"
         placeholder="搜索"
@@ -61,6 +61,10 @@ export default {
     pageSize: {
       type: Number,
       default: 10
+    },
+    showSearchBar: {
+      type: Boolean,
+      default: false
     }
   },
   inject: {
@@ -138,6 +142,11 @@ export default {
             loading.close();
           });
       }
+    },
+    refreshData() {
+      this.list.splice(0, this.list.length);
+      this.search = "";
+      this.queryData();
     },
     searchInput() {
       this.loading++;
