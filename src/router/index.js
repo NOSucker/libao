@@ -19,6 +19,16 @@ const router = new VueRouter({
       // which is lazy-loaded when the route is visited.
       component: () =>
         import(/* webpackChunkName: "about" */ "../views/demo/About.vue")
+    },
+    {
+      path: "/tree-select",
+      name: "treeSelect",
+      component: () => import("../../example/demo/treeSelect.vue")
+    },
+    {
+      path: "/page-select",
+      name: "pageSelect",
+      component: () => import("../../example/demo/pageSelect.vue")
     }
   ]
 });
