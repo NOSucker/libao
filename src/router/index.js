@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import sampleRouter from "../../examples/router";
 // import {Loading} from 'element-ui';
 
 Vue.use(VueRouter);
@@ -20,16 +21,7 @@ const router = new VueRouter({
       component: () =>
         import(/* webpackChunkName: "about" */ "../views/demo/About.vue")
     },
-    {
-      path: "/tree-select",
-      name: "treeSelect",
-      component: () => import("../../example/demo/treeSelect.vue")
-    },
-    {
-      path: "/page-select",
-      name: "pageSelect",
-      component: () => import("../../example/demo/pageSelect.vue")
-    }
+    ...sampleRouter
   ]
 });
 
