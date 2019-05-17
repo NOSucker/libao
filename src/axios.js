@@ -21,11 +21,10 @@ axios.defaults.baseURL = process.env.VUE_APP_BASE_URL; // 根据环境变量设�
  * 请求拦截器
  */
 axios.interceptors.request.use(
-  config => {
+  config =>
     // 在请求发送之前做一些处理，让每个请求携带JWT token-- ['Authorization'] 请根据实际情况自行修改
     // config.headers["Authorization"] = "Bearer " + localStorage.getItem("token");
-    return config;
-  },
+    config,
   error => {
     // 发送失败
     console.log(error);
@@ -37,7 +36,7 @@ axios.interceptors.request.use(
  * 响应拦截器
  */
 axios.interceptors.response.use(
-  response => {
+  response =>
     // 这个“status状态码”和“statusText状态信息”是和后端约定的，需前后端严格按照规范来处理
     // if(response.data && response.data.status !== 0){
     //     Message({
@@ -46,8 +45,7 @@ axios.interceptors.response.use(
     //         duration: 5000
     //     });
     // }
-    return response;
-  },
+    response,
   error => {
     // 后台请求错误处理，这里可以埋点
     if (error && error.response) {

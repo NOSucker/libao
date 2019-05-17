@@ -1,42 +1,34 @@
 <template>
   <div class="home">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link to="/">
+        Home
+      </router-link>
+      |
+      <router-link to="/about">
+        About
+      </router-link>
     </div>
     <img alt="Vue logo" src="../../assets/logo.png" />
     <el-table v-loading="tableLoading" :data="tableData" style="width: 100%">
-      <el-table-column prop="comCode" label="组织机构代码"> </el-table-column>
-      <el-table-column prop="comName" label="组织机构名"> </el-table-column>
-      <el-table-column prop="personCode" label="操作员代码"> </el-table-column>
-      <el-table-column prop="personName" label="操作员姓名"> </el-table-column>
+      <el-table-column prop="comCode" label="组织机构代码" />
+      <el-table-column prop="comName" label="组织机构名" />
+      <el-table-column prop="personCode" label="操作员代码" />
+      <el-table-column prop="personName" label="操作员姓名" />
     </el-table>
-    <pager-select
-      v-model="selectModel"
-      :remote-method="pagerQuery"
-    ></pager-select>
+    <pager-select v-model="selectModel" :remote-method="pagerQuery" />
     <el-select v-model="selectModel" placeholder="请选择">
-      <el-option
-        v-for="item in $store.getters.baseCodeData('abc')"
-        :key="item.code"
-        :label="item.value"
-        :value="item.code"
-      >
-      </el-option>
+      <el-option v-for="item in $store.getters.baseCodeData('abc')" :key="item.code" :label="item.value" :value="item.code" />
     </el-select>
     <el-form inline style="margin-bottom: 200px;">
       {{ selected }}
       <el-form-item label="请选择：">
-        <tree-select
-          v-model="selected"
-          :highlight-current="true"
-          :remote-method="treeQuery"
-          :init-lable-method="initLabel"
-          :props="defaultProps"
-        />
+        <tree-select v-model="selected" :highlight-current="true" :remote-method="treeQuery" :init-lable-method="initLabel" :props="defaultProps" />
       </el-form-item>
     </el-form>
-    <el-button @click="selected = 'B'">GGGGG</el-button>
+    <el-button @click="selected = 'B'">
+      GGGGG
+    </el-button>
     <HelloWorld msg="Welcome to Your Vue.js App" />
   </div>
 </template>
@@ -104,21 +96,14 @@ export default {
     treeQuery(node) {
       let url = "";
       node
-        ? (url =
-            this.$axios.config.sdd.baseURL +
-            this.$axios.config.treeQuery +
-            `/${node}`)
+        ? (url = this.$axios.config.sdd.baseURL + this.$axios.config.treeQuery + `/${node}`)
         : (url = this.$axios.config.sdd.baseURL + this.$axios.config.treeQuery);
       return this.$axios.get(url);
     },
     initLabel() {
       let node = "2";
       this.selected = node;
-      return this.$axios.get(
-        this.$axios.config.sdd.baseURL +
-          this.$axios.config.treeQuery +
-          `/${node}`
-      );
+      return this.$axios.get(this.$axios.config.sdd.baseURL + this.$axios.config.treeQuery + `/${node}`);
     }
   }
 };

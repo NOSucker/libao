@@ -6,7 +6,7 @@ const install = function(Vue) {
 };
 
 if (window.Vue) {
-  window["formTrack"] = formTrack;
+  window.formTrack = formTrack;
   Vue.use(install); // eslint-disable-line
 }
 

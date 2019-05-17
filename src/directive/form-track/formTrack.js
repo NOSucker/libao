@@ -1,5 +1,5 @@
 export default {
-  bind: function(el, binding, vnode) {
+  bind(el, binding, vnode) {
     vnode.componentInstance.trackValue = binding.value;
     vnode.componentInstance.$on("el.form.addField", field => {
       field.trackLabel = null;
@@ -19,41 +19,22 @@ export default {
             oldVal = JSON.stringify(oldVal);
           }
 
-          if (
-            newVal !== oldVal &&
-            !(!newVal && !oldVal) &&
-            field.validateState !== "error"
-          ) {
-            if (
-              field.$slots.default.length > 0 &&
-              field.$slots.default[0].componentInstance.$options
-                ._componentTag === "el-select"
-            ) {
-              oldVal =
-                field.$slots.default[0].componentInstance.getOption(oldVal)
-                  .label || oldVal;
-              newVal =
-                field.$slots.default[0].componentInstance.getOption(newVal)
-                  .label || newVal;
+          if (newVal !== oldVal && !(!newVal && !oldVal) && field.validateState !== "error") {
+            if (field.$slots.default.length > 0 && field.$slots.default[0].componentInstance.$options._componentTag === "el-select") {
+              oldVal = field.$slots.default[0].componentInstance.getOption(oldVal).label || oldVal;
+              newVal = field.$slots.default[0].componentInstance.getOption(newVal).label || newVal;
             }
             if (!field.trackLabel) {
               field.trackLabel = document.createElement("div");
-              field.trackLabel.className =
-                "el-form-item__track el-form-item__error";
+              field.trackLabel.className = "el-form-item__track el-form-item__error";
               field.trackLabel.innerHTML = `原值：${oldVal}`;
-              field.$el
-                .querySelector(".el-form-item__content")
-                .appendChild(field.trackLabel);
+              field.$el.querySelector(".el-form-item__content").appendChild(field.trackLabel);
               field.$el.classList.add("is-track");
             }
-          } else {
-            if (field.trackLabel) {
-              field.$el
-                .querySelector(".el-form-item__content")
-                .removeChild(field.trackLabel);
-              field.$el.classList.remove("is-track");
-              field.trackLabel = null;
-            }
+          } else if (field.trackLabel) {
+            field.$el.querySelector(".el-form-item__content").removeChild(field.trackLabel);
+            field.$el.classList.remove("is-track");
+            field.trackLabel = null;
           }
           vnode.componentInstance.$emit("form-track", {
             prop: field.prop,
@@ -77,7 +58,7 @@ export default {
       });
     });
   },
-  update: function(el, binding, vnode) {
+  update(el, binding, vnode) {
     vnode.componentInstance.trackValue = binding.value;
   }
 };

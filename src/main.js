@@ -1,9 +1,9 @@
 import Vue from "vue";
+import ElementUI from "element-ui";
 import App from "./App.vue";
 import router from "./router/index";
 import store from "./store";
 import axios from "./axios.js";
-import ElementUI from "element-ui";
 import "./libs/util.js";
 import "element-ui/lib/theme-chalk/index.css";
 // import "animate.css"

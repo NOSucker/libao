@@ -7,10 +7,8 @@
       trigger="click"
       :disabled="inputDisabled"
       @show="onShowPopover"
-      @hide="onHidePopover"
-    >
-      <el-input v-model="filterText" placeholder="输入关键字进行过滤">
-      </el-input>
+      @hide="onHidePopover">
+      <el-input v-model="filterText" placeholder="输入关键字进行过滤" />
       <el-tree
         ref="tree"
         v-bind="$attrs"
@@ -22,9 +20,7 @@
         :default-expand-all="false"
         :load="loadNode"
         lazy
-        @node-click="onClickNode"
-      >
-      </el-tree>
+        @node-click="onClickNode"/>
       <el-input
         slot="reference"
         ref="input"
@@ -34,18 +30,13 @@
         :disabled="inputDisabled"
         :class="{ rotate: showStatus }"
         suffix-icon="el-icon-arrow-down"
-        placeholder="请选择"
-      >
-      </el-input>
+        placeholder="请选择"/>
     </el-popover>
   </div>
 </template>
 
 <script>
-import {
-  addResizeListener,
-  removeResizeListener
-} from "element-ui/src/utils/resize-event";
+import { addResizeListener, removeResizeListener } from "element-ui/src/utils/resize-event";
 import Emitter from "element-ui/src/mixins/emitter";
 export default {
   name: "Pagination",
@@ -105,8 +96,7 @@ export default {
     });
   },
   beforeDestroy() {
-    if (this.$el && this.handleResize)
-      removeResizeListener(this.$el, this.handleResize);
+    if (this.$el && this.handleResize) removeResizeListener(this.$el, this.handleResize);
   },
   methods: {
     loadNode(node, resolve) {
@@ -181,8 +171,7 @@ export default {
       this.$refs.tree.setCurrentKey(val);
     },
     handleResize() {
-      this.treeWidth =
-        this.$refs.input.$el.getBoundingClientRect().width - 24 + "px";
+      this.treeWidth = this.$refs.input.$el.getBoundingClientRect().width - 24 + "px";
     }
   }
 };

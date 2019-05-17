@@ -1,30 +1,13 @@
 <template>
-  <el-select
-    ref="select"
-    v-model="selectValue"
-    v-bind="$attrs"
-    :disabled="inputDisabled"
-    :title="title"
-    @change="selectChange"
-  >
+  <el-select ref="select" v-model="selectValue" v-bind="$attrs" :disabled="inputDisabled" :title="title" @change="selectChange">
     <el-option v-if="showSearchBar" :disabled="true" value>
-      <el-input
-        v-model="search"
-        placeholder="搜索"
-        size="mini"
-        prefix-icon="el-icon-search"
-        @input="searchInput"
-      />
+      <el-input v-model="search" placeholder="搜索" size="mini" prefix-icon="el-icon-search" @input="searchInput" />
     </el-option>
-    <el-option
-      v-for="item in list"
-      :key="item[valueField]"
-      :label="item[labelField]"
-      :value="item[valueField]"
-    >
-    </el-option>
+    <el-option v-for="item in list" :key="item[valueField]" :label="item[labelField]" :value="item[valueField]" />
     <el-option v-if="list.length == 0" :disabled="true" value>
-      <div style="text-align: center">没有数据</div>
+      <div style="text-align: center">
+        没有数据
+      </div>
     </el-option>
     <el-option v-if="total > 0" :disabled="true" value>
       <el-pagination
@@ -125,8 +108,7 @@ export default {
       });
     },
     queryData(filter) {
-      this.$refs.select.$refs.scrollbar.$el.childNodes[0].style.maxHeight =
-        "440px";
+      this.$refs.select.$refs.scrollbar.$el.childNodes[0].style.maxHeight = "440px";
       if (typeof this.remoteMethod === "function") {
         const loading = this.$loading({
           text: "查询中",
