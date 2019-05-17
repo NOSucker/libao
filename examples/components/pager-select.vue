@@ -1,7 +1,7 @@
 <template>
   <div style="margin-top: 100px;">
     <el-form inline>
-      <el-form-item label="">
+      <el-form-item :label="'value:'+ selectModel">
         <pager-select
           :show-search-bar="true"
           v-model="selectModel"

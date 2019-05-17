@@ -123,6 +123,7 @@ export default {
     refreshData() {
       this.list.splice(0, this.list.length);
       this.search = "";
+      this.pageNo = 1;
       this.queryData();
     },
     searchInput() {
@@ -130,6 +131,7 @@ export default {
       setTimeout(() => {
         this.debounceCount--;
         if (this.debounceCount === 0) {
+          this.pageNo = 1;
           this.queryData();
         }
       }, this.debounce);
