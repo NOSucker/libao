@@ -1,7 +1,7 @@
 <template>
   <el-select ref="select" v-model="selectValue" v-bind="$attrs">
     <el-option v-if="showSearchBar" :disabled="true" value>
-      <el-input v-model="search" placeholder="搜索" size="mini" prefix-icon="el-icon-search" @input="searchInput" />
+      <el-input v-model="search" :validate-event="false" placeholder="搜索" size="mini" prefix-icon="el-icon-search" @input="searchInput" />
     </el-option>
     <el-option v-for="item in list" :key="item[valueField]" :label="item[labelField]" :value="item[valueField]" />
     <el-option v-if="list.length == 0" :disabled="true" value>
