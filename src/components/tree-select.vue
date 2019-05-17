@@ -27,7 +27,7 @@
         :readonly="true"
         :disabled="inputDisabled"
         :class="{ rotate: showStatus }"
-        suffix-icon="el-icon-arrow-down"
+        :suffix-icon="suffixIcon"
         :placeholder="placeholder"/>
     </el-popover>
   </div>
@@ -67,7 +67,8 @@ export default {
       showStatus: false,
       treeWidth: "auto",
       labelModel: "",
-      valueModel: ""
+      valueModel: "",
+      suffixIcon: "el-icon-arrow-down"
     };
   },
   computed: {
@@ -151,11 +152,16 @@ export default {
         this.labelModel = val;
         let nodeData = {};
         nodeData[this.$refs.tree._props.props.value] = val;
-        this.remoteMethod(nodeData).then(data => {
-          if (data && data[this.$refs.tree._props.props.label]) {
-            this.labelModel = data[this.$refs.tree._props.props.label];
-          }
-        });
+        this.suffixIcon = "el-icon-loading";
+        this.remoteMethod(nodeData)
+          .then(data => {
+            if (data && data[this.$refs.tree._props.props.label]) {
+              this.labelModel = data[this.$refs.tree._props.props.label];
+            }
+          })
+          .finally(() => {
+            this.suffixIcon = "el-icon-arrow-down";
+          });
       }
       this.$refs.tree.setCurrentKey(val);
     },
