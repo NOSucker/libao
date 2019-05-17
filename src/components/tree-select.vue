@@ -8,12 +8,10 @@
       :disabled="inputDisabled"
       @show="onShowPopover"
       @hide="onHidePopover">
-      <el-input v-model="filterText" placeholder="输入关键字进行过滤" />
+      <el-input v-if="showSearchBar" v-model="filterText" clearable :validate-event="false" placeholder="输入关键字进行过滤" />
       <el-tree
         ref="tree"
         v-bind="$attrs"
-        class="select-tree"
-        node-key="value"
         :style="{ minWidth: treeWidth }"
         :expand-on-click-node="false"
         :filter-node-method="filterNode"
@@ -25,12 +23,12 @@
         slot="reference"
         ref="input"
         v-model="labelModel"
+        :validate-event="false"
         :readonly="true"
-        style="width: 100%"
         :disabled="inputDisabled"
         :class="{ rotate: showStatus }"
         suffix-icon="el-icon-arrow-down"
-        placeholder="请选择"/>
+        :placeholder="placeholder"/>
     </el-popover>
   </div>
 </template>
@@ -38,8 +36,9 @@
 <script>
 import { addResizeListener, removeResizeListener } from "element-ui/src/utils/resize-event";
 import Emitter from "element-ui/src/mixins/emitter";
+
 export default {
-  name: "Pagination",
+  name: "TreeSelect",
   mixins: [Emitter],
   inject: {
     elForm: {
@@ -48,9 +47,15 @@ export default {
   },
   props: {
     value: String,
-    width: String,
     remoteMethod: Function,
-    initLableMethod: Function,
+    placeholder: {
+      type: String,
+      default: "请选择"
+    },
+    showSearchBar: {
+      type: Boolean,
+      default: false
+    },
     disabled: {
       type: Boolean,
       default: false
@@ -59,12 +64,10 @@ export default {
   data() {
     return {
       filterText: "",
-      options: [],
       showStatus: false,
       treeWidth: "auto",
       labelModel: "",
-      valueModel: "0",
-      search: ""
+      valueModel: ""
     };
   },
   computed: {
@@ -86,7 +89,6 @@ export default {
   mounted() {
     // 检测输入框原有值并显示对应 label
     this.$refs.popover.disabled = this.inputDisabled;
-    this.changeLabelText(this.value);
     addResizeListener(this.$el, this.handleResize);
     const _INPUT = this.$refs.input;
     this.$nextTick(() => {
@@ -100,43 +102,26 @@ export default {
   },
   methods: {
     loadNode(node, resolve) {
-      if (node.level == 0) {
-        this.remoteMethod()
-          .then(response => {
-            let treeData = [];
-            response.data.options.forEach(e => {
-              treeData.push(e);
-            });
-            resolve(treeData);
-          })
-          .catch(() => {
-            resolve([]);
-          });
-      } else {
-        this.remoteMethod(node.id)
-          .then(response => {
-            let myList = [];
-            response.data.options.forEach(e => {
-              myList.push(e);
-            });
-            resolve(myList);
-          })
-          .catch(() => {
-            resolve([]);
-          });
-      }
+      this.remoteMethod(node.data)
+        .then(response => {
+          resolve(response[this.$refs.tree._props.props.children]);
+        })
+        .catch(() => {
+          resolve([]);
+        })
+        .finally(() => {
+          if (node.level == 0) {
+            this.changeLabelText(this.value);
+          }
+        });
     },
     // 单击节点
     onClickNode(node) {
       this.labelModel = node[this.$refs.tree._props.props.label];
       this.valueModel = node[this.$refs.tree._props.props.value];
       this.$emit("input", this.valueModel);
-      this.$emit("treeChange", node);
-      this.dispatch("ElFormItem", "el.form.change", node.comCode);
-      this.onCloseTree();
-    },
-    // 隐藏树状菜单
-    onCloseTree() {
+      this.$emit("select-change", node);
+      this.dispatch("ElFormItem", "el.form.change", this.valueModel);
       this.$refs.popover.showPopper = false;
     },
     onShowPopover() {
@@ -153,7 +138,7 @@ export default {
     },
     changeLabelText(val) {
       if (!val) {
-        this.labelModel = "请选择";
+        this.labelModel = "";
         return;
       }
       let node = null;
@@ -163,9 +148,13 @@ export default {
       if (node) {
         this.labelModel = node.data[this.$refs.tree._props.props.label];
       } else {
-        // 这里要调用一个接口 给Value获取Name的
-        this.initLableMethod().then(response => {
-          this.labelModel = response.data.options[0].label;
+        this.labelModel = val;
+        let nodeData = {};
+        nodeData[this.$refs.tree._props.props.value] = val;
+        this.remoteMethod(nodeData).then(data => {
+          if (data && data[this.$refs.tree._props.props.label]) {
+            this.labelModel = data[this.$refs.tree._props.props.label];
+          }
         });
       }
       this.$refs.tree.setCurrentKey(val);

@@ -78,11 +78,12 @@ mock.onGet(new RegExp(config.sdd.baseURL + config.sdd.baseCode.substr(0, config.
           statusText: "Success"
         }
       ]);
-    }, 100);
+    }, 500);
   });
 });
 
 mock.onGet(new RegExp(config.saa.baseURL + config.saa.companyQuery.substr(0, config.saa.companyQuery.indexOf("{")))).reply(request => {
+  console.log("Mock: " + request.url);
   let comCode = request.url.substr(request.url.lastIndexOf("/") + 1);
   let companyData = {
     comCode: "000000",
@@ -94,7 +95,8 @@ mock.onGet(new RegExp(config.saa.baseURL + config.saa.companyQuery.substr(0, con
         subCompanyList: [
           {
             comCode: "110100",
-            comCName: "北京东城分公司"
+            comCName: "北京东城分公司",
+            subCompanyList: []
           },
           {
             comCode: "110200",
@@ -108,35 +110,35 @@ mock.onGet(new RegExp(config.saa.baseURL + config.saa.companyQuery.substr(0, con
       }
     ]
   };
-  if (comCode == "210000") {
-    companyData = {
-      comCode: "210000",
-      comCName: "上海分公司",
-      subCompanyList: []
-    };
+  switch (comCode) {
+    case "":
+      break;
+    case "110000":
+      companyData = companyData.subCompanyList[0];
+      break;
+    case "110100":
+      companyData = companyData.subCompanyList[0].subCompanyList[0];
+      break;
+    case "110200":
+      companyData = companyData.subCompanyList[0].subCompanyList[1];
+      break;
+    case "210000":
+      companyData = companyData.subCompanyList[1];
+      break;
+    default:
+      companyData = {};
   }
-  if (comCode == "110000") {
-    companyData = {
-      comCode: "110000",
-      comCName: "北京分公司",
-      subCompanyList: [
-        {
-          comCode: "110100",
-          comCName: "北京东城分公司"
-        },
-        {
-          comCode: "110200",
-          comCName: "北京西城分公司"
-        }
-      ]
-    };
-  }
-  companyData.status = 0;
-  companyData.statusText = "Success";
   return new Promise(resolve => {
     setTimeout(() => {
-      resolve([200, companyData]);
-    }, 1000);
+      resolve([
+        200,
+        {
+          data: companyData,
+          status: 0,
+          statusText: "Success"
+        }
+      ]);
+    }, 500);
   });
 });
 

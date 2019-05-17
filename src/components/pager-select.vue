@@ -1,7 +1,7 @@
 <template>
   <el-select ref="select" v-model="selectValue" v-bind="$attrs">
     <el-option v-if="showSearchBar" :disabled="true" value>
-      <el-input v-model="search" :validate-event="false" placeholder="搜索" size="mini" prefix-icon="el-icon-search" @input="searchInput" />
+      <el-input v-model="search" :validate-event="false" clearable placeholder="搜索" size="mini" prefix-icon="el-icon-search" @input="searchInput" />
     </el-option>
     <el-option v-for="item in list" :key="item[valueField]" :label="item[labelField]" :value="item[valueField]" />
     <el-option v-if="list.length == 0" :disabled="true" value>
@@ -70,52 +70,55 @@ export default {
     }
   },
   watch: {
-    value: function(val) {
+    value: function() {
+      this.setLabelText();
+    }
+  },
+  mounted() {
+    this.queryData().then(() => {
+      this.setLabelText();
+    });
+  },
+  methods: {
+    setLabelText() {
       if (
-        val &&
+        this.value &&
         this.list.every(item => {
-          if (item[this.valueField] === val) {
+          if (item[this.valueField] === this.value) {
             return false;
           }
           return true;
         })
       ) {
-        this.queryData(val);
+        this.queryData(this.value);
       }
-    }
-  },
-  mounted() {
-    this.queryData(this.value);
-  },
-  methods: {
+    },
     queryData(value) {
       this.$refs.select.$refs.scrollbar.$el.childNodes[0].style.maxHeight = "440px";
-      if (typeof this.remoteMethod === "function") {
-        var loading = this.$loading({
-          text: "查询中",
-          spinner: "el-icon-loading",
-          target: this.$refs.select.$refs.scrollbar.$el
-        });
-        this.remoteMethod({ pageNo: this.pageNo, pageSize: this.pageSize, search: this.search, value: value ? value : "" })
-          .then(response => {
-            if (!value) {
-              this.list = response.data.list;
-              this.total = response.data.total;
-            } else {
+      var loading = this.$loading({
+        text: "查询中",
+        spinner: "el-icon-loading",
+        target: this.$refs.select.$refs.scrollbar.$el
+      });
+      return this.remoteMethod({ pageNo: this.pageNo, pageSize: this.pageSize, search: this.search, value: value ? value : "" })
+        .then(response => {
+          if (!value) {
+            this.list = response.data.list;
+            this.total = response.data.total;
+          } else {
+            response.data.list.forEach(item => {
+              this.list.push(item);
+            });
+            this.$nextTick(() => {
               response.data.list.forEach(item => {
-                this.list.push(item);
+                this.list.splice(this.list.indexOf(item), 1);
               });
-              this.$nextTick(() => {
-                response.data.list.forEach(item => {
-                  this.list.splice(this.list.indexOf(item), 1);
-                });
-              });
-            }
-          })
-          .finally(() => {
-            loading.close();
-          });
-      }
+            });
+          }
+        })
+        .finally(() => {
+          loading.close();
+        });
     },
     refreshData() {
       this.list.splice(0, this.list.length);
