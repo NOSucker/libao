@@ -3,15 +3,15 @@ import { Message } from "element-ui";
 
 const config = {
   sdd: {
-    baseURL: "",
+    baseURL: "/sdd",
     baseCode: "/baseCode/search/{codeType}"
   },
   saa: {
-    baseURL: "",
-    login: "/login"
+    baseURL: "/saa",
+    login: "/login",
+    companyQuery: "/company/query/{comCode}"
   },
-  businessDataQuery: "/businessData/query",
-  treeQuery: "slectTreeData/query"
+  businessDataQuery: "/businessData/query"
 };
 axios.config = config;
 axios.defaults.timeout = 10000; // 请求超时时间

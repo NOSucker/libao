@@ -1,5 +1,5 @@
 <template>
-  <el-select ref="select" v-model="selectValue" v-bind="$attrs" :disabled="inputDisabled" :title="title" @change="selectChange">
+  <el-select ref="select" v-model="selectValue" v-bind="$attrs">
     <el-option v-if="showSearchBar" :disabled="true" value>
       <el-input v-model="search" placeholder="搜索" size="mini" prefix-icon="el-icon-search" @input="searchInput" />
     </el-option>
@@ -17,21 +17,16 @@
         :page-size="pageSize"
         :total="total"
         style="width: 100%"
-        @current-change="pageChange"
-      />
+        @current-change="pageChange"/>
     </el-option>
   </el-select>
 </template>
 
 <script>
-import emitter from "element-ui/lib/mixins/emitter";
-
 export default {
   name: "PagerSelect",
-  mixins: [emitter],
   props: {
     value: String,
-    disabled: Boolean,
     remoteMethod: Function,
     valueField: {
       type: String,
@@ -50,11 +45,6 @@ export default {
       default: false
     }
   },
-  inject: {
-    elForm: {
-      default: ""
-    }
-  },
   data: function() {
     return {
       list: [],
@@ -70,10 +60,9 @@ export default {
       get: function() {
         return this.value;
       },
-      set: function() {}
-    },
-    inputDisabled() {
-      return this.disabled || (this.elForm || {}).disabled;
+      set: function(val) {
+        this.$emit("input", val);
+      }
     }
   },
   watch: {
@@ -95,19 +84,7 @@ export default {
     this.queryData(this.value);
   },
   methods: {
-    selectChange(ev) {
-      this.$emit("input", ev);
-      this.dispatch("ElFormItem", "el.form.change", ev);
-      this.list.every(item => {
-        if (item.code === ev) {
-          this.$emit("select-change", item);
-          this.title = item.value;
-          return false;
-        }
-        return true;
-      });
-    },
-    queryData(filter) {
+    queryData(value) {
       this.$refs.select.$refs.scrollbar.$el.childNodes[0].style.maxHeight = "440px";
       if (typeof this.remoteMethod === "function") {
         const loading = this.$loading({
@@ -115,10 +92,21 @@ export default {
           spinner: "el-icon-loading",
           target: this.$refs.select.$refs.scrollbar.$el
         });
-        this.remoteMethod(this.pageNo, this.pageSize, filter)
+        this.remoteMethod({ pageNo: this.pageNo, pageSize: this.pageSize, search: this.search, value: value ? value : "" })
           .then(response => {
-            this.list = response.data.list;
-            this.total = response.data.total;
+            if (!value) {
+              this.list = response.data.list;
+              this.total = response.data.total;
+            } else {
+              response.data.list.forEach(item => {
+                this.list.push(item);
+              });
+              this.$nextTick(() => {
+                response.data.list.forEach(item => {
+                  this.list.splice(this.list.indexOf(item), 1);
+                });
+              });
+            }
           })
           .finally(() => {
             loading.close();
@@ -135,7 +123,7 @@ export default {
       setTimeout(() => {
         this.loading--;
         if (this.loading === 0) {
-          this.queryData(this.search);
+          this.queryData();
         }
       }, 1000);
     },

@@ -10,25 +10,6 @@
       </router-link>
     </div>
     <img alt="Vue logo" src="../../assets/logo.png" />
-    <el-table v-loading="tableLoading" :data="tableData" style="width: 100%">
-      <el-table-column prop="comCode" label="组织机构代码" />
-      <el-table-column prop="comName" label="组织机构名" />
-      <el-table-column prop="personCode" label="操作员代码" />
-      <el-table-column prop="personName" label="操作员姓名" />
-    </el-table>
-    <pager-select v-model="selectModel" :remote-method="pagerQuery" />
-    <el-select v-model="selectModel" placeholder="请选择">
-      <el-option v-for="item in $store.getters.baseCodeData('abc')" :key="item.code" :label="item.value" :value="item.code" />
-    </el-select>
-    <el-form inline style="margin-bottom: 200px;">
-      {{ selected }}
-      <el-form-item label="请选择：">
-        <tree-select v-model="selected" :highlight-current="true" :remote-method="treeQuery" :init-lable-method="initLabel" :props="defaultProps" />
-      </el-form-item>
-    </el-form>
-    <el-button @click="selected = 'B'">
-      GGGGG
-    </el-button>
     <HelloWorld msg="Welcome to Your Vue.js App" />
   </div>
 </template>
@@ -36,75 +17,11 @@
 <script>
 // @ is an alias to /src
 import HelloWorld from "./components/HelloWorld.vue";
-import PagerSelect from "../../components/pager-select";
-import TreeSelect from "../../components/tree-select";
 
 export default {
   name: "Home",
   components: {
-    HelloWorld,
-    PagerSelect,
-    TreeSelect
-  },
-  data() {
-    return {
-      tableData: [],
-      selectModel: "1",
-      tableLoading: false,
-      // 默认选中值
-      selected: "A",
-      // 数据默认字段
-      defaultProps: {
-        parent: "parentId", // 父级唯一标识
-        value: "value", // 唯一标识
-        label: "label", // 标签显示
-        children: "children" // 子级
-      }
-    };
-  },
-  mounted() {
-    this.tableLoading = true;
-    this.$axios
-      .post(this.$axios.config.businessDataQuery, {})
-      .then(response => {
-        this.$notify({
-          title: "成功",
-          message: "这是一条Element UI的成功提示消息",
-          type: "success"
-        });
-        this.tableData = response.data.table;
-      })
-      .finally(() => {
-        this.tableLoading = false;
-      });
-  },
-  methods: {
-    pagerQuery(pageNo, pageSize, filter) {
-      let params = new URLSearchParams();
-      params.append("pageNo", pageNo);
-      params.append("pageSize", pageSize);
-      params.append("filter", filter);
-      return this.$axios.get(
-        this.$axios.config.sdd.baseURL +
-          this.$axios.config.sdd.baseCode.format({
-            codeType: "123"
-          }) +
-          "?" +
-          params.toString()
-      );
-    },
-    treeQuery(node) {
-      let url = "";
-      node
-        ? (url = this.$axios.config.sdd.baseURL + this.$axios.config.treeQuery + `/${node}`)
-        : (url = this.$axios.config.sdd.baseURL + this.$axios.config.treeQuery);
-      return this.$axios.get(url);
-    },
-    initLabel() {
-      let node = "2";
-      this.selected = node;
-      return this.$axios.get(this.$axios.config.sdd.baseURL + this.$axios.config.treeQuery + `/${node}`);
-    }
+    HelloWorld
   }
 };
 </script>

@@ -7,54 +7,65 @@ const mock = new MockAdapter(axios);
 
 // Mock any GET request to /users
 // arguments for reply are (status, data, headers)
-mock.onPost(axios.defaults.baseURL + config.businessDataQuery).reply(
-  () =>
-    new Promise(resolve => {
-      setTimeout(() => {
-        resolve([
-          200,
-          {
-            table: [
-              {
-                comCode: "110000",
-                comName: "财险公司北京分公司",
-                personCode: "110000001",
-                personName: "操作员1"
-              },
-              {
-                comCode: "110000",
-                comName: "财险公司北京分公司",
-                personCode: "110000002",
-                personName: "操作员2"
-              },
-              {
-                comCode: "210000",
-                comName: "财险公司上海分公司",
-                personCode: "210000001",
-                personName: "操作员1"
-              }
-            ],
-            status: 0,
-            statusText: "Success"
-          }
-        ]);
-      }, 1000);
-    })
-);
+mock.onPost(axios.defaults.baseURL + config.businessDataQuery).reply(() => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          table: [
+            {
+              comCode: "110000",
+              comName: "财险公司北京分公司",
+              personCode: "110000001",
+              personName: "操作员1"
+            },
+            {
+              comCode: "110000",
+              comName: "财险公司北京分公司",
+              personCode: "110000002",
+              personName: "操作员2"
+            },
+            {
+              comCode: "210000",
+              comName: "财险公司上海分公司",
+              personCode: "210000001",
+              personName: "操作员1"
+            }
+          ],
+          status: 0,
+          statusText: "Success"
+        }
+      ]);
+    }, 1000);
+  });
+});
 
 mock.onGet(new RegExp(config.sdd.baseURL + config.sdd.baseCode.substr(0, config.sdd.baseCode.indexOf("{")))).reply(request => {
-  const params = new URLSearchParams(request.url.substr(request.url.indexOf("?")).slice(1));
-  let listData = [{ code: "1", value: "基础代码1" }, { code: "2", value: "基础代码2" }, { code: "3", value: "基础代码3" }];
-  let total;
-  if (params.get("pageNo") && params.get("pageSize")) {
-    total = 36;
-    listData = [];
-    for (let i = 1; i <= parseInt(params.get("pageSize")); i++) {
-      const n = i + (parseInt(params.get("pageNo")) - 1) * parseInt(params.get("pageSize"));
-      if (n <= total) {
-        listData.push({ code: n.toString(), value: `基础代码${n}` });
-      }
+  console.log("Mock: " + request.url);
+  let params = new URLSearchParams(request.url.substr(request.url.indexOf("?")).slice(1));
+  let listData = [];
+  let total = 36;
+  for (let i = 1; i <= total; i++) {
+    listData.push({ code: i.toString(), value: `基础代码${i}` });
+  }
+  if (params.get("value")) {
+    listData = [{ code: params.get("value"), value: "基础代码" + params.get("value") }];
+  } else if (params.get("pageNo") && params.get("pageSize")) {
+    if (params.get("search")) {
+      let searchList = [];
+      listData.forEach(item => {
+        if (item.value.indexOf(params.get("search")) > -1) {
+          searchList.push(item);
+        }
+      });
+      total = searchList.length;
+      listData = searchList.splice((parseInt(params.get("pageNo")) - 1) * parseInt(params.get("pageSize")), parseInt(params.get("pageSize")));
+    } else {
+      listData = listData.splice((parseInt(params.get("pageNo")) - 1) * parseInt(params.get("pageSize")), parseInt(params.get("pageSize")));
     }
+  } else {
+    listData = listData.splice(0, 3);
   }
   return new Promise(resolve => {
     setTimeout(() => {
@@ -71,86 +82,63 @@ mock.onGet(new RegExp(config.sdd.baseURL + config.sdd.baseCode.substr(0, config.
   });
 });
 
-mock.onGet(new RegExp(config.sdd.baseURL + config.sdd.baseCode.substr(0, config.sdd.baseCode.indexOf("{")))).reply(request => {
-  const params = new URLSearchParams(request.url.substr(request.url.indexOf("?")).slice(1));
-  let listData = [{ code: "1", value: "基础代码1" }, { code: "2", value: "基础代码2" }, { code: "3", value: "基础代码3" }];
-  let total;
-  if (params.get("pageNo") && params.get("pageSize")) {
-    total = 36;
-    listData = [];
-    for (let i = 1; i <= parseInt(params.get("pageSize")); i++) {
-      const n = i + (parseInt(params.get("pageNo")) - 1) * parseInt(params.get("pageSize"));
-      if (n <= total) {
-        listData.push({ code: n.toString(), value: `基础代码${n}` });
+mock.onGet(new RegExp(config.saa.baseURL + config.saa.companyQuery.substr(0, config.saa.companyQuery.indexOf("{")))).reply(request => {
+  let comCode = request.url.substr(request.url.lastIndexOf("/") + 1);
+  let companyData = {
+    comCode: "000000",
+    comCName: "总公司",
+    subCompanyList: [
+      {
+        comCode: "110000",
+        comCName: "北京分公司",
+        subCompanyList: [
+          {
+            comCode: "110100",
+            comCName: "北京东城分公司"
+          },
+          {
+            comCode: "110200",
+            comCName: "北京西城分公司"
+          }
+        ]
+      },
+      {
+        comCode: "210000",
+        comCName: "上海分公司"
       }
-    }
+    ]
+  };
+  if (comCode == "210000") {
+    companyData = {
+      comCode: "210000",
+      comCName: "上海分公司",
+      subCompanyList: []
+    };
   }
+  if (comCode == "110000") {
+    companyData = {
+      comCode: "110000",
+      comCName: "北京分公司",
+      subCompanyList: [
+        {
+          comCode: "110100",
+          comCName: "北京东城分公司"
+        },
+        {
+          comCode: "110200",
+          comCName: "北京西城分公司"
+        }
+      ]
+    };
+  }
+  companyData.status = 0;
+  companyData.statusText = "Success";
   return new Promise(resolve => {
     setTimeout(() => {
-      resolve([
-        200,
-        {
-          list: listData,
-          total,
-          status: 0,
-          statusText: "Success"
-        }
-      ]);
-    }, 100);
+      resolve([200, companyData]);
+    }, 1000);
   });
 });
-mock.onGet(config.sdd.baseURL + config.treeQuery).reply(
-  () =>
-    new Promise(resolve => {
-      setTimeout(() => {
-        resolve([
-          200,
-          {
-            options: [
-              {
-                parentId: "0",
-                value: "A",
-                label: "label-A"
-              },
-              {
-                parentId: "1",
-                value: "B",
-                label: "label-B"
-              },
-              {
-                parentId: "2",
-                value: "C",
-                label: "label-C"
-              }
-            ],
-            status: 0,
-            statusText: "Success"
-          }
-        ]);
-      }, 1000);
-    })
-);
-mock.onGet(new RegExp(config.sdd.baseURL + config.sdd.baseCode.substr(0, config.sdd.baseCode.indexOf("/")))).reply(
-  request =>
-    new Promise(resolve => {
-      const params = parseInt(request.url.substr(request.url.charAt(1)).slice(request.url.length - 1));
-      setTimeout(() => {
-        resolve([
-          200,
-          {
-            options: [
-              {
-                parentId: `${params + 1}`,
-                value: `sub-${params}`,
-                label: `sub-label-${params}`
-              }
-            ],
-            status: 0,
-            statusText: "Success"
-          }
-        ]);
-      }, 1000);
-    })
-);
+
 mock.onAny().passThrough();
 export default mock;
