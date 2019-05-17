@@ -43,6 +43,10 @@ export default {
     showSearchBar: {
       type: Boolean,
       default: false
+    },
+    debounce: {
+      type: Number,
+      default: 600
     }
   },
   data: function() {
@@ -52,7 +56,7 @@ export default {
       search: "",
       total: 0,
       pageNo: 1,
-      loading: 0
+      debounceCount: 0
     };
   },
   computed: {
@@ -87,7 +91,7 @@ export default {
     queryData(value) {
       this.$refs.select.$refs.scrollbar.$el.childNodes[0].style.maxHeight = "440px";
       if (typeof this.remoteMethod === "function") {
-        const loading = this.$loading({
+        var loading = this.$loading({
           text: "查询中",
           spinner: "el-icon-loading",
           target: this.$refs.select.$refs.scrollbar.$el
@@ -119,13 +123,13 @@ export default {
       this.queryData();
     },
     searchInput() {
-      this.loading++;
+      this.debounceCount++;
       setTimeout(() => {
-        this.loading--;
-        if (this.loading === 0) {
+        this.debounceCount--;
+        if (this.debounceCount === 0) {
           this.queryData();
         }
-      }, 1000);
+      }, this.debounce);
     },
     pageChange(no) {
       this.pageNo = no;
