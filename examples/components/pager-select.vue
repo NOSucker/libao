@@ -28,15 +28,19 @@
     },
     methods: {
       pagerQuery(query) {
-        let params = new URLSearchParams();
-        params.append("pageNo", query.pageNo);
-        params.append("pageSize", query.pageSize);
-        params.append("search", query.search);
-        params.append("value", query.value);
-        return this.$axios.get(
-          this.$axios.config.sdd.baseURL +
-          this.$axios.config.sdd.baseCode.format({codeType: "codeType"}) + "?" + params.toString()
-        );
+        return new Promise(resolve => {
+          let params = new URLSearchParams();
+          params.append("pageNo", query.pageNo);
+          params.append("pageSize", query.pageSize);
+          params.append("search", query.search);
+          params.append("value", query.value);
+          this.$axios.get(
+            this.$axios.config.sdd.baseURL +
+            this.$axios.config.sdd.baseCode.format({codeType: "codeType"}) + "?" + params.toString()
+          ).then(response => {
+            resolve(response.data.data)
+          });
+        })
       }
     }
   };

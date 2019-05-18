@@ -13,7 +13,7 @@ mock.onPost(axios.defaults.baseURL + config.businessDataQuery).reply(() => {
       resolve([
         200,
         {
-          table: [
+          data: [
             {
               comCode: "110000",
               comName: "财险公司北京分公司",
@@ -44,36 +44,39 @@ mock.onPost(axios.defaults.baseURL + config.businessDataQuery).reply(() => {
 mock.onGet(new RegExp(config.sdd.baseURL + config.sdd.baseCode.substr(0, config.sdd.baseCode.indexOf("{")))).reply(request => {
   console.log("Mock: " + request.url);
   let params = new URLSearchParams(request.url.substr(request.url.indexOf("?")).slice(1));
-  let listData = [];
-  let total = 36;
-  for (let i = 1; i <= total; i++) {
-    listData.push({ code: i.toString(), value: `基础代码${i}` });
+  let pagerData = {
+    pageNo: params.get("pageNo"),
+    perPage: params.get("pageSize"),
+    data: [],
+    totalCount: 36
+  };
+  for (let i = 1; i <= pagerData.totalCount; i++) {
+    pagerData.data.push({ code: i.toString(), value: `基础代码${i}` });
   }
   if (params.get("value")) {
-    listData = [{ code: params.get("value"), value: "基础代码" + params.get("value") }];
+    pagerData.data = [{ code: params.get("value"), value: "基础代码" + params.get("value") }];
   } else if (params.get("pageNo") && params.get("pageSize")) {
     if (params.get("search")) {
       let searchList = [];
-      listData.forEach(item => {
+      pagerData.data.forEach(item => {
         if (item.value.indexOf(params.get("search")) > -1) {
           searchList.push(item);
         }
       });
-      total = searchList.length;
-      listData = searchList.splice((parseInt(params.get("pageNo")) - 1) * parseInt(params.get("pageSize")), parseInt(params.get("pageSize")));
+      pagerData.totalCount = searchList.length;
+      pagerData.data = searchList.splice((parseInt(params.get("pageNo")) - 1) * parseInt(params.get("pageSize")), parseInt(params.get("pageSize")));
     } else {
-      listData = listData.splice((parseInt(params.get("pageNo")) - 1) * parseInt(params.get("pageSize")), parseInt(params.get("pageSize")));
+      pagerData.data = pagerData.data.splice((parseInt(params.get("pageNo")) - 1) * parseInt(params.get("pageSize")), parseInt(params.get("pageSize")));
     }
   } else {
-    listData = listData.splice(0, 3);
+    pagerData = pagerData.data.splice(0, 3);
   }
   return new Promise(resolve => {
     setTimeout(() => {
       resolve([
         200,
         {
-          list: listData,
-          total,
+          data: pagerData,
           status: 0,
           statusText: "Success"
         }

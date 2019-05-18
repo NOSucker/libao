@@ -18,7 +18,7 @@ store = new Vuex.Store({
   actions: {
     GetBaseCode({ commit }, codeType) {
       return axios.get(axios.config.sdd.baseURL + axios.config.sdd.baseCode.format({ codeType })).then(response => {
-        commit("SET_BASE_CODE", { type: codeType, list: response.data.list });
+        commit("SET_BASE_CODE", { type: codeType, list: response.data.data });
       });
     }
   },

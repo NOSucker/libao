@@ -103,14 +103,14 @@ export default {
       return this.remoteMethod({ pageNo: this.pageNo, pageSize: this.pageSize, search: this.search, value: value ? value : "" })
         .then(response => {
           if (!value) {
-            this.list = response.data.list;
-            this.total = response.data.total;
+            this.list = response.data;
+            this.total = response.totalCount;
           } else {
-            response.data.list.forEach(item => {
+            response.data.forEach(item => {
               this.list.push(item);
             });
             this.$nextTick(() => {
-              response.data.list.forEach(item => {
+              response.data.forEach(item => {
                 this.list.splice(this.list.indexOf(item), 1);
               });
             });
