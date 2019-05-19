@@ -1,5 +1,5 @@
 <template>
-  <el-row>
+  <div v-loading="loading">
     <div style="text-align: left">
       <el-button type="primary" icon="el-icon-plus">
         新增
@@ -11,54 +11,60 @@
         删除
       </el-button>
     </div>
-    <el-table :data="tableData" tooltip-effect="dark" style="width: 100%">
+    <el-table :data="tableData" tooltip-effect="dark" stripe style="width: 100%">
       <el-table-column type="selection" width="55" />
-      <el-table-column label="日期" width="120">
+      <el-table-column prop="userCode" label="用户代码" width="120" />
+      <el-table-column prop="userName" label="用户名称" width="120" />
+      <el-table-column prop="comCode" label="组织机构代码" width="120" />
+      <el-table-column prop="comCName" label="组织机构名称" width="120" />
+      <el-table-column prop="regTime" label="注册时间" width="120">
         <template slot-scope="scope">
-          {{ scope.row.date }}
+          {{ new Date(scope.row.regTime).format("yyyy年MM月dd日") }}
         </template>
       </el-table-column>
-      <el-table-column prop="name" label="姓名" width="120" />
-      <el-table-column prop="address" label="地址" show-overflow-tooltip />
+      <el-table-column prop="remark" label="备注" show-overflow-tooltip />
     </el-table>
     <el-pagination
-      :current-page="currentPage4"
+      :current-page.sync="pagerQuery.pageNo"
       background
       :page-sizes="[10, 20, 30, 50]"
-      :page-size="100"
+      :page-size="10"
       style="width: 100%; text-align: right; margin-top: 20px"
       layout="total,  prev, pager, next, sizes, jumper"
-      :total="36"/>
-  </el-row>
+      :total="totalCount"
+      @current-change="queryData"/>
+  </div>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        }
-      ]
+      tableData: [],
+      totalCount: 0,
+      loading: false,
+      pagerQuery: {
+        pageNo: 1,
+        perPage: 10
+      }
     };
+  },
+  mounted() {
+    this.queryData();
+  },
+  methods: {
+    queryData() {
+      this.loading = true;
+      this.$axios
+        .post(this.$axios.config.saa.baseURL + this.$axios.config.saa.userQuery, this.pagerQuery)
+        .then(response => {
+          this.tableData = response.data.data.data;
+          this.totalCount = response.data.data.totalCount;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    }
   }
 };
 </script>

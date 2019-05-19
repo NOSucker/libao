@@ -31,7 +31,7 @@
         return new Promise(resolve => {
           let params = new URLSearchParams();
           params.append("pageNo", query.pageNo);
-          params.append("pageSize", query.pageSize);
+          params.append("perPage", query.pageSize);
           params.append("search", query.search);
           params.append("value", query.value);
           this.$axios.get(

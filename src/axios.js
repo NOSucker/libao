@@ -9,9 +9,9 @@ const config = {
   saa: {
     baseURL: "/saa",
     login: "/login",
-    companyQuery: "/company/query/{comCode}"
-  },
-  businessDataQuery: "/businessData/query"
+    companyQuery: "/company/query/{comCode}",
+    userQuery: "/user/query"
+  }
 };
 axios.config = config;
 axios.defaults.timeout = 10000; // 请求超时时间

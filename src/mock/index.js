@@ -7,37 +7,38 @@ const mock = new MockAdapter(axios);
 
 // Mock any GET request to /users
 // arguments for reply are (status, data, headers)
-mock.onPost(axios.defaults.baseURL + config.businessDataQuery).reply(() => {
+mock.onPost(config.saa.baseURL + config.saa.userQuery).reply(request => {
+  console.log("Mock: " + request.url);
+  let pagerData = JSON.parse(request.data);
+  pagerData.data = [];
+  pagerData.totalCount = 25;
+  for (let i = 1; i <= pagerData.perPage; i++) {
+    let n = i + (pagerData.pageNo - 1) * pagerData.perPage;
+    if (n <= pagerData.totalCount) {
+      pagerData.data.push({
+        userCode:
+          "010" +
+          Math.random()
+            .toFixed(4)
+            .replace(".", ""),
+        userName: "姓名" + n,
+        comCode: "110000",
+        comCName: "北京分公司",
+        regTime: "2019-01-01"
+      });
+    }
+  }
   return new Promise(resolve => {
     setTimeout(() => {
       resolve([
         200,
         {
-          data: [
-            {
-              comCode: "110000",
-              comName: "财险公司北京分公司",
-              personCode: "110000001",
-              personName: "操作员1"
-            },
-            {
-              comCode: "110000",
-              comName: "财险公司北京分公司",
-              personCode: "110000002",
-              personName: "操作员2"
-            },
-            {
-              comCode: "210000",
-              comName: "财险公司上海分公司",
-              personCode: "210000001",
-              personName: "操作员1"
-            }
-          ],
+          data: pagerData,
           status: 0,
           statusText: "Success"
         }
       ]);
-    }, 1000);
+    }, 1500);
   });
 });
 
@@ -46,7 +47,7 @@ mock.onGet(new RegExp(config.sdd.baseURL + config.sdd.baseCode.substr(0, config.
   let params = new URLSearchParams(request.url.substr(request.url.indexOf("?")).slice(1));
   let pagerData = {
     pageNo: params.get("pageNo"),
-    perPage: params.get("pageSize"),
+    perPage: params.get("perPage"),
     data: [],
     totalCount: 36
   };
@@ -55,7 +56,7 @@ mock.onGet(new RegExp(config.sdd.baseURL + config.sdd.baseCode.substr(0, config.
   }
   if (params.get("value")) {
     pagerData.data = [{ code: params.get("value"), value: "基础代码" + params.get("value") }];
-  } else if (params.get("pageNo") && params.get("pageSize")) {
+  } else if (params.get("pageNo") && params.get("perPage")) {
     if (params.get("search")) {
       let searchList = [];
       pagerData.data.forEach(item => {
@@ -64,9 +65,9 @@ mock.onGet(new RegExp(config.sdd.baseURL + config.sdd.baseCode.substr(0, config.
         }
       });
       pagerData.totalCount = searchList.length;
-      pagerData.data = searchList.splice((parseInt(params.get("pageNo")) - 1) * parseInt(params.get("pageSize")), parseInt(params.get("pageSize")));
+      pagerData.data = searchList.splice((parseInt(params.get("pageNo")) - 1) * parseInt(params.get("perPage")), parseInt(params.get("perPage")));
     } else {
-      pagerData.data = pagerData.data.splice((parseInt(params.get("pageNo")) - 1) * parseInt(params.get("pageSize")), parseInt(params.get("pageSize")));
+      pagerData.data = pagerData.data.splice((parseInt(params.get("pageNo")) - 1) * parseInt(params.get("perPage")), parseInt(params.get("perPage")));
     }
   } else {
     pagerData = pagerData.data.splice(0, 3);
