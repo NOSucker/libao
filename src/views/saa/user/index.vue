@@ -28,7 +28,7 @@
       :current-page.sync="pagerQuery.pageNo"
       background
       :page-sizes="[10, 20, 30, 50]"
-      :page-size.sync="pagerQuery.perPage"
+      :page-size.sync="pagerQuery.pageSize"
       style="width: 100%; text-align: right; margin-top: 20px"
       layout="total,  prev, pager, next, sizes, jumper"
       :total="totalCount"
@@ -129,7 +129,7 @@ export default {
       queryLoading: false,
       pagerQuery: {
         pageNo: 1,
-        perPage: 10
+        pageSize: 10
       },
       editDialogVisible: false,
       editDialogTitle: "",
@@ -158,11 +158,14 @@ export default {
   methods: {
     queryData() {
       this.queryLoading = true;
+      let params = new URLSearchParams();
+      params.append("_pageNo", this.pagerQuery.pageNo);
+      params.append("_pageSize", this.pagerQuery.pageSize);
       this.$axios
-        .post(this.$axios.config.saa.baseURL + this.$axios.config.saa.userQuery, this.pagerQuery)
+        .post(this.$axios.config.saa.baseURL + this.$axios.config.saa.userQuery + "?" + params.toString())
         .then(response => {
-          this.tableData = response.data.data.data;
-          this.totalCount = response.data.data.totalCount;
+          this.tableData = response.data.data;
+          this.totalCount = response.data.totalCount;
         })
         .finally(() => {
           this.queryLoading = false;

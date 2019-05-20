@@ -7,13 +7,13 @@ const config = {
     baseCode: "/baseCode/search/{codeType}"
   },
   saa: {
-    baseURL: "/saa",
+    baseURL: process.env.VUE_APP_SAA_BASE_URL,
     login: "/login",
     companyQuery: "/company/query/{comCode}",
-    userQuery: "/user/query",
-    userCreate: "/user/create",
-    userEdit: "/user/edit",
-    userDelete: "/user/delete"
+    userQuery: "/sysuser/list",
+    userCreate: "/sysuser/create",
+    userEdit: "/sysuser/edit",
+    userDelete: "/sysuser/delete"
   }
 };
 axios.config = config;

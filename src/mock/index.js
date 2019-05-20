@@ -30,13 +30,17 @@ function defaultErrorResponse(request) {
 
 // Mock any GET request to /users
 // arguments for reply are (status, data, headers)
-mock.onPost(config.saa.baseURL + config.saa.userQuery).reply(request => {
+mock.onPost(new RegExp(config.saa.baseURL + config.saa.userQuery)).reply(request => {
   console.log("Mock: " + request.url);
-  let pagerData = JSON.parse(request.data);
-  pagerData.data = [];
-  pagerData.totalCount = 25;
-  for (let i = 1; i <= pagerData.perPage; i++) {
-    let n = i + (pagerData.pageNo - 1) * pagerData.perPage;
+  let params = new URLSearchParams(request.url.substr(request.url.indexOf("?")).slice(1));
+  let pagerData = {
+    pageNo: parseInt(params.get("_pageNo")),
+    pageSize: parseInt(params.get("_pageSize")),
+    data: [],
+    totalCount: 25
+  };
+  for (let i = 1; i <= pagerData.pageSize; i++) {
+    let n = i + (pagerData.pageNo - 1) * pagerData.pageSize;
     if (n <= pagerData.totalCount) {
       pagerData.data.push({
         userCode:
@@ -56,7 +60,7 @@ mock.onPost(config.saa.baseURL + config.saa.userQuery).reply(request => {
       resolve([
         200,
         {
-          data: pagerData,
+          ...pagerData,
           status: 0,
           statusText: "Success"
         }
@@ -74,7 +78,7 @@ mock.onGet(new RegExp(config.sdd.baseURL + config.sdd.baseCode.substr(0, config.
   let params = new URLSearchParams(request.url.substr(request.url.indexOf("?")).slice(1));
   let pagerData = {
     pageNo: params.get("pageNo"),
-    perPage: params.get("perPage"),
+    pageSize: params.get("pageSize"),
     data: [],
     totalCount: 36
   };
@@ -83,7 +87,7 @@ mock.onGet(new RegExp(config.sdd.baseURL + config.sdd.baseCode.substr(0, config.
   }
   if (params.get("value")) {
     pagerData.data = [{ code: params.get("value"), value: "基础代码" + params.get("value") }];
-  } else if (params.get("pageNo") && params.get("perPage")) {
+  } else if (params.get("pageNo") && params.get("pageSize")) {
     if (params.get("search")) {
       let searchList = [];
       pagerData.data.forEach(item => {
@@ -92,9 +96,9 @@ mock.onGet(new RegExp(config.sdd.baseURL + config.sdd.baseCode.substr(0, config.
         }
       });
       pagerData.totalCount = searchList.length;
-      pagerData.data = searchList.splice((parseInt(params.get("pageNo")) - 1) * parseInt(params.get("perPage")), parseInt(params.get("perPage")));
+      pagerData.data = searchList.splice((parseInt(params.get("pageNo")) - 1) * parseInt(params.get("pageSize")), parseInt(params.get("pageSize")));
     } else {
-      pagerData.data = pagerData.data.splice((parseInt(params.get("pageNo")) - 1) * parseInt(params.get("perPage")), parseInt(params.get("perPage")));
+      pagerData.data = pagerData.data.splice((parseInt(params.get("pageNo")) - 1) * parseInt(params.get("pageSize")), parseInt(params.get("pageSize")));
     }
   } else {
     pagerData = pagerData.data.splice(0, 3);
