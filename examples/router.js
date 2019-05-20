@@ -10,5 +10,10 @@ export default [
     path: "/pager-select",
     name: "pagerSelect",
     component: () => import("./components/pager-select.vue")
+  },
+  {
+    path: "/form-track",
+    name: "formTrack",
+    component: () => import("./components/form-track.vue")
   }
 ]

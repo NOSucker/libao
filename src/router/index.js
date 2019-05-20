@@ -28,8 +28,7 @@ const router = new VueRouter({
       component: {
         beforeCreate() {
           this.$router.replace({
-            path:
-            "/" + (this.$route.params.path ? this.$route.params.path : ""),
+            path: "/" + (this.$route.params.path ? this.$route.params.path : ""),
             query: this.$route.query
           });
         },

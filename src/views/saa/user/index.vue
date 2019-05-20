@@ -43,8 +43,7 @@
       :visible.sync="editDialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
-      width="80%"
-    >
+      width="80%">
       <el-form ref="editForm" :model="editData" :rules="validateRules" label-width="80px">
         <el-row>
           <el-col :span="8">

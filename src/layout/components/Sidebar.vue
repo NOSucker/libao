@@ -51,7 +51,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .el-menu,
 .el-menu-item {
   background-color: transparent;
