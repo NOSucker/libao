@@ -5,6 +5,29 @@ import { config } from "../axios";
 // This sets the mock adapter on the default instance
 const mock = new MockAdapter(axios);
 
+function defaultResponse(request, status, statusText) {
+  console.log("Mock: " + request.url);
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve([
+        200,
+        {
+          status: status,
+          statusText: statusText
+        }
+      ]);
+    }, 1000);
+  });
+}
+
+function defaultSuccessResponse(request) {
+  return defaultResponse(request, 0, "Success");
+}
+
+function defaultErrorResponse(request) {
+  return defaultResponse(request, 1, "操作失败");
+}
+
 // Mock any GET request to /users
 // arguments for reply are (status, data, headers)
 mock.onPost(config.saa.baseURL + config.saa.userQuery).reply(request => {
@@ -41,6 +64,10 @@ mock.onPost(config.saa.baseURL + config.saa.userQuery).reply(request => {
     }, 1500);
   });
 });
+
+mock.onPost(config.saa.baseURL + config.saa.userCreate).reply(defaultSuccessResponse);
+mock.onPut(config.saa.baseURL + config.saa.userEdit).reply(defaultErrorResponse);
+mock.onDelete(config.saa.baseURL + config.saa.userDelete).reply(defaultSuccessResponse);
 
 mock.onGet(new RegExp(config.sdd.baseURL + config.sdd.baseCode.substr(0, config.sdd.baseCode.indexOf("{")))).reply(request => {
   console.log("Mock: " + request.url);

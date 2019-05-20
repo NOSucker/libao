@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading">
+  <div v-loading="queryLoading">
     <div>
       <el-button type="primary" icon="el-icon-plus" @click="newButtonClick">
         新增
@@ -33,7 +33,14 @@
       layout="total,  prev, pager, next, sizes, jumper"
       :total="totalCount"
       @current-change="queryData"/>
-    <el-dialog :title="editDialogTitle" :visible.sync="editDialogVisible" :close-on-click-modal="false" :close-on-press-escape="false" width="80%">
+    <el-dialog
+      v-loading="submitLoading"
+      :title="editDialogTitle"
+      :visible.sync="editDialogVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      width="80%"
+    >
       <el-form ref="editForm" :model="editData" :rules="validateRules" label-width="80px">
         <el-row>
           <el-col :span="8">
@@ -63,7 +70,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="性别" prop="sex">
-              <el-select v-model="editData.sex">
+              <el-select v-model="editData.sex" style="width: 100%">
                 <el-option label="男" :value="'1'"></el-option>
                 <el-option label="女" :value="'2'"></el-option>
               </el-select>
@@ -115,7 +122,7 @@ export default {
       tableData: [],
       tableSelection: [],
       totalCount: 0,
-      loading: false,
+      queryLoading: false,
       pagerQuery: {
         pageNo: 1,
         perPage: 10
@@ -123,6 +130,8 @@ export default {
       editDialogVisible: false,
       editDialogTitle: "",
       editData: {},
+      editStatus: "",
+      submitLoading: false,
       validateRules: {
         userCode: [{ required: true, message: "请输入用户代码", trigger: "blur" }, { min: 8, max: 10, message: "长度在 8 到 10 个字符", trigger: "blur" }],
         userName: [{ required: true, message: "请输入用户姓名", trigger: "blur" }, { min: 2, max: 4, message: "长度在 2 到 4 个字符", trigger: "blur" }],
@@ -144,7 +153,7 @@ export default {
   },
   methods: {
     queryData() {
-      this.loading = true;
+      this.queryLoading = true;
       this.$axios
         .post(this.$axios.config.saa.baseURL + this.$axios.config.saa.userQuery, this.pagerQuery)
         .then(response => {
@@ -152,7 +161,7 @@ export default {
           this.totalCount = response.data.data.totalCount;
         })
         .finally(() => {
-          this.loading = false;
+          this.queryLoading = false;
         });
     },
     tableSelectionChange(selection) {
@@ -160,6 +169,7 @@ export default {
     },
     newButtonClick() {
       this.editData = {};
+      this.editStatus = "new";
       this.editDialogTitle = "新增用户";
       this.editDialogVisible = true;
       this.$nextTick(() => {
@@ -168,6 +178,7 @@ export default {
     },
     editButtonClick() {
       this.editData = JSON.parse(JSON.stringify(this.tableSelection[0]));
+      this.editStatus = "edit";
       this.editDialogTitle = "修改用户";
       this.editDialogVisible = true;
       this.$nextTick(() => {
@@ -177,7 +188,30 @@ export default {
     submitForm() {
       this.$refs.editForm.validate(valid => {
         if (valid) {
-          alert("submit!");
+          this.submitLoading = true;
+          this.$axios
+            .request({
+              method: this.editStatus == "new" ? "post" : "put",
+              url: this.$axios.config.saa.baseURL + (this.editStatus == "new" ? this.$axios.config.saa.userCreate : this.$axios.config.saa.userEdit),
+              data: this.editData
+            })
+            .then(response => {
+              if (response.data.status != 0) {
+                this.$message({
+                  showClose: true,
+                  duration: 10000,
+                  message: response.data.statusText,
+                  type: "error"
+                });
+              } else {
+                this.$message.success("保存成功！");
+                this.editDialogVisible = false;
+                this.queryData();
+              }
+            })
+            .finally(() => {
+              this.submitLoading = false;
+            });
         } else {
           this.$message.error("校验失败，请修复所有错误后再提交！");
           return false;

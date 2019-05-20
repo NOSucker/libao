@@ -10,7 +10,10 @@ const config = {
     baseURL: "/saa",
     login: "/login",
     companyQuery: "/company/query/{comCode}",
-    userQuery: "/user/query"
+    userQuery: "/user/query",
+    userCreate: "/user/create",
+    userEdit: "/user/edit",
+    userDelete: "/user/delete"
   }
 };
 axios.config = config;
