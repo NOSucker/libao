@@ -8,7 +8,7 @@
       </div>
       <section class="app-main">
         <transition enter-active-class="animated slideInLeft" leave-active-class="animated slideOutRight">
-          <router-view />
+          <router-view  class="router-view"/>
         </transition>
       </section>
     </div>
@@ -78,6 +78,11 @@ export default {
   width: 100%;
   position: relative;
   overflow: hidden;
+  background: #f2f2f4;
+}
+
+.router-view{
+  padding: 15px;
 }
 
 .fixed-header+.app-main {
