@@ -44,14 +44,44 @@ mock.onPost(new RegExp(config.saa.baseURL + config.saa.userQuery)).reply(request
     if (n <= pagerData.totalCount) {
       pagerData.data.push({
         userCode:
-          "010" +
+          "01000" +
           Math.random()
             .toFixed(4)
             .replace(".", ""),
         userName: "姓名" + n,
-        comCode: "110000",
-        comCName: "北京分公司",
-        regTime: "2019-01-01"
+        email: null,
+        mobilePhone: "11111111111",
+        password: "5037394F1146CF12C11E88AFC34D320C",
+        salt: "0",
+        secondValidate: null,
+        gaCode: null,
+        question: null,
+        answer: null,
+        sex: null,
+        birthday: "9999-10-09T16:00:00.000+0000",
+        comCode: "15100001008888888",
+        comCName: "营业部",
+        regTime: "2019-01-01",
+        lastLoginFailed: null,
+        lastTime: null,
+        lastIp: null,
+        type: null,
+        qq: null,
+        accountId: "2",
+        officePhone: null,
+        homePhone: "021-50722882",
+        checked: "0",
+        age: null,
+        operators: null,
+        passwordSetDate: null,
+        passwordExpireDate: null,
+        address: null,
+        postCode: null,
+        validStatus: "1",
+        version: 5,
+        insertTimeForHis: "2018-04-03T03:07:57.000+0000",
+        operateTimeForHis: "2018-04-03T03:07:57.000+0000",
+        versionId: "598"
       });
     }
   }
@@ -121,54 +151,73 @@ mock.onGet(new RegExp(config.saa.baseURL + config.saa.companyQuery.substr(0, con
   console.log("Mock: " + request.url);
   let comCode = request.url.substr(request.url.lastIndexOf("/") + 1);
   let companyData = {
-    comCode: "000000",
-    comCName: "总公司",
-    subCompanyList: [
+    comCode: "15100000000000000",
+    comCName: "四川分",
+    subList: [
       {
-        comCode: "110000",
-        comCName: "北京分公司",
-        subCompanyList: [
+        comCode: "15100000001040000",
+        comCName: "财务会计部"
+      },
+      {
+        comCode: "15100000003080000",
+        comCName: "业务管理部"
+      },
+      {
+        comCode: "15100001008888888",
+        comCName: "营业部",
+        subList: [
           {
-            comCode: "110100",
-            comCName: "北京东城分公司",
-            subCompanyList: []
+            comCode: "15100001308888888",
+            comCName: "四川分公司营业部业务团队"
           },
           {
-            comCode: "110200",
-            comCName: "北京西城分公司"
+            comCode: "15100001108888888",
+            comCName: "四川分公司营业部第一业务团队"
+          },
+          {
+            comCode: "15100001208888888",
+            comCName: "四川分公司营业部第二业务团队"
+          },
+          {
+            comCode: "15100001508888888",
+            comCName: "四川分公司营业部第五业务团队"
+          },
+          {
+            comCode: "15100008008888888",
+            comCName: "四川分公司营业部互联网渠道团队（Ｖ）"
           }
         ]
       },
       {
-        comCode: "210000",
-        comCName: "上海分公司"
+        comCode: "15100000002020000",
+        comCName: "理赔服务部"
+      },
+      {
+        comCode: "15100000003050000",
+        comCName: "销售管理部"
+      },
+      {
+        comCode: "15100000001100000",
+        comCName: "综合行政部＆内控合规部"
       }
     ]
   };
   switch (comCode) {
     case "":
       break;
-    case "110000":
-      companyData = companyData.subCompanyList[0];
+    case "15100001008888888":
+      companyData = companyData.subList[2];
       break;
-    case "110100":
-      companyData = companyData.subCompanyList[0].subCompanyList[0];
+    case "15100001308888888":
+      companyData = companyData.subList[2].subList[0];
       break;
-    case "110200":
-      companyData = companyData.subCompanyList[0].subCompanyList[1];
-      break;
-    case "210000":
-      companyData = companyData.subCompanyList[1];
-      break;
-    default:
-      companyData = {};
   }
   return new Promise(resolve => {
     setTimeout(() => {
       resolve([
         200,
         {
-          data: companyData,
+          data: [companyData],
           status: 0,
           statusText: "Success"
         }

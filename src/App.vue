@@ -1,33 +1,26 @@
 <template>
   <div id="app">
-    <router-view />
-    <!--<transition enter-active-class="animated slideInLeft"-->
-    <!--leave-active-class="animated slideOutRight">-->
-    <!--<router-view/>-->
-    <!--</transition>-->
+    <Layout />
   </div>
 </template>
 
-<!--<style scoped>-->
-<!--.animated {-->
-<!-- -webkit-animation-duration: .5s;-->
-<!--animation-duration: .5s;-->
-<!--}-->
-<!--.slideInLeft {-->
-<!--width: 100%;-->
-<!--position: absolute;-->
-<!--}-->
-<!--.slideOutRight {-->
-<!--width: 100%;-->
-<!--position: absolute;-->
-<!--}-->
-<!--</style>-->
+<script>
+import Layout from "./layout";
+export default {
+  name: "App",
+  components: {
+    Layout
+  },
+  data() {
+    return {
+      user: {}
+    };
+  }
+};
+</script>
 
 <style>
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+  background: #f2f2f4;
 }
 </style>

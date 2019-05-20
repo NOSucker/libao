@@ -2,11 +2,13 @@ import Vue from "vue";
 import ElementUI from "element-ui";
 import App from "./App.vue";
 import router from "./router/index";
-import store from "./store";
+import store from "./store/index";
 import axios from "./axios.js";
 import "./libs/util.js";
+import "./icons"; // icon
 import "element-ui/lib/theme-chalk/index.css";
-// import "animate.css"
+import "@/styles/index.scss"; // global css
+import "animate.css";
 
 if (process.env.NODE_ENV === "development") {
   require("./mock/index");
@@ -14,7 +16,7 @@ if (process.env.NODE_ENV === "development") {
 
 Vue.config.productionTip = false;
 
-Vue.use(ElementUI, { size: "small", zIndex: 3000 });
+Vue.use(ElementUI, { size: "mini", zIndex: 3000 });
 Vue.prototype.$axios = axios;
 
 new Vue({

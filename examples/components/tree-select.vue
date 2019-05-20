@@ -7,15 +7,14 @@
           node-key="comCode"
           :remote-method="treeQuery"
           :props="{
-          isLeaf: 'isLeaf',
-          children: 'subCompanyList',
+          children: 'subList',
           value: 'comCode',
           label: 'comCName'
         }"
         />
       </el-form-item>
     </el-form>
-    <el-button @click="selectModel='110200'">设置值为110200</el-button>
+    <el-button @click="selectModel='15100001308888888'">设置值为15100001308888888</el-button>
   </div>
 </template>
 
@@ -35,14 +34,7 @@
       treeQuery(node) {
         return new Promise(resolve => {
           this.$axios.get(this.$axios.config.saa.baseURL + this.$axios.config.saa.companyQuery.format({comCode: node ? node.comCode : ""})).then(response => {
-            if(response.data.data.subCompanyList){
-              response.data.data.subCompanyList.forEach(function (item) {
-                if(item.subCompanyList && item.subCompanyList.length == 0){
-                  item.isLeaf = true;
-                }
-              })
-            }
-            resolve(response.data.data)
+            resolve(response.data.data[0])
           })
         })
       }

@@ -10,6 +10,7 @@ const router = new VueRouter({
     {
       path: "/",
       name: "home",
+      meta: { icon: "home", title: "主页" },
       // meta: { requiresAuth: true },  // 路由元数据信息
       component: () => import("../views/demo/Home.vue")
     },
@@ -20,6 +21,22 @@ const router = new VueRouter({
       // this generates a separate chunk (about.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ "../views/demo/About.vue")
+    },
+    {
+      path: "/redirect/:path*",
+      hidden: true,
+      component: {
+        beforeCreate() {
+          this.$router.replace({
+            path:
+            "/" + (this.$route.params.path ? this.$route.params.path : ""),
+            query: this.$route.query
+          });
+        },
+        render: function(h) {
+          return h(); // avoid warning message
+        }
+      }
     },
     ...sampleRouter,
     ...saaRouter

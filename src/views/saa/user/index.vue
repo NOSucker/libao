@@ -15,8 +15,8 @@
       <el-table-column type="selection" width="55" />
       <el-table-column prop="userCode" label="用户代码" width="120" />
       <el-table-column prop="userName" label="用户名称" width="120" />
-      <el-table-column prop="comCode" label="组织机构代码" width="120" />
-      <el-table-column prop="comCName" label="组织机构名称" width="180" />
+      <el-table-column prop="comCode" label="组织机构代码" width="180" />
+      <el-table-column prop="comCName" label="组织机构名称" />
       <el-table-column prop="regTime" label="注册时间" width="160">
         <template slot-scope="scope">
           {{ new Date(scope.row.regTime).format("yyyy年MM月dd日") }}
@@ -92,8 +92,7 @@
                 node-key="comCode"
                 :remote-method="comQuery"
                 :props="{
-                  isLeaf: 'isLeaf',
-                  children: 'subCompanyList',
+                  children: 'subList',
                   value: 'comCode',
                   label: 'comCName'
                 }"></tree-select>
@@ -228,14 +227,7 @@ export default {
     comQuery(node) {
       return new Promise(resolve => {
         this.$axios.get(this.$axios.config.saa.baseURL + this.$axios.config.saa.companyQuery.format({ comCode: node ? node.comCode : "" })).then(response => {
-          if (response.data.data.subCompanyList) {
-            response.data.data.subCompanyList.forEach(function(item) {
-              if (item.subCompanyList && item.subCompanyList.length == 0) {
-                item.isLeaf = true;
-              }
-            });
-          }
-          resolve(response.data.data);
+          resolve(response.data.data[0]);
         });
       });
     }
