@@ -35,12 +35,8 @@
         </el-form-item>
       </el-col>
       <el-col :span="8">
-        <el-form-item label="出生日期" prop="">
-          <el-date-picker v-model="editData.birthdate" style="width: 100%"></el-date-picker>
-        </el-form-item>
-      </el-col>
-      <el-col :span="8">
-        <el-form-item label="组织机构" prop="comCode">
+        <el-form-item label="出生日期" prop="birthdate">
+          <el-date-picker v-model="editData.birthdate" value-format="yyyy-MM-dd" style="width: 100%"></el-date-picker>
         </el-form-item>
       </el-col>
       <el-col :span="24">
@@ -65,14 +61,15 @@
     name: "form-track",
     data(){
       return {
-        editData: {userCode: "123566"},
+        editData: {},
         trackData: {
-          userCode: "12345678"
+          userCode: "12345678",
+          birthdate: new Date().format("yyyy-MM-dd"),
+          sex: "2"
         },
         validateRules: {
-          userCode: [{ required: true, message: "请输入用户代码", trigger: "blur" }, { min: 8, max: 10, message: "长度在 8 到 10 个字符", trigger: "blur" }],
-          userName: [{ required: true, message: "请输入用户姓名", trigger: "blur" }, { min: 2, max: 4, message: "长度在 2 到 4 个字符", trigger: "blur" }],
-          comCode: [{ required: true, message: "请选择组织机构" }],
+          userCode: [{ required: true, message: "请输入用户代码"}, { min: 8, max: 10, message: "长度在 8 到 10 个字符"}],
+          userName: [{ required: true, message: "请输入用户姓名"}, { min: 2, max: 4, message: "长度在 2 到 4 个字符"}],
           sex: [{ required: true, message: "请选择组织机构" }]
         }
       }
