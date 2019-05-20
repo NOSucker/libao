@@ -28,11 +28,15 @@
       :current-page.sync="pagerQuery.pageNo"
       background
       :page-sizes="[10, 20, 30, 50]"
-      :page-size="10"
+      :page-size.sync="pagerQuery.perPage"
       style="width: 100%; text-align: right; margin-top: 20px"
       layout="total,  prev, pager, next, sizes, jumper"
       :total="totalCount"
-      @current-change="queryData"/>
+      @current-change="queryData"
+      @size-change="
+        pagerQuery.pageNo = 1;
+        queryData();
+      "/>
     <el-dialog
       v-loading="submitLoading"
       :title="editDialogTitle"
