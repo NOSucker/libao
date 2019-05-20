@@ -16,7 +16,7 @@ if (process.env.NODE_ENV === "development") {
 
 Vue.config.productionTip = false;
 
-Vue.use(ElementUI, { size: "mini", zIndex: 3000 });
+Vue.use(ElementUI, { size: "small", zIndex: 3000 });
 Vue.prototype.$axios = axios;
 
 new Vue({
