@@ -211,6 +211,9 @@ mock.onGet(new RegExp(config.saa.baseURL + config.saa.companyQuery.substr(0, con
     case "15100001308888888":
       companyData = companyData.subList[2].subList[0];
       break;
+    default:
+      companyData = null;
+      break;
   }
   return new Promise(resolve => {
     setTimeout(() => {
