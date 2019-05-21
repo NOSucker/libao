@@ -23,12 +23,23 @@
           </el-dropdown>
         </el-tooltip>
       </template>
+      <el-dropdown class="right-menu-item hover-effect" trigger="click">
+        <div class="avatar-wrapper">
+          <img src="../../assets/logo.png" style="width: 24px;; height: 24px" class="user-avatar" />
+          <i class="el-icon-caret-bottom" />
+        </div>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item divided>
+            <span style="display:block;" @click="logout">登出</span>
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
   data() {
@@ -44,6 +55,7 @@ export default {
     })
   },
   methods: {
+    ...mapActions("app", ["logout"]),
     toggleSideBar() {
       this.$store.dispatch("app/toggleSideBar");
     },

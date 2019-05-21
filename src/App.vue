@@ -1,20 +1,18 @@
 <template>
   <div id="app">
     <Layout />
+    <Login />
   </div>
 </template>
 
 <script>
 import Layout from "./layout";
+import Login from "./views/saa/login";
 export default {
   name: "App",
   components: {
-    Layout
-  },
-  data() {
-    return {
-      user: {}
-    };
+    Layout,
+    Login
   }
 };
 </script>

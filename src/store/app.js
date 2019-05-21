@@ -1,4 +1,5 @@
 const state = {
+  loginData: localStorage.getItem("loginData") ? JSON.parse(localStorage.getItem("loginData")) : null,
   sidebar: {
     // opened: localStorage.getItem("sidebarStatus")
     //   ? !!+localStorage.getItem("sidebarStatus")
@@ -14,11 +15,6 @@ const mutations = {
   TOGGLE_SIDEBAR: state => {
     state.sidebar.opened = !state.sidebar.opened;
     state.sidebar.withoutAnimation = false;
-    // if (state.sidebar.opened) {
-    //   localStorage.setItem("sidebarStatus", 1);
-    // } else {
-    //   localStorage.setItem("sidebarStatus", 0);
-    // }
   },
   CLOSE_SIDEBAR: (state, withoutAnimation) => {
     localStorage.setItem("sidebarStatus", 0);
@@ -31,6 +27,14 @@ const mutations = {
   SET_SIZE: (state, size) => {
     state.size = size;
     localStorage.setItem("size", size);
+  },
+  SET_LOGIN_DATA: (state, loginData) => {
+    if (!loginData) {
+      localStorage.removeItem("loginData");
+    } else {
+      localStorage.setItem("loginData", JSON.stringify(loginData));
+    }
+    state.loginData = loginData;
   }
 };
 
@@ -46,13 +50,34 @@ const actions = {
   },
   setSize({ commit }, size) {
     commit("SET_SIZE", size);
+  },
+  // user login
+  login({ commit }, userInfo) {
+    console.log(userInfo);
+    commit("SET_LOGIN_DATA", {});
+    // const { username, password } = userInfo;
+    // return new Promise((resolve, reject) => {
+    //   resolve();
+    //   // login({ username: username.trim(), password: password }).then(response => {
+    //   //   const { data } = response
+    //   //   commit('SET_TOKEN', data.token)
+    //   //   setToken(data.token)
+    //   //   resolve()
+    //   // }).catch(error => {
+    //   //   reject(error)
+    //   // })
+    // });
+  },
+  logout({ commit }) {
+    commit("SET_LOGIN_DATA", null);
   }
 };
 
 const getters = {
   sidebar: state => state.sidebar,
   size: state => state.size,
-  device: state => state.device
+  device: state => state.device,
+  loginData: state => state.loginData
 };
 
 export default {
