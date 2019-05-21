@@ -37,8 +37,8 @@ const router = new VueRouter({
         }
       }
     },
-    ...sampleRouter,
-    ...saaRouter
+    ...saaRouter,
+    ...sampleRouter
   ]
 });
 

@@ -52,7 +52,7 @@
 </template>
 
 <script>
-  import formTrack from "../../src/directive/form-track"
+  import formTrack from "../../src/directive/form-track/index"
 
   export default {
     directives: {
