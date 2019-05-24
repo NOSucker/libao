@@ -51,22 +51,13 @@ const actions = {
   setSize({ commit }, size) {
     commit("SET_SIZE", size);
   },
-  // user login
   login({ commit }, userInfo) {
-    console.log(userInfo);
-    commit("SET_LOGIN_DATA", {});
-    // const { username, password } = userInfo;
-    // return new Promise((resolve, reject) => {
-    //   resolve();
-    //   // login({ username: username.trim(), password: password }).then(response => {
-    //   //   const { data } = response
-    //   //   commit('SET_TOKEN', data.token)
-    //   //   setToken(data.token)
-    //   //   resolve()
-    //   // }).catch(error => {
-    //   //   reject(error)
-    //   // })
-    // });
+    let params = new URLSearchParams();
+    params.append("userCode", userInfo.userCode);
+    params.append("password", userInfo.password);
+    return this._vm.$axios.post(this._vm.$axios.config.saa.baseURL + this._vm.$axios.config.saa.login + "?" + params.toString()).then(() => {
+      commit("SET_LOGIN_DATA", {});
+    });
   },
   logout({ commit }) {
     commit("SET_LOGIN_DATA", null);

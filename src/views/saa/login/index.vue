@@ -13,10 +13,10 @@
         <el-row style="height: 100%">
           <el-col :xs="0" :md="9" :lg="9" :xl="9">&nbsp;</el-col>
           <el-col :xs="24" :md="6" :lg="6" :xl="6" style="height: 100%">
-            <el-card class="box-card" style="height: 100%">
+            <el-card v-loading="loginLoading" class="box-card" style="height: 100%">
               <el-form ref="loginForm" label-position="top" :rules="rules" :model="formLogin" size="default">
                 <el-form-item prop="username">
-                  <el-input v-model="formLogin.username" type="text" placeholder="用户名">
+                  <el-input v-model="formLogin.userCode" type="text" placeholder="用户名">
                     <svg slot="prepend" class="svg-icon">
                       <use :xlink:href="'#icon-user'" />
                     </svg>
@@ -58,13 +58,14 @@ export default {
   data() {
     return {
       loginVisible: false,
+      loginLoading: false,
       formLogin: {
-        username: "admin",
-        password: "admin",
+        userCode: "0500000699",
+        password: "0000000",
         code: "v9am"
       },
       rules: {
-        username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+        userCode: [{ required: true, message: "请输入用户名", trigger: "blur" }],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
         code: [{ required: true, message: "请输入验证码", trigger: "blur" }]
       }
@@ -75,15 +76,13 @@ export default {
     submit() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          // 登录
-          // 注意 这里的演示没有传验证码
-          // 具体需要传递的数据请自行修改代码
-          this.loginVisible = false;
-          this.login({
-            username: this.formLogin.username,
-            password: this.formLogin.password
-          }).then(() => {
+          this.loginLoading = true;
+          this.login(this.formLogin).then(() => {
             this.loginVisible = false;
+          }).catch(error =>{
+            console.log(error)
+          }).finally(()=>{
+            this.loginLoading = false;
           });
         }
       });
