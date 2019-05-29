@@ -1,5 +1,6 @@
 const state = {
   loginData: localStorage.getItem("loginData") ? JSON.parse(localStorage.getItem("loginData")) : null,
+  userInfo: localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo")) : null,
   sidebar: {
     // opened: localStorage.getItem("sidebarStatus")
     //   ? !!+localStorage.getItem("sidebarStatus")
@@ -35,6 +36,14 @@ const mutations = {
       localStorage.setItem("loginData", JSON.stringify(loginData));
     }
     state.loginData = loginData;
+  },
+  SET_USER_INFO: (state, userInfo) => {
+    if (!userInfo) {
+      localStorage.removeItem("userInfo");
+    } else {
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
+    }
+    state.userInfo = userInfo;
   }
 };
 
@@ -55,12 +64,16 @@ const actions = {
     let params = new URLSearchParams();
     params.append("userCode", userInfo.userCode);
     params.append("password", userInfo.password);
-    return this._vm.$axios.post(this._vm.$axios.config.saa.baseURL + this._vm.$axios.config.saa.login + "?" + params.toString()).then(() => {
-      commit("SET_LOGIN_DATA", {});
+    return this._vm.$axios.post(this._vm.$axios.config.saa.baseURL + this._vm.$axios.config.saa.login + "?" + params.toString()).then(response => {
+      commit("SET_LOGIN_DATA", response.data);
+      this._vm.$axios.get(this._vm.$axios.config.saa.baseURL + this._vm.$axios.config.saa.loginInfo).then(resp => {
+        commit("SET_USER_INFO", resp.data);
+      });
     });
   },
   logout({ commit }) {
     commit("SET_LOGIN_DATA", null);
+    commit("SET_USER_INFO", null);
   }
 };
 

@@ -9,6 +9,7 @@ const config = {
   saa: {
     baseURL: process.env.VUE_APP_SAA_BASE_URL,
     login: "/auth/token",
+    loginInfo: "/saa/login_info",
     companyQuery: "/syscompany/listsub/{comCode}",
     userQuery: "/sysuser/list",
     userCreate: "/sysuser/create",
@@ -24,10 +25,11 @@ axios.defaults.baseURL = process.env.VUE_APP_BASE_URL; // 根据环境变量设�
  * 请求拦截器
  */
 axios.interceptors.request.use(
-  config =>
+  config =>{
     // 在请求发送之前做一些处理，让每个请求携带JWT token-- ['Authorization'] 请根据实际情况自行修改
-    // config.headers["Authorization"] = "Bearer " + localStorage.getItem("token");
-    config,
+    config.headers["Authorization"] = "Bearer " + (localStorage.getItem("loginData") ? JSON.parse(localStorage.getItem("loginData")).accessToken : '');
+    return config;
+  },
   error => {
     // 发送失败
     console.log(error);
