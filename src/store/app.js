@@ -81,7 +81,8 @@ const getters = {
   sidebar: state => state.sidebar,
   size: state => state.size,
   device: state => state.device,
-  loginData: state => state.loginData
+  loginData: state => state.loginData,
+  userInfo: state => state.userInfo
 };
 
 export default {
