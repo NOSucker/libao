@@ -10,7 +10,7 @@ const config = {
     baseURL: process.env.VUE_APP_SAA_BASE_URL,
     login: "/auth/token",
     loginInfo: "/saa/login_info",
-    companyQuery: "/syscompany/listsub/{comCode}",
+    sysCompanyNext: "/syscompany/next/{comCode}",
     userQuery: "/sysuser/list",
     userCreate: "/sysuser/create",
     userEdit: "/sysuser/edit",

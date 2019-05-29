@@ -93,7 +93,7 @@
                 :props="{
                   children: 'subList',
                   value: 'comCode',
-                  label: 'comCName'
+                  label: 'comName'
                 }"></tree-select>
             </el-form-item>
           </el-col>
@@ -160,7 +160,7 @@ export default {
       params.append("_pageNo", this.pagerQuery.pageNo);
       params.append("_pageSize", this.pagerQuery.pageSize);
       this.$axios
-        .post(this.$axios.config.saa.baseURL + this.$axios.config.saa.userQuery + "?" + params.toString())
+        .post(this.$axios.config.saa.baseURL + this.$axios.config.saa.userQuery + "?" + params.toString(), {})
         .then(response => {
           this.tableData = response.data.data;
           this.totalCount = response.data.totalCount;
@@ -225,7 +225,7 @@ export default {
     },
     comQuery(node) {
       return new Promise(resolve => {
-        this.$axios.get(this.$axios.config.saa.baseURL + this.$axios.config.saa.companyQuery.format({ comCode: node ? node.comCode : "" })).then(response => {
+        this.$axios.get(this.$axios.config.saa.baseURL + this.$axios.config.saa.sysCompanyNext.format({ comCode: node ? node.comCode : this.$store.state.app.userInfo.comCode })).then(response => {
           resolve(response.data.data[0]);
         });
       });
