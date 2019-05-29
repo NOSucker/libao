@@ -12,9 +12,9 @@ const config = {
     loginInfo: "/saa/login_info",
     sysCompanyNext: "/syscompany/next/{comCode}",
     userQuery: "/sysuser/list",
-    userCreate: "/sysuser/create",
-    userEdit: "/sysuser/edit",
-    userDelete: "/sysuser/delete"
+    userCreate: "/sysuser/",
+    userUpdate: "/sysuser/update",
+    userDelete: "/sysuser/delete/{userCode}"
   }
 };
 axios.config = config;
