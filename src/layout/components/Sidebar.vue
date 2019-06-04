@@ -14,8 +14,7 @@
         :active-text-color="variables.menuActiveText"
         :collapse-transition="false"
         mode="vertical"
-        :background-color="variables.menuBg"
-      >
+        :background-color="variables.menuBg">
         <div v-for="route in $router.options.routes" :key="route.path" class="menu-wrapper">
           <router-link v-if="route.meta" :to="route.path">
             <el-menu-item :index="route.path">

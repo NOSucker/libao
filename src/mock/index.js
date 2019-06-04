@@ -228,6 +228,89 @@ mock.onGet(new RegExp(config.saa.baseURL + config.saa.companyQuery.substr(0, con
     }, 500);
   });
 });
+// mock.onPost(config.saa.baseURL + config.saa.roleListAll).reply( request =>{
+//   console.log("Mock: " + request.url);
+//   return new Promise(resolve => {
+//     setTimeout(() => {
+//       resolve([
+//         200,
+//         {
+//           data: {
+//             roles: [
+//               {
+//                 "roleCode": "3",
+//                 "roleName": "3",
+//                 "validInd": "1",
+//                 "remark": null,
+//                 "flag": null,
+//                 "version": 1
+//               },
+//               {
+//                 "roleCode": "111111",
+//                 "roleName": "营业员",
+//                 "validInd": "1",
+//                 "remark": null,
+//                 "flag": null,
+//                 "version": 1
+//               },
+//               {
+//                 "roleCode": "111112",
+//                 "roleName": "业务员",
+//                 "validInd": "1",
+//                 "remark": null,
+//                 "flag": null,
+//                 "version": 1
+//               },
+//               {
+//                 "roleCode": "111113",
+//                 "roleName": "饲养员",
+//                 "validInd": "1",
+//                 "remark": null,
+//                 "flag": null,
+//                 "version": 1
+//               },
+//               {
+//                 "roleCode": "1",
+//                 "roleName": "1",
+//                 "validInd": "1",
+//                 "remark": null,
+//                 "flag": null,
+//                 "version": 1
+//               },
+//               {
+//                 "roleCode": "2",
+//                 "roleName": "清洁",
+//                 "validInd": "1",
+//                 "remark": null,
+//                 "flag": null,
+//                 "version": 1
+//               },
+//               {
+//                 "roleCode": "6",
+//                 "roleName": "快递",
+//                 "validInd": "1",
+//                 "remark": "2",
+//                 "flag": null,
+//                 "version": 1
+//               },
+//               {
+//                 "roleCode": "111114",
+//                 "roleName": "测试",
+//                 "validInd": "1",
+//                 "remark": null,
+//                 "flag": null,
+//                 "version": 1
+//               }
+//             ]
+//           },
+//           totalCount: 8,
+//           status: 0,
+//           statusText: "Success"
+//         }
+//       ]);
+//     }, 100);
+//   });
+// });
 
 mock.onAny().passThrough();
 export default mock;

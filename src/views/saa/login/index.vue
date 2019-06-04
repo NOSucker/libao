@@ -77,13 +77,16 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loginLoading = true;
-          this.login(this.formLogin).then(() => {
-            this.loginVisible = false;
-          }).catch(error =>{
-            console.log(error)
-          }).finally(()=>{
-            this.loginLoading = false;
-          });
+          this.login(this.formLogin)
+            .then(() => {
+              this.loginVisible = false;
+            })
+            .catch(error => {
+              console.log(error);
+            })
+            .finally(() => {
+              this.loginLoading = false;
+            });
         }
       });
     }

@@ -8,13 +8,24 @@ const config = {
   },
   saa: {
     baseURL: process.env.VUE_APP_SAA_BASE_URL,
+    // baseURL:"http://192.168.1.103:18020",
     login: "/auth/token",
     loginInfo: "/saa/login_info",
     companyQuery: "/syscompany/listsub/{comCode}",
     userQuery: "/sysuser/list",
     userCreate: "/sysuser/create",
     userEdit: "/sysuser/edit",
-    userDelete: "/sysuser/delete"
+    userDelete: "/sysuser/delete",
+    roleListAll: "/saa/role/list?_pageNo={_pageNo}&_pageSize={_pageSize}",
+    taskTree: "/saa/task/tree/{userCode}",
+    createRole: "/saa/role/create",
+    deleteRole: "/saa/role/delete",
+    updateRole: "/saa/role/update",
+    getSubCompany: "/syscompany/sub/{comCode}",
+    createOrganization: "/syscompany/create",
+    deleteOrganization: "/syscompany/delete",
+    updateOrganization: "/syscompany/update",
+    availableOrganization: "/syscompany/available" // 根据用户userCode查看有效的机构
   }
 };
 axios.config = config;
@@ -25,9 +36,9 @@ axios.defaults.baseURL = process.env.VUE_APP_BASE_URL; // 根据环境变量设�
  * 请求拦截器
  */
 axios.interceptors.request.use(
-  config =>{
+  config => {
     // 在请求发送之前做一些处理，让每个请求携带JWT token-- ['Authorization'] 请根据实际情况自行修改
-    config.headers["Authorization"] = "Bearer " + (localStorage.getItem("loginData") ? JSON.parse(localStorage.getItem("loginData")).accessToken : '');
+    config.headers["Authorization"] = "Bearer " + (localStorage.getItem("loginData") ? JSON.parse(localStorage.getItem("loginData")).accessToken : "");
     return config;
   },
   error => {
