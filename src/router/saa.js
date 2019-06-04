@@ -16,5 +16,11 @@ export default [
     name: "organization",
     meta: { icon: "users", title: "机构管理" },
     component: () => import("../views/saa/organization")
+  },
+  {
+    path: "/menu",
+    name: "menu",
+    meta: { icon: "users", title: "菜单管理" },
+    component: () => import("../views/saa/menu")
   }
 ];

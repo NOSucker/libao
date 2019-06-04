@@ -7,8 +7,8 @@ const config = {
     baseCode: "/baseCode/search/{codeType}"
   },
   saa: {
-    baseURL: process.env.VUE_APP_SAA_BASE_URL,
-    // baseURL:"http://192.168.1.103:18020",
+    // baseURL: process.env.VUE_APP_SAA_BASE_URL,
+    baseURL: "http://192.168.1.105:18020",
     login: "/auth/token",
     loginInfo: "/saa/login_info",
     companyQuery: "/syscompany/listsub/{comCode}",
@@ -16,20 +16,28 @@ const config = {
     userCreate: "/sysuser/create",
     userEdit: "/sysuser/edit",
     userDelete: "/sysuser/delete",
+    // saa 角色相关
     roleListAll: "/saa/role/list?_pageNo={_pageNo}&_pageSize={_pageSize}",
     taskTree: "/saa/task/tree/{userCode}",
     createRole: "/saa/role/create",
     deleteRole: "/saa/role/delete",
     updateRole: "/saa/role/update",
+    // saa 机构相关
     getSubCompany: "/syscompany/sub/{comCode}",
     createOrganization: "/syscompany/create",
     deleteOrganization: "/syscompany/delete",
     updateOrganization: "/syscompany/update",
-    availableOrganization: "/syscompany/available" // 根据用户userCode查看有效的机构
+    availableOrganization: "/syscompany/available", // 根据用户userCode查看有效的机构
+    // saa 菜单相关
+    getMenuWithUser: "/saa/task/tree/{userCode}", //根据用户userCode查看菜单信息
+    getSubMenu: "/saa/task/sub/{taskCode}", // 获取菜单的子节点
+    deleteMenu: "/saa/task/delete",
+    createMenu: "/saa/task/create",
+    updateMenu: "/saa/task/update"
   }
 };
 axios.config = config;
-axios.defaults.timeout = 10000; // 请求超时时间
+axios.defaults.timeout = 20000; // 请求超时时间
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL; // 根据环境变量设置默认请求后台地址
 
 /**

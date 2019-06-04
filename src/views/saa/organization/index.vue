@@ -3,11 +3,11 @@
     <h2 style="background: #f8fbff;font-size: 14px;padding: 10px;margin-bottom: 0;">角色管理</h2>
     <div style="background: #fff; padding-top: 10px">
       <el-row :gutter="40">
-        <el-col :span="8">
+        <el-col v-loading="treeLoading" :span="8">
           <el-card
-            v-loading="treeLoading"
+            v-loading="treeMask"
             style="height: 500px;  overflow-x: auto; overflow-y: auto; "
-            element-loading-text="您无法在修改状态下切换机构"
+            element-loading-text="您添加编辑状态下切换机构"
             element-loading-spinner="el-icon-info"
             element-loading-background="rgba(0, 0, 0, 0.8)"
           >
@@ -19,7 +19,7 @@
             <el-row>
               <el-col :span="10">
                 <el-form-item prop="upperComName" label="上级机构" :rules="[{ required: false, message: '请点击选择上级机构', trigger: 'change' }]">
-                  <el-input v-model="organizationData.upperComName" :disabled="true"></el-input>
+                  <el-input v-model="organizationData.upperComName" placeholder="无上级机构，将作为根机构" :disabled="true"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="10">
@@ -46,10 +46,11 @@
               <el-button @click="backToView">返回</el-button>
             </el-row>
             <el-row v-if="pageModel === 'view'" style="text-align: center;padding-top: 15px; border-top: 1px solid #eee;">
-              <el-button @click="operateCLK('add')">新增子机构</el-button>
+              <el-button @click="operateCLK('add')">{{ buttonName }}</el-button>
               <el-button @click="operateCLK('addPeople')">新增员工</el-button>
               <el-button @click="operateCLK('edit')">修改</el-button>
-              <el-button type="danger" @click="deleteOrganization">删除</el-button>
+              <el-button v-if="organizationData.validStatus !== '0'" type="danger" @click="deleteOrganization">删除</el-button>
+              <el-button v-if="organizationData.validStatus === '0'" type="success" @click="recoverOrganization">还原有效</el-button>
             </el-row>
           </el-form>
         </el-col>
@@ -64,8 +65,9 @@ export default {
   data() {
     return {
       treeData: [],
-      pageModel: "view",
       treeLoading: false,
+      pageModel: "view",
+      treeMask: false,
       upperComName: null,
       organizationData: {
         upperComName: null,
@@ -85,12 +87,24 @@ export default {
       submitLoading: false
     };
   },
+  computed: {
+    buttonName: {
+      set() {},
+      get() {
+        if (!this.organizationData.upperComCode) {
+          return "创建机构";
+        } else {
+          return "创建子机构";
+        }
+      }
+    }
+  },
   watch: {
     pageModel(newV) {
-      if (newV === "edit") {
-        this.treeLoading = true;
+      if (newV !== "view") {
+        this.treeMask = true;
       } else {
-        this.treeLoading = false;
+        this.treeMask = false;
       }
     }
   },
@@ -105,6 +119,7 @@ export default {
     },
 
     getTreeDataWithUser(node, resolve) {
+      this.treeLoading = true;
       const theUserCode = JSON.parse(localStorage.getItem("userInfo")).userCode;
       this.$axios
         .get(this.$axios.config.saa.baseURL + this.$axios.config.saa.availableOrganization, {
@@ -129,6 +144,9 @@ export default {
         })
         .catch(() => {
           resolve([]);
+        })
+        .finally(() => {
+          this.treeLoading = false;
         });
     },
 
@@ -138,6 +156,7 @@ export default {
         this.getTreeDataWithUser(node, resolve);
       } else {
         // 获取下级机构
+        this.treeLoading = true;
         this.$axios
           .get(this.$axios.config.saa.baseURL + this.$axios.config.saa.getSubCompany.format({ comCode: node.data.comCode }))
           .then(response => {
@@ -149,6 +168,8 @@ export default {
                   resolve([]);
                 }
               } else {
+                debugger;
+                response.data.data.disabled = true;
                 resolve(response.data.data);
               }
             } else {
@@ -232,7 +253,7 @@ export default {
     operateCLK(type) {
       if (type !== "addPeople") {
         if (type === "edit" && !this.organizationData.comCode) {
-          this.$message.error("请您选择一个需要修改的机构！");
+          this.$message.error("请您先选择一个需要修改的机构！");
           return;
         }
         if (type === "add") {
@@ -245,7 +266,7 @@ export default {
             comLevel: null
           };
           let node = this.$refs.taskTree.getCurrentNode();
-          if (node) {
+          if (node && node.upperComCode) {
             this.$set(this.organizationData, "upperComName", node.comName);
             this.$set(this.organizationData, "upperComCode", node.comCode);
             this.$set(this.organizationData, "comLevel", node.comLevel + 1);
@@ -300,6 +321,78 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+    // 恢复机构
+    recoverOrganization() {
+      function updateOrganization(that, postData) {
+        that.submitLoading = true;
+        that.$axios
+          .post(that.$axios.config.saa.baseURL + that.$axios.config.saa.updateOrganization, postData)
+          .then(response => {
+            if (response.data.status === 0) {
+              that.$message.success("操作成功!");
+              if (!that.organizationData.upperComCode) {
+                that.treeData = [];
+                const theUserCode = JSON.parse(localStorage.getItem("userInfo")).userCode;
+                that.$axios
+                  .get(that.$axios.config.saa.baseURL + that.$axios.config.saa.availableOrganization, {
+                    params: {
+                      userCode: theUserCode
+                    }
+                  })
+                  .then(response => {
+                    if (response.data.status === 0) {
+                      that.treeData = response.data.data;
+                    } else {
+                      that.$message.error(response.data.statusText);
+                    }
+                  });
+                return;
+              }
+              let currentCom = that.organizationData.upperComCode;
+              // 更新tree节点数据
+              that.$axios
+                .get(that.$axios.config.saa.baseURL + that.$axios.config.saa.getSubCompany.format({ comCode: currentCom }))
+                .then(response => {
+                  if (response.data.status === 0) {
+                    if (response.data.data[0] && response.data.data[0].subList && response.data.data[0].subList.length > 0) {
+                      that.$refs.taskTree.updateKeyChildren(currentCom, response.data.data[0].subList);
+                    } else {
+                      that.$refs.taskTree.updateKeyChildren(currentCom, []);
+                    }
+                    that.pageModel = "view";
+                  } else {
+                    that.$message.error(response.data.statusText);
+                  }
+                })
+                .catch(err => {
+                  console.log(err);
+                })
+                .finally(() => {
+                  that.submitLoading = false;
+                });
+            } else {
+              that.$message.error(response.data.statusText);
+            }
+          })
+          .finally(() => {
+            that.submitLoading = false;
+          });
+      }
+      let postData = JSON.parse(JSON.stringify(this.organizationData));
+      postData.validStatus = "1";
+      if (this.organizationData.upperComCode) {
+        const upperNode = this.$refs.taskTree.getNode(this.organizationData.upperComCode);
+        if (upperNode) {
+          if (upperNode.data.validStatus === "0") {
+            this.$message.warning("请您先恢复上级机构的有效状态后，再恢复此机构！");
+            return;
+          }
+          updateOrganization(this, postData);
+        } else {
+          updateOrganization(this, postData);
+        }
+      }
     }
   }
 };
