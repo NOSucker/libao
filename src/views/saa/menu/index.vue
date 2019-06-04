@@ -56,7 +56,8 @@
             <el-row v-if="pageModel === 'view'" style="text-align: center;padding-top: 15px; border-top: 1px solid #eee;">
               <el-button v-if="menuData.level < 3" @click="operationMenu('add')">{{ buttonName }}</el-button>
               <el-button @click="operationMenu('edit')">修改</el-button>
-              <el-button type="danger" @click="deleteMenu">删除</el-button>
+              <el-button v-if="menuData.validind !== '0'" type="danger" @click="deleteMenu">删除</el-button>
+              <el-button v-if="menuData.validind === '0'" type="success" @click="recoverMenu">还原有效</el-button>
             </el-row>
           </el-form>
         </el-col>
@@ -267,7 +268,10 @@ export default {
           .then(response => {
             if (response.data.status === 0) {
               if (response.data.data && response.data.data.subLists && response.data.data.subLists.length > 0) {
-                this.$refs.menuTree.updateKeyChildren(currentTask, response.data.data.subLists);
+                this.$refs.menuTree.updateKeyChildren(currentTask, []);
+                this.$nextTick(() => {
+                  this.$refs.menuTree.updateKeyChildren(currentTask, response.data.data.subLists);
+                });
               } else {
                 this.$refs.menuTree.updateKeyChildren(currentTask, []);
               }
@@ -315,6 +319,34 @@ export default {
             });
         }
       });
+    },
+    // 还原到有效
+    recoverMenu() {
+      if (this.menuData.upperTaskCode) {
+        const upperNode = this.$refs.menuTree.getNode(this.menuData.upperTaskCode);
+        if (upperNode) {
+          if (upperNode.data.validind === "0") {
+            this.$message.warning("请您先恢复上级机构的有效状态后，再恢复此机构！");
+            return;
+          }
+        }
+      }
+      this.submitLoading = true;
+      let PostData = JSON.parse(JSON.stringify(this.menuData));
+      PostData.validind = "1";
+      this.$axios
+        .post(this.$axios.config.saa.baseURL + this.$axios.config.saa.updateMenu, PostData)
+        .then(response => {
+          if (response.data.status === 0) {
+            this.$message.success("操作成功!");
+            this.handleTreeData();
+          } else {
+            this.$message.error(response.data.statusText);
+          }
+        })
+        .finally(() => {
+          this.submitLoading = false;
+        });
     }
   }
 };
