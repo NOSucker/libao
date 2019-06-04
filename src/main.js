@@ -11,7 +11,7 @@ import "@/styles/index.scss"; // global css
 import "animate.css";
 
 if (process.env.NODE_ENV === "development") {
-  require("./mock/index");
+  // require("./mock/index");
 }
 
 Vue.config.productionTip = false;
