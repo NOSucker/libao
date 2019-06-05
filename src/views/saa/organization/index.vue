@@ -11,7 +11,17 @@
             element-loading-spinner="el-icon-info"
             element-loading-background="rgba(0, 0, 0, 0.8)"
           >
-            <el-tree ref="taskTree" node-key="comCode" :load="loadNode" :props="props" lazy :data="treeData" @node-click="onClickNode"></el-tree>
+            <el-tree
+              ref="taskTree"
+              node-key="comCode"
+              :load="loadNode"
+              :props="props"
+              lazy
+              :draggable="true"
+              :data="treeData"
+              @node-drop="dragEndFun"
+              @node-click="onClickNode"
+            ></el-tree>
           </el-card>
         </el-col>
         <el-col :span="16">
@@ -109,6 +119,16 @@ export default {
     }
   },
   methods: {
+    dragEndFun(before, after, inner, eve) {
+      console.log("b");
+      console.log(before);
+      console.log("a");
+      console.log(after);
+      console.log("i");
+      console.log(inner);
+      console.log("e");
+      console.log(eve);
+    },
     onClickNode(node) {
       this.organizationData = JSON.parse(JSON.stringify(node));
       if (this.pageModel === "add") {
@@ -305,8 +325,8 @@ export default {
             .then(res => {
               if (res.data.status === 0) {
                 this.$message.success("删除成功!");
-                // 重新构筑树 清除当前选择的树节点
-                this.$refs.taskTree.remove(this.organizationData.comCode);
+                // 重新构筑树
+                this.handleOrgTree();
               } else {
                 this.$message.success(res.data.statusText);
               }
@@ -322,63 +342,60 @@ export default {
           });
         });
     },
-    // 恢复机构
-    recoverOrganization() {
-      function updateOrganization(that, postData) {
-        that.submitLoading = true;
-        that.$axios
-          .post(that.$axios.config.saa.baseURL + that.$axios.config.saa.updateOrganization, postData)
-          .then(response => {
-            if (response.data.status === 0) {
-              that.$message.success("操作成功!");
-              if (!that.organizationData.upperComCode) {
-                that.treeData = [];
-                const theUserCode = JSON.parse(localStorage.getItem("userInfo")).userCode;
-                that.$axios
-                  .get(that.$axios.config.saa.baseURL + that.$axios.config.saa.availableOrganization, {
-                    params: {
-                      userCode: theUserCode
-                    }
-                  })
-                  .then(response => {
-                    if (response.data.status === 0) {
-                      that.treeData = response.data.data;
-                    } else {
-                      that.$message.error(response.data.statusText);
-                    }
-                  });
-                return;
-              }
-              let currentCom = that.organizationData.upperComCode;
-              // 更新tree节点数据
-              that.$axios
-                .get(that.$axios.config.saa.baseURL + that.$axios.config.saa.getSubCompany.format({ comCode: currentCom }))
-                .then(response => {
-                  if (response.data.status === 0) {
-                    if (response.data.data[0] && response.data.data[0].subList && response.data.data[0].subList.length > 0) {
-                      that.$refs.taskTree.updateKeyChildren(currentCom, response.data.data[0].subList);
-                    } else {
-                      that.$refs.taskTree.updateKeyChildren(currentCom, []);
-                    }
-                    that.pageModel = "view";
-                  } else {
-                    that.$message.error(response.data.statusText);
-                  }
-                })
-                .catch(err => {
-                  console.log(err);
-                })
-                .finally(() => {
-                  that.submitLoading = false;
-                });
-            } else {
-              that.$message.error(response.data.statusText);
+    handleOrgTree() {
+      if (!this.organizationData.upperComCode) {
+        this.treeData = [];
+        const theUserCode = JSON.parse(localStorage.getItem("userInfo")).userCode;
+        this.$axios
+          .get(this.$axios.config.saa.baseURL + this.$axios.config.saa.availableOrganization, {
+            params: {
+              userCode: theUserCode
             }
           })
+          .then(response => {
+            if (response.data.status === 0) {
+              this.treeData = response.data.data;
+            } else {
+              this.$message.error(response.data.statusText);
+            }
+          });
+      } else {
+        let currentCom = this.organizationData.upperComCode;
+        // 更新tree节点数据
+        this.$axios
+          .get(this.$axios.config.saa.baseURL + this.$axios.config.saa.getSubCompany.format({ comCode: currentCom }))
+          .then(response => {
+            if (response.data.status === 0) {
+              if (response.data.data[0] && response.data.data[0].subList && response.data.data[0].subList.length > 0) {
+                let currentNode = this.$refs.menuTree.getNode(currentCom);
+                currentNode.data.subLists.splice(0, currentNode.data.subLists.length);
+                this.$refs.taskTree.updateKeyChildren(currentCom, response.data.data[0].subList);
+              } else {
+                this.$refs.taskTree.updateKeyChildren(currentCom, []);
+              }
+              this.pageModel = "view";
+            } else {
+              this.$message.error(response.data.statusText);
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          })
           .finally(() => {
-            that.submitLoading = false;
+            this.submitLoading = false;
           });
       }
+      this.organizationData = {
+        upperComName: null,
+        upperComCode: null,
+        comCode: null,
+        comName: null,
+        manAger: null,
+        comLevel: null
+      };
+    },
+    // 恢复机构
+    recoverOrganization() {
       let postData = JSON.parse(JSON.stringify(this.organizationData));
       postData.validStatus = "1";
       if (this.organizationData.upperComCode) {
@@ -388,11 +405,22 @@ export default {
             this.$message.warning("请您先恢复上级机构的有效状态后，再恢复此机构！");
             return;
           }
-          updateOrganization(this, postData);
-        } else {
-          updateOrganization(this, postData);
         }
       }
+      this.submitLoading = true;
+      this.$axios
+        .post(this.$axios.config.saa.baseURL + this.$axios.config.saa.updateOrganization, postData)
+        .then(response => {
+          if (response.data.status === 0) {
+            this.$message.success("操作成功!");
+            this.handleOrgTree();
+          } else {
+            this.$message.error(response.data.statusText);
+          }
+        })
+        .finally(() => {
+          this.submitLoading = false;
+        });
     }
   }
 };
