@@ -268,10 +268,9 @@ export default {
           .then(response => {
             if (response.data.status === 0) {
               if (response.data.data && response.data.data.subLists && response.data.data.subLists.length > 0) {
-                this.$refs.menuTree.updateKeyChildren(currentTask, []);
-                this.$nextTick(() => {
-                  this.$refs.menuTree.updateKeyChildren(currentTask, response.data.data.subLists);
-                });
+                let currentNode = this.$refs.menuTree.getNode(currentTask);
+                currentNode.data.subLists.splice(0, currentNode.data.subLists.length);
+                this.$refs.menuTree.updateKeyChildren(currentTask, response.data.data.subLists);
               } else {
                 this.$refs.menuTree.updateKeyChildren(currentTask, []);
               }
@@ -287,6 +286,14 @@ export default {
             this.treeLoading = false;
           });
       }
+      this.menuData = {
+        upperTaskName: null,
+        upperTaskCode: null,
+        url: null,
+        level: null,
+        taskCode: null,
+        groupName: null
+      };
     },
     submitForm() {
       this.$refs.menuForm.validate(valid => {

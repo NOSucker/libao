@@ -10,8 +10,7 @@
       :close-on-press-escape="false"
       width="80%"
       @close="closeThedialog"
-      @open="dialogOpen"
-    >
+      @open="dialogOpen">
       <el-row :gutter="40">
         <el-col :span="8">
           <el-card style="height: 500px;  overflow-x: auto; overflow-y: auto; ">
@@ -22,8 +21,7 @@
               node-key="taskCode"
               :data="showTreeData"
               :props="props"
-              show-checkbox
-            ></el-tree>
+              show-checkbox></el-tree>
           </el-card>
         </el-col>
         <el-col :span="16">

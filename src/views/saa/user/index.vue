@@ -1,42 +1,76 @@
 <template>
   <div v-loading="queryLoading">
-    <div>
-      <el-button type="primary" icon="el-icon-plus" @click="newButtonClick">
-        新增
-      </el-button>
-      <el-button type="primary" :disabled="editDisabled" icon="el-icon-edit" @click="editButtonClick">
-        修改
-      </el-button>
-      <el-button type="danger" :disabled="deleteDisabled" icon="el-icon-delete">
-        删除
-      </el-button>
+    <h2 style="background: #f8fbff;font-size: 14px;padding: 10px;margin-bottom: 0;">用户管理</h2>
+    <div style="background: #fff; padding-top: 10px">
+      <el-form ref="userForm" :model="pagerQuery" label-width="30%" style=" border-bottom: 1px solid #eee;">
+        <el-row>
+          <el-col :span="6">
+            <el-form-item label="用户代码" prop="userCode">
+              <el-input v-model="pagerQuery.userCode"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="用户名称" prop="userName">
+              <el-input v-model="pagerQuery.userName"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="注册日期" prop="value1">
+              <el-date-picker
+                v-model="value1"
+                class="user-datapick"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-button style="margin-left: 20px" type="primary" @click="queryData">查询</el-button>
+            <el-button @click="$refs.userForm.resetFields()">重置</el-button>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div style="padding: 20px">
+        <el-row>
+          <el-button type="primary" icon="el-icon-plus" @click="newButtonClick">
+            新增
+          </el-button>
+          <el-button type="primary" :disabled="editDisabled" icon="el-icon-edit" @click="editButtonClick">
+            修改
+          </el-button>
+          <el-button type="danger" :disabled="deleteDisabled" icon="el-icon-delete">
+            删除
+          </el-button>
+        </el-row>
+        <el-table :data="tableData" tooltip-effect="dark" stripe @selection-change="tableSelectionChange">
+          <el-table-column type="selection" width="55" />
+          <el-table-column prop="userCode" label="用户代码" width="120" />
+          <el-table-column prop="userName" label="用户名称" width="120" />
+          <el-table-column prop="comCode" label="组织机构代码" width="180" />
+          <el-table-column prop="comCName" label="组织机构名称" />
+          <el-table-column prop="regTime" label="注册时间" width="160">
+            <template slot-scope="scope">
+              {{ scope.row.regTime | dataFilter("yyyy年MM月dd日") }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="remark" label="备注" show-overflow-tooltip />
+        </el-table>
+        <el-pagination
+          :current-page.sync="pagerQuery.pageNo"
+          background
+          :page-sizes="[10, 20, 30, 50]"
+          :page-size.sync="pagerQuery.pageSize"
+          style="width: 100%; text-align: right; margin-top: 20px"
+          layout="total,  prev, pager, next, sizes, jumper"
+          :total="totalCount"
+          @current-change="queryData"
+          @size-change="
+            pagerQuery.pageNo = 1;
+            queryData();
+          "/>
+      </div>
     </div>
-    <el-table :data="tableData" tooltip-effect="dark" stripe @selection-change="tableSelectionChange">
-      <el-table-column type="selection" width="55" />
-      <el-table-column prop="userCode" label="用户代码" width="120" />
-      <el-table-column prop="userName" label="用户名称" width="120" />
-      <el-table-column prop="comCode" label="组织机构代码" width="180" />
-      <el-table-column prop="comCName" label="组织机构名称" />
-      <el-table-column prop="regTime" label="注册时间" width="160">
-        <template slot-scope="scope">
-          {{ new Date(scope.row.regTime).format("yyyy年MM月dd日") }}
-        </template>
-      </el-table-column>
-      <el-table-column prop="remark" label="备注" show-overflow-tooltip />
-    </el-table>
-    <el-pagination
-      :current-page.sync="pagerQuery.pageNo"
-      background
-      :page-sizes="[10, 20, 30, 50]"
-      :page-size.sync="pagerQuery.pageSize"
-      style="width: 100%; text-align: right; margin-top: 20px"
-      layout="total,  prev, pager, next, sizes, jumper"
-      :total="totalCount"
-      @current-change="queryData"
-      @size-change="
-        pagerQuery.pageNo = 1;
-        queryData();
-      "/>
     <el-dialog
       v-loading="submitLoading"
       :title="editDialogTitle"
@@ -119,8 +153,21 @@ export default {
   components: {
     TreeSelect
   },
+  filters: {
+    dataFilter(val, format) {
+      if (!val) {
+        return "";
+      }
+      const TempDate = new Date(val);
+      if (TempDate instanceof Date && !isNaN(TempDate.getTime())) {
+        return format ? TempDate.format(format) : TempDate.format("yyyy-MM-dd hh:mm:ss");
+      }
+      return "";
+    }
+  },
   data() {
     return {
+      value1: null,
       tableData: [],
       tableSelection: [],
       totalCount: 0,
@@ -150,17 +197,20 @@ export default {
       return this.tableSelection.length < 1;
     }
   },
-  mounted() {
-    this.queryData();
-  },
   methods: {
     queryData() {
       this.queryLoading = true;
-      let params = new URLSearchParams();
-      params.append("_pageNo", this.pagerQuery.pageNo);
-      params.append("_pageSize", this.pagerQuery.pageSize);
       this.$axios
-        .post(this.$axios.config.saa.baseURL + this.$axios.config.saa.userQuery + "?" + params.toString(), {})
+        .post(
+          this.$axios.config.saa.baseURL + this.$axios.config.saa.userQuery,
+          {},
+          {
+            params: {
+              _pageNo: this.pagerQuery.pageNo,
+              _pageSize: this.pagerQuery.pageSize
+            }
+          }
+        )
         .then(response => {
           this.tableData = response.data.data;
           this.totalCount = response.data.totalCount;
@@ -224,16 +274,32 @@ export default {
       });
     },
     comQuery(node) {
-      return new Promise(resolve => {
-        this.$axios
-          .get(
-            this.$axios.config.saa.baseURL +
-              this.$axios.config.saa.sysCompanyNext.format({ comCode: node ? node.comCode : this.$store.state.app.userInfo.comCode })
-          )
-          .then(response => {
-            resolve(response.data.data[0]);
-          });
-      });
+      // 如果没有点击节点 也就是初始化的时候， 通过用户的userCode去调用接口，返回这个用户有权限操作的接口
+      if (!node) {
+        const theUserCode = JSON.parse(localStorage.getItem("userInfo")).userCode;
+        return new Promise(resolve => {
+          this.$axios
+            .get(this.$axios.config.saa.baseURL + this.$axios.config.saa.availableOrganization, {
+              params: {
+                userCode: theUserCode
+              }
+            })
+            .then(response => {
+              resolve({ subList: response.data.data });
+            });
+        });
+      } else {
+        return new Promise(resolve => {
+          this.$axios
+            .get(
+              this.$axios.config.saa.baseURL +
+                this.$axios.config.saa.getSubCompany.format({ comCode: node ? node.comCode : this.$store.state.app.userInfo.comCode })
+            )
+            .then(response => {
+              resolve(response.data.data[0]);
+            });
+        });
+      }
     }
   }
 };
@@ -242,5 +308,11 @@ export default {
 <style>
 .el-pagination__total {
   float: left;
+}
+.user-datapick {
+  width: 100% !important;
+}
+.user-datapick .el-range-separator {
+  width: 10%;
 }
 </style>

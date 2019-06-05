@@ -134,9 +134,8 @@ export default {
     // 获取用户的taskTree
     getTaskTree() {
       const theUserCode = JSON.parse(localStorage.getItem("userInfo")).userCode;
-      this.$axios.get(this.$axios.config.saa.baseURL + this.$axios.config.saa.taskTree.format({ userCode: theUserCode })).then(response => {
+      this.$axios.get(this.$axios.config.saa.baseURL + this.$axios.config.saa.taskTreeWithUser.format({ userCode: theUserCode })).then(response => {
         this.userTaskTree = response.data.data;
-        console.log(response.data.data);
       });
     },
     // 删除role信息

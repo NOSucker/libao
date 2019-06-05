@@ -18,7 +18,7 @@ const config = {
     userDelete: "/sysuser/delete",
     // saa 角色相关
     roleListAll: "/saa/role/list?_pageNo={_pageNo}&_pageSize={_pageSize}",
-    taskTree: "/saa/task/tree/{userCode}",
+    taskTreeWithUser: "/saa/task/tree/{userCode}",
     createRole: "/saa/role/create",
     deleteRole: "/saa/role/delete",
     updateRole: "/saa/role/update",

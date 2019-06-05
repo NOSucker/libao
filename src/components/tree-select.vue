@@ -118,6 +118,7 @@ export default {
       }
       this.remoteMethod(node.data)
         .then(response => {
+          console.log(this.$refs.tree._props.props.children);
           resolve(response[this.$refs.tree._props.props.children]);
         })
         .catch(() => {
