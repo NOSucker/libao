@@ -33,7 +33,7 @@
     methods: {
       treeQuery(node) {
         return new Promise(resolve => {
-          this.$axios.get(this.$axios.config.saa.baseURL + this.$axios.config.saa.companyQuery.format({comCode: node ? node.comCode : ""})).then(response => {
+          this.$axios.get(this.$axios.config.saa.baseURL + this.$axios.config.saa.getSubCompany.format({comCode: node ? node.comCode : ""})).then(response => {
             resolve(response.data.data[0])
           })
         })

@@ -147,7 +147,7 @@ mock.onGet(new RegExp(config.sdd.baseURL + config.sdd.baseCode.substr(0, config.
   });
 });
 
-mock.onGet(new RegExp(config.saa.baseURL + config.saa.sysCompanyNext.substr(0, config.saa.sysCompanyNext.indexOf("{")))).reply(request => {
+mock.onGet(new RegExp(config.saa.baseURL + config.saa.getSubCompany.substr(0, config.saa.getSubCompany.indexOf("{")))).reply(request => {
   console.log("Mock: " + request.url);
   let comCode = request.url.substr(request.url.lastIndexOf("/") + 1);
   let companyData = {

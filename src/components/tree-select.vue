@@ -8,17 +8,26 @@
       :disabled="inputDisabled"
       @show="onShowPopover"
       @hide="onHidePopover">
-      <el-input v-if="showSearchBar" v-model="filterText" clearable :validate-event="false" placeholder="输入关键字进行过滤" />
-      <el-tree
-        ref="tree"
-        v-bind="$attrs"
-        :style="{ minWidth: treeWidth }"
-        :expand-on-click-node="false"
-        :filter-node-method="filterNode"
-        :default-expand-all="false"
-        :load="loadNode"
-        lazy
-        @node-click="onClickNode"/>
+      <el-scrollbar
+        v-loading="loading"
+        element-loading-text="加载中"
+        element-loading-spinner="el-icon-loading"
+        tag="ul"
+        wrap-class="el-select-dropdown__wrap"
+        view-class="el-select-dropdown__list"
+        ref="scrollbar">
+        <el-input v-if="showSearchBar" v-model="filterText" clearable :validate-event="false" placeholder="输入关键字进行过滤" />
+        <el-tree
+          ref="tree"
+          v-bind="$attrs"
+          :style="{ minWidth: treeWidth }"
+          :expand-on-click-node="false"
+          :filter-node-method="filterNode"
+          :default-expand-all="false"
+          :load="loadNode"
+          lazy
+          @node-click="onClickNode"/>
+      </el-scrollbar>
       <el-input
         slot="reference"
         ref="input"
@@ -63,6 +72,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       filterText: "",
       showStatus: false,
       treeWidth: "auto",
@@ -103,6 +113,9 @@ export default {
   },
   methods: {
     loadNode(node, resolve) {
+      if(node.level == 0){
+        this.loading = true;
+      }
       this.remoteMethod(node.data)
         .then(response => {
           resolve(response[this.$refs.tree._props.props.children]);
@@ -111,6 +124,7 @@ export default {
           resolve([]);
         })
         .finally(() => {
+          this.loading = false;
           if (node.level == 0) {
             this.changeLabelText(this.value);
           }
