@@ -14,7 +14,7 @@ const config = {
     companyQuery: "/syscompany/listsub/{comCode}",
     userQuery: "/sysuser/list",
     userCreate: "/sysuser/create",
-    userEdit: "/sysuser/edit",
+    userEdit: "/sysuser/update",
     userDelete: "/sysuser/delete",
     // saa 角色相关
     roleListAll: "/saa/role/list?_pageNo={_pageNo}&_pageSize={_pageSize}",

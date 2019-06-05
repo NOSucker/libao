@@ -9,7 +9,7 @@ export default [
     path: "/role",
     name: "role",
     meta: { icon: "users", title: "角色管理" },
-    component: () => import("../views/saa/role/role-query")
+    component: () => import("../views/saa/role/index")
   },
   {
     path: "/organization",

@@ -9,7 +9,6 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       width="80%"
-      @close="closeThedialog"
       @open="dialogOpen">
       <el-row :gutter="40">
         <el-col :span="8">
@@ -29,7 +28,7 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="角色代码" prop="roleCode">
-                  <el-input v-model="rolePageData.roleCode" :disabled="this.model === 'edit'"></el-input>
+                  <el-input v-model="rolePageData.roleCode" :disabled="this.type === 'edit'"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -59,7 +58,7 @@ export default {
   name: "EditRole",
   props: {
     value: Boolean,
-    model: String,
+    type: String,
     treeData: Array,
     roleData: Object
   },
@@ -80,7 +79,9 @@ export default {
   },
   computed: {
     showDialog: {
-      set() {},
+      set(val) {
+        this.$emit("input", val);
+      },
       get() {
         return this.value;
       }
@@ -88,13 +89,13 @@ export default {
     editDialogTitle: {
       set() {},
       get() {
-        if (this.model === "add") {
+        if (this.type === "add") {
           return "新增角色";
         }
-        if (this.model === "edit") {
+        if (this.type === "edit") {
           return "编辑角色";
         }
-        if (this.model === "copy") {
+        if (this.type === "copy") {
           return "复制角色";
         }
         return "";
@@ -113,7 +114,7 @@ export default {
       let theUrl = this.$axios.config.saa.createRole;
       let PostData = [this.rolePageData];
       this.rolePageData.taskCodeList = checkedTree;
-      if (this.model === "edit") {
+      if (this.type === "edit") {
         theUrl = this.$axios.config.saa.updateRole;
         PostData = this.rolePageData;
       }
@@ -122,9 +123,9 @@ export default {
         .post(this.$axios.config.saa.baseURL + theUrl, PostData)
         .then(response => {
           if (response.data.status === 0) {
-            this.$message.success(this.model === "edit" ? "角色更新" : "角色添加" + "成功!");
-            this.needQueryListData = true;
-            this.$refs.roleDialog.handleClose();
+            this.$message.success(this.type === "edit" ? "角色更新" : "角色添加" + "成功!");
+            this.$emit("role-edit-close");
+            this.$emit("input", false);
           } else {
             this.$message.error(response.data.statusText);
           }
@@ -136,20 +137,21 @@ export default {
     dialogOpen() {
       this.checkedList = [];
       this.expandedList = [];
+      this.showTreeData = [];
       this.rolePageData = {};
-      if (this.model === "copy") {
+      if (this.type === "copy") {
         if (this.roleData) {
           this.rolePageData = JSON.parse(JSON.stringify(this.roleData));
           this.$set(this.rolePageData, "roleCode", null);
           this.$set(this.rolePageData, "roleName", null);
         }
       }
-      if (this.model === "edit") {
+      if (this.type === "edit") {
         if (this.roleData) {
           this.rolePageData = JSON.parse(JSON.stringify(this.roleData));
         }
       }
-      if (this.model !== "add") {
+      if (this.type !== "add") {
         this.checkedList = this.rolePageData.taskCodeList;
       }
       this.showTreeData = JSON.parse(JSON.stringify(this.treeData));
@@ -189,13 +191,6 @@ export default {
           });
         });
         this.expandedList = tempArr;
-      }
-    },
-    closeThedialog() {
-      this.showTreeData = [];
-      this.$emit("input", false);
-      if (this.needQueryListData) {
-        this.$emit("role-edit-close");
       }
     }
   }

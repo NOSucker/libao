@@ -4,17 +4,17 @@
     <div style="background: #fff; padding-top: 10px">
       <el-form ref="roleForm" :model="queryRole" :rules="rules" label-width="30%" style=" border-bottom: 1px solid #eee;">
         <el-row>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="角色代码" prop="roleCode">
               <el-input v-model="queryRole.roleCode"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="角色名称" prop="roleName">
               <el-input v-model="queryRole.roleName"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-button style="margin-left: 20px" type="primary" @click="queryRoleList">查询</el-button>
             <el-button @click="resetRoleForm('roleForm')">重置</el-button>
           </el-col>
@@ -69,7 +69,7 @@
     </div>
     <edit-role
       v-model="showRoleDialog"
-      :model="dialogModel"
+      :type="dialogModel"
       :role-data="dialogRoleData"
       :tree-data="userTaskTree"
       @role-edit-close="

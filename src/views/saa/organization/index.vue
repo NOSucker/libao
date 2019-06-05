@@ -300,9 +300,7 @@ export default {
     backToView() {
       this.pageModel = "view";
       this.$nextTick(() => {
-        this.$refs.editForm.validateField("upperComName");
-        this.$refs.editForm.validateField("comCode");
-        this.$refs.editForm.validateField("comName");
+        this.$refs.editForm.clearValidate();
       });
     },
     // 删除机构

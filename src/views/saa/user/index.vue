@@ -15,46 +15,51 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="注册日期" prop="value1">
-              <el-date-picker
-                v-model="value1"
-                class="user-datapick"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
             <el-button style="margin-left: 20px" type="primary" @click="queryData">查询</el-button>
             <el-button @click="$refs.userForm.resetFields()">重置</el-button>
           </el-col>
         </el-row>
       </el-form>
       <div style="padding: 20px">
-        <el-row>
-          <el-button type="primary" icon="el-icon-plus" @click="newButtonClick">
+        <el-row style="margin-bottom: 15px;">
+          <el-button type="primary" icon="el-icon-plus" @click="userButtonClick('new')">
             新增
           </el-button>
-          <el-button type="primary" :disabled="editDisabled" icon="el-icon-edit" @click="editButtonClick">
-            修改
-          </el-button>
-          <el-button type="danger" :disabled="deleteDisabled" icon="el-icon-delete">
+          <el-button type="danger" :disabled="deleteDisabled" icon="el-icon-delete" @click="deleteUser">
             删除
           </el-button>
         </el-row>
-        <el-table :data="tableData" tooltip-effect="dark" stripe @selection-change="tableSelectionChange">
+        <el-table header-cell-class-name="user-table-header" :data="tableData" tooltip-effect="dark" stripe @selection-change="tableSelectionChange">
           <el-table-column type="selection" width="55" />
-          <el-table-column prop="userCode" label="用户代码" width="120" />
-          <el-table-column prop="userName" label="用户名称" width="120" />
-          <el-table-column prop="comCode" label="组织机构代码" width="180" />
-          <el-table-column prop="comCName" label="组织机构名称" />
-          <el-table-column prop="regTime" label="注册时间" width="160">
+          <el-table-column prop="userCode" label="用户代码" />
+          <el-table-column prop="userName" label="用户名称" />
+          <el-table-column prop="regTime" label="注册时间">
             <template slot-scope="scope">
               {{ scope.row.regTime | dataFilter("yyyy年MM月dd日") }}
             </template>
           </el-table-column>
-          <el-table-column prop="remark" label="备注" show-overflow-tooltip />
+          <el-table-column prop="comCode" label="机构" />
+          <el-table-column prop="validStatus" label="是否有效">
+            <template slot-scope="scope">
+              <el-switch
+                v-model="scope.row.validStatus"
+                active-value="1"
+                inactive-value="0"
+                disabled="disabled"
+                active-color="#13ce66"
+                inactive-color="#ff4949"></el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="150px">
+            <template slot-scope="scope">
+              <span title="复制" style="padding: 10px; cursor: pointer; color: #5683bf;" @click="userButtonClick('copy', scope.row)">
+                <i class="el-icon-tickets"></i>
+              </span>
+              <span title="编辑" style="padding: 10px; cursor: pointer; color: #5683bf;" @click="userButtonClick('edit', scope.row)">
+                <i class="el-icon-edit"></i>
+              </span>
+            </template>
+          </el-table-column>
         </el-table>
         <el-pagination
           :current-page.sync="pagerQuery.pageNo"
@@ -71,87 +76,23 @@
           "/>
       </div>
     </div>
-    <el-dialog
-      v-loading="submitLoading"
-      :title="editDialogTitle"
-      :visible.sync="editDialogVisible"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      width="80%">
-      <el-form ref="editForm" :model="editData" :rules="validateRules" label-width="80px">
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="用户代码" prop="userCode">
-              <el-input v-model="editData.userCode"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="用户姓名" prop="userName">
-              <el-input v-model="editData.userName"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="手机号码" prop="mobile">
-              <el-input v-model="editData.mobile"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="电子邮箱" prop="mobile">
-              <el-input v-model="editData.email"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="证件号码" prop="">
-              <el-input v-model="editData.identityNo"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="性别" prop="sex">
-              <el-select v-model="editData.sex" style="width: 100%">
-                <el-option label="男" :value="'1'"></el-option>
-                <el-option label="女" :value="'2'"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="出生日期" prop="">
-              <el-date-picker v-model="editData.birthdate" style="width: 100%"></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="组织机构" prop="comCode">
-              <tree-select
-                v-model="editData.comCode"
-                node-key="comCode"
-                :remote-method="comQuery"
-                :props="{
-                  children: 'subList',
-                  value: 'comCode',
-                  label: 'comName'
-                }"></tree-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="备注" prop="remark">
-              <el-input v-model="editData.remark" type="textarea"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row style="text-align: right">
-          <el-button type="primary" @click="submitForm">提交</el-button>
-          <el-button @click="$refs.editForm.resetFields()">重置</el-button>
-        </el-row>
-      </el-form>
-    </el-dialog>
+    <edit-user
+      v-model="editDialogVisible"
+      :type="editStatus"
+      :user-data="editData"
+      @role-edit-close="
+        pagerQuery._pageNo = 1;
+        queryData();
+      "
+    ></edit-user>
   </div>
 </template>
 
 <script>
-import TreeSelect from "../../../components/tree-select";
-
+import editUser from "../user/model/edit-user";
 export default {
   components: {
-    TreeSelect
+    editUser
   },
   filters: {
     dataFilter(val, format) {
@@ -173,20 +114,14 @@ export default {
       totalCount: 0,
       queryLoading: false,
       pagerQuery: {
+        userCode: null,
+        userName: null,
         pageNo: 1,
         pageSize: 10
       },
-      editDialogVisible: false,
-      editDialogTitle: "",
       editData: {},
-      editStatus: "",
-      submitLoading: false,
-      validateRules: {
-        userCode: [{ required: true, message: "请输入用户代码", trigger: "blur" }, { min: 8, max: 10, message: "长度在 8 到 10 个字符", trigger: "blur" }],
-        userName: [{ required: true, message: "请输入用户姓名", trigger: "blur" }, { min: 2, max: 4, message: "长度在 2 到 4 个字符", trigger: "blur" }],
-        comCode: [{ required: true, message: "请选择组织机构" }],
-        sex: [{ required: true, message: "请选择组织机构" }]
-      }
+      editDialogVisible: false,
+      editStatus: ""
     };
   },
   computed: {
@@ -201,16 +136,12 @@ export default {
     queryData() {
       this.queryLoading = true;
       this.$axios
-        .post(
-          this.$axios.config.saa.baseURL + this.$axios.config.saa.userQuery,
-          {},
-          {
-            params: {
-              _pageNo: this.pagerQuery.pageNo,
-              _pageSize: this.pagerQuery.pageSize
-            }
+        .post(this.$axios.config.saa.baseURL + this.$axios.config.saa.userQuery, this.pagerQuery, {
+          params: {
+            _pageNo: this.pagerQuery.pageNo,
+            _pageSize: this.pagerQuery.pageSize
           }
-        )
+        })
         .then(response => {
           this.tableData = response.data.data;
           this.totalCount = response.data.totalCount;
@@ -222,90 +153,47 @@ export default {
     tableSelectionChange(selection) {
       this.tableSelection = selection;
     },
-    newButtonClick() {
-      this.editData = {};
-      this.editStatus = "new";
-      this.editDialogTitle = "新增用户";
+    userButtonClick(type, data) {
+      this.editData = data;
+      this.editStatus = type;
       this.editDialogVisible = true;
-      this.$nextTick(() => {
-        this.$refs.editForm.clearValidate();
-      });
     },
-    editButtonClick() {
-      this.editData = JSON.parse(JSON.stringify(this.tableSelection[0]));
-      this.editStatus = "edit";
-      this.editDialogTitle = "修改用户";
-      this.editDialogVisible = true;
-      this.$nextTick(() => {
-        this.$refs.editForm.clearValidate();
-      });
-    },
-    submitForm() {
-      this.$refs.editForm.validate(valid => {
-        if (valid) {
-          this.submitLoading = true;
-          this.$axios
-            .request({
-              method: this.editStatus == "new" ? "post" : "put",
-              url: this.$axios.config.saa.baseURL + (this.editStatus == "new" ? this.$axios.config.saa.userCreate : this.$axios.config.saa.userEdit),
-              data: this.editData
-            })
-            .then(response => {
-              if (response.data.status != 0) {
-                this.$message({
-                  showClose: true,
-                  duration: 10000,
-                  message: response.data.statusText,
-                  type: "error"
-                });
-              } else {
-                this.$message.success("保存成功！");
-                this.editDialogVisible = false;
-                this.queryData();
-              }
-            })
-            .finally(() => {
-              this.submitLoading = false;
-            });
-        } else {
-          this.$message.error("校验失败，请修复所有错误后再提交！");
-          return false;
-        }
-      });
-    },
-    comQuery(node) {
-      // 如果没有点击节点 也就是初始化的时候， 通过用户的userCode去调用接口，返回这个用户有权限操作的接口
-      if (!node) {
-        const theUserCode = JSON.parse(localStorage.getItem("userInfo")).userCode;
-        return new Promise(resolve => {
-          this.$axios
-            .get(this.$axios.config.saa.baseURL + this.$axios.config.saa.availableOrganization, {
-              params: {
-                userCode: theUserCode
-              }
-            })
-            .then(response => {
-              resolve({ subList: response.data.data });
-            });
-        });
-      } else {
-        return new Promise(resolve => {
-          this.$axios
-            .get(
-              this.$axios.config.saa.baseURL +
-                this.$axios.config.saa.getSubCompany.format({ comCode: node ? node.comCode : this.$store.state.app.userInfo.comCode })
-            )
-            .then(response => {
-              resolve(response.data.data[0]);
-            });
-        });
+    deleteUser() {
+      if (this.tableSelection.length < 1) {
+        this.$message.warning("请您选中需要删除的用户后再进行操作");
+        return;
       }
+      let needDelUser = [];
+      this.tableSelection.forEach(select => {
+        needDelUser.push(select.userCode);
+      });
+      this.queryLoading = true;
+      this.$axios
+        .delete(this.$axios.config.saa.baseURL + this.$axios.config.saa.userDelete, {
+          data: needDelUser
+        })
+        .then(response => {
+          if (response.data.status === 0) {
+            this.$message.success("角色删除成功！");
+            this.queryData();
+          } else {
+            this.$message.error(response.data.statusText);
+          }
+        })
+        .finally(() => {
+          this.queryLoading = false;
+        });
     }
   }
 };
 </script>
 
 <style>
+.user-table-header {
+  border-top: 2px solid #ebeef5;
+  border-bottom: 2px solid #ebeef5 !important;
+}
+
 .el-pagination__total {
   float: left;
 }

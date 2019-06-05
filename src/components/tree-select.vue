@@ -9,13 +9,14 @@
       @show="onShowPopover"
       @hide="onHidePopover">
       <el-scrollbar
+        ref="scrollbar"
         v-loading="loading"
         element-loading-text="加载中"
         element-loading-spinner="el-icon-loading"
         tag="ul"
         wrap-class="el-select-dropdown__wrap"
         view-class="el-select-dropdown__list"
-        ref="scrollbar">
+      >
         <el-input v-if="showSearchBar" v-model="filterText" clearable :validate-event="false" placeholder="输入关键字进行过滤" />
         <el-tree
           ref="tree"
@@ -113,12 +114,11 @@ export default {
   },
   methods: {
     loadNode(node, resolve) {
-      if(node.level == 0){
+      if (node.level == 0) {
         this.loading = true;
       }
       this.remoteMethod(node.data)
         .then(response => {
-          console.log(this.$refs.tree._props.props.children);
           resolve(response[this.$refs.tree._props.props.children]);
         })
         .catch(() => {
