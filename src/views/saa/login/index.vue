@@ -9,7 +9,7 @@
     :close-on-press-escape="false">
     <el-container>
       <el-header style="height: 20vh"></el-header>
-      <el-main style="height: 60vh">
+      <el-main style="height: 60vh;min-height: 320px">
         <el-row style="height: 100%">
           <el-col :xs="0" :md="9" :lg="9" :xl="9">&nbsp;</el-col>
           <el-col :xs="24" :md="6" :lg="6" :xl="6" style="height: 100%">
@@ -60,7 +60,7 @@ export default {
       loginVisible: false,
       loginLoading: false,
       formLogin: {
-        userCode: "0500000699",
+        userCode: "270015",
         password: "0000000",
         code: "v9am"
       },

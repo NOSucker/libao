@@ -8,19 +8,19 @@ export default [
   {
     path: "/role",
     name: "role",
-    meta: { icon: "users", title: "角色管理" },
+    meta: { icon: "role", title: "角色管理" },
     component: () => import("../views/saa/role/index")
   },
   {
     path: "/organization",
     name: "organization",
-    meta: { icon: "users", title: "机构管理" },
+    meta: { icon: "organization", title: "机构管理" },
     component: () => import("../views/saa/organization")
   },
   {
     path: "/menu",
     name: "menu",
-    meta: { icon: "users", title: "菜单管理" },
+    meta: { icon: "menu", title: "菜单管理" },
     component: () => import("../views/saa/menu")
   }
 ];

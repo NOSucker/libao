@@ -7,8 +7,8 @@ const config = {
     baseCode: "/baseCode/search/{codeType}"
   },
   saa: {
-    // baseURL: process.env.VUE_APP_SAA_BASE_URL,
-    baseURL: "http://192.168.1.105:18020",
+    baseURL: process.env.VUE_APP_SAA_BASE_URL,
+    // baseURL: "http://192.168.20.118:18020",
     login: "/auth/token",
     loginInfo: "/saa/login_info",
     companyQuery: "/syscompany/listsub/{comCode}",
@@ -28,6 +28,7 @@ const config = {
     deleteOrganization: "/syscompany/delete",
     updateOrganization: "/syscompany/update",
     availableOrganization: "/syscompany/available", // 根据用户userCode查看有效的机构
+    dragOrganization: "/syscompany/drag",
     // saa 菜单相关
     getMenuWithUser: "/saa/task/tree/{userCode}", //根据用户userCode查看菜单信息
     getSubMenu: "/saa/task/sub/{taskCode}", // 获取菜单的子节点

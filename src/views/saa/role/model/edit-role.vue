@@ -12,16 +12,22 @@
       @open="dialogOpen">
       <el-row :gutter="40">
         <el-col :span="8">
-          <el-card style="height: 500px;  overflow-x: auto; overflow-y: auto; ">
-            <el-tree
-              ref="taskTree"
-              :default-expanded-keys="expandedList"
-              :default-checked-keys="checkedList"
-              node-key="taskCode"
-              :data="showTreeData"
-              :props="props"
-              show-checkbox></el-tree>
-          </el-card>
+          <div style="padding:  0 10px 10px">
+            <el-card style="height: 500px;  overflow-x: auto; overflow-y: auto;position: relative ">
+              <div class="my-tree-header">
+                <span style="margin-left: 10px;">角色使用权限</span>
+              </div>
+              <el-tree
+                ref="taskTree"
+                style="margin-top: 20px"
+                :default-expanded-keys="expandedList"
+                :default-checked-keys="checkedList"
+                node-key="taskCode"
+                :data="showTreeData"
+                :props="props"
+                show-checkbox></el-tree>
+            </el-card>
+          </div>
         </el-col>
         <el-col :span="16">
           <el-form ref="editForm" :model="rolePageData" :rules="validateRules" label-width="80px">
@@ -197,4 +203,16 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.my-tree-header {
+  background: rgb(248, 251, 255);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  font-size: 15px;
+  color: #c1c1c4;
+}
+</style>

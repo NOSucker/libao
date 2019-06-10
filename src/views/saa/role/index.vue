@@ -89,7 +89,7 @@ export default {
   },
   data() {
     return {
-      userTaskTree: null,
+      userTaskTree: [],
       showRoleDialog: false,
       dialogRoleData: {},
       dialogModel: null,
@@ -135,7 +135,11 @@ export default {
     getTaskTree() {
       const theUserCode = JSON.parse(localStorage.getItem("userInfo")).userCode;
       this.$axios.get(this.$axios.config.saa.baseURL + this.$axios.config.saa.taskTreeWithUser.format({ userCode: theUserCode })).then(response => {
-        this.userTaskTree = response.data.data;
+        if (response.data.status === 0) {
+          this.userTaskTree = response.data.data;
+        } else {
+          this.$message.error(response.data.statusText);
+        }
       });
     },
     // 删除role信息

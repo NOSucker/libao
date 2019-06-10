@@ -38,7 +38,7 @@
               {{ scope.row.regTime | dataFilter("yyyy年MM月dd日") }}
             </template>
           </el-table-column>
-          <el-table-column prop="comCode" label="机构" />
+          <el-table-column prop="comName" label="机构" />
           <el-table-column prop="validStatus" label="是否有效">
             <template slot-scope="scope">
               <el-switch

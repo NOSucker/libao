@@ -21,7 +21,7 @@
               <el-input v-model="postData.userCode"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col v-if="type !== 'edit'" :span="8">
             <el-form-item label="密码" prop="password">
               <el-input v-model="postData.password" show-password></el-input>
             </el-form-item>
@@ -95,8 +95,8 @@ export default {
       postData: {},
       editDialogTitle: "",
       validateRules: {
-        password: [{ required: true, message: "请输入密码" }],
-        userCode: [{ required: true, message: "请输入用户代码", trigger: "blur" }, { min: 8, max: 10, message: "长度在 8 到 10 个字符", trigger: "blur" }],
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        userCode: [{ required: true, message: "请输入用户代码", trigger: "blur" }, { min: 6, max: 20, message: "长度在 8 到 20 个字符", trigger: "blur" }],
         userName: [{ required: true, message: "请输入用户姓名", trigger: "blur" }, { min: 2, max: 24, message: "长度在 2 到 24 个字符", trigger: "blur" }],
         comCode: [{ required: true, message: "请选择组织机构" }]
       }
@@ -121,7 +121,7 @@ export default {
           this.$axios
             .request({
               method: "post",
-              url: this.$axios.config.saa.baseURL + (this.type == "new" ? this.$axios.config.saa.userCreate : this.$axios.config.saa.userEdit),
+              url: this.$axios.config.saa.baseURL + (this.type == "edit" ? this.$axios.config.saa.userEdit : this.$axios.config.saa.userCreate),
               data: this.postData
             })
             .then(response => {
@@ -188,9 +188,9 @@ export default {
         }
         if (this.type === "copy") {
           this.editDialogTitle = "复制添加用户";
-          this.postData.userCode = null;
-          this.postData.userName = null;
-          this.postData.password = null;
+          this.$set(this.postData, "userCode", null);
+          this.$set(this.postData, "userName", null);
+          this.$set(this.postData, "password", null);
         }
       }
     }
