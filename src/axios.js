@@ -8,7 +8,6 @@ const config = {
   },
   saa: {
     baseURL: process.env.VUE_APP_SAA_BASE_URL,
-    // baseURL: "http://192.168.20.118:18020",
     login: "/auth/token",
     loginInfo: "/saa/login_info",
     companyQuery: "/syscompany/listsub/{comCode}",
