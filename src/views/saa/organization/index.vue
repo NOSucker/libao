@@ -24,6 +24,7 @@
                 :data="treeData"
                 lazy
                 :draggable="true"
+                @node-drag-start="nodeDragStart"
                 @node-drop="dragEndFun"
                 @node-click="onClickNode"
               ></el-tree>
@@ -103,7 +104,9 @@ export default {
         label: "comName",
         children: "subList"
       },
-      submitLoading: false
+      submitLoading: false,
+      dragNodeParent: null,
+      dragNodeIndex: -1,
     };
   },
   watch: {
@@ -116,6 +119,10 @@ export default {
     }
   },
   methods: {
+    nodeDragStart (node){
+      this.dragNodeIndex = node.parent.childNodes.indexOf(node);
+      this.dragNodeParent = node.parent;
+    },
     dragEndFun(dragNode, referNode, type) {
       //dragNode 被拖拽的Node, referNode 参照物的Node  type 插入的类型， inner需要特殊处理
       let PostDragData = {
@@ -130,25 +137,40 @@ export default {
         PostDragData.upperComCode = referNode.data.upperComCode;
         PostDragData.comLevel = referNode.data.comLevel;
       }
-      this.treeLoading = true;
-      this.$axios
-        .post(this.$axios.config.saa.baseURL + this.$axios.config.saa.dragOrganization, PostDragData)
-        .then(response => {
-          if (response.data.status === 0) {
-            // 判断有没有upperComCode这个节点， 有更新下面的数据， 没有更新整个树
-            let tempNode = this.$refs.taskTree.getNode(PostDragData.upperComCode);
-            if (tempNode) {
-              this.handelTree(PostDragData.upperComCode);
+
+      this.$confirm('确定移动机构?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.treeLoading = true;
+        this.$axios
+          .post(this.$axios.config.saa.baseURL + this.$axios.config.saa.dragOrganization, PostDragData)
+          .then(response => {
+            if (response.data.status === 0) {
+              // 判断有没有upperComCode这个节点， 有更新下面的数据， 没有更新整个树
+              let tempNode = this.$refs.taskTree.getNode(PostDragData.upperComCode);
+              if (tempNode) {
+                this.handelTree(PostDragData.upperComCode);
+              } else {
+                this.handelTree(null, true);
+              }
             } else {
-              this.handelTree(null, true);
+              this.$message.error(response.data.statusText);
             }
-          } else {
-            this.$message.error(response.data.statusText);
-          }
-        })
-        .finally(() => {
-          this.treeLoading = false;
-        });
+          })
+          .finally(() => {
+            this.treeLoading = false;
+          });
+      }).catch(() => {
+        this.$refs.taskTree.remove(dragNode.data.comCode)
+        if(this.dragNodeIndex + 1 <= this.dragNodeParent.childNodes.length){
+          this.$refs.taskTree.insertBefore(dragNode.data, this.dragNodeParent.childNodes[this.dragNodeIndex])
+        }else{
+          this.$refs.taskTree.append(dragNode.data, this.dragNodeParent)
+        }
+      });
+
     },
     onClickNode(node) {
       this.organizationData = node;
