@@ -2,6 +2,7 @@
   <div>
     <el-dialog
       v-loading="submitLoading"
+      custom-class="user-edit"
       :title="editDialogTitle"
       :visible.sync="showDialog"
       :close-on-click-modal="false"
@@ -68,11 +69,11 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row style="text-align: right">
-          <el-button type="primary" @click="submitForm">提交</el-button>
-          <el-button @click="$refs.editForm.resetFields()">重置</el-button>
-        </el-row>
       </el-form>
+      <span slot="footer">
+        <el-button type="primary" @click="submitForm">提交</el-button>
+        <el-button @click="$refs.editForm.resetFields()">重置</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -198,4 +199,11 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style>
+.user-edit .el-dialog__header {
+  background: #f8fbff;
+}
+.user-edit .el-dialog__body {
+  border-bottom: 1px solid #eee;
+}
+</style>

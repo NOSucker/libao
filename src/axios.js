@@ -21,6 +21,10 @@ const config = {
     createRole: "/saa/role/create",
     deleteRole: "/saa/role/delete",
     updateRole: "/saa/role/update",
+    outsideRoleCode: "/saa/outside/{roleCode}", // 查找不在某角色下的所有用户
+    deleteUsersFromRole: "/saa/delete/{roleCode}",
+    existingUserQuery: "/saa/user-grants/{roleCode}", //在指定的角色下已经添加的用户
+    addUserToRole: "/saa/adduser/{roleCode}", //在指定的角色下添加用户
     // saa 机构相关
     getSubCompany: "/syscompany/sub/{comCode}",
     createOrganization: "/syscompany/create",

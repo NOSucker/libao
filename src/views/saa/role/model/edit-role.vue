@@ -3,6 +3,7 @@
     <el-dialog
       ref="roleDialog"
       v-loading="submitLoading"
+      custom-class="edit-role"
       top="5vh"
       :title="editDialogTitle"
       :visible.sync="showDialog"
@@ -203,7 +204,10 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+.edit-role .el-dialog__header {
+  background: #f8fbff;
+}
 .my-tree-header {
   background: rgb(248, 251, 255);
   position: absolute;

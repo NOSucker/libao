@@ -102,11 +102,12 @@ export default {
       showTreeData: [],
       props: {
         label: "comName",
-        children: "subList"
+        children: "subList",
+        isLeaf: "leaf"
       },
       submitLoading: false,
       dragNodeParent: null,
-      dragNodeIndex: -1,
+      dragNodeIndex: -1
     };
   },
   watch: {
@@ -119,8 +120,9 @@ export default {
     }
   },
   methods: {
-    nodeDragStart (node){
+    nodeDragStart(node) {
       this.dragNodeIndex = node.parent.childNodes.indexOf(node);
+      node.data.leaf = node.isLeaf;
       this.dragNodeParent = node.parent;
     },
     dragEndFun(dragNode, referNode, type) {
@@ -138,39 +140,45 @@ export default {
         PostDragData.comLevel = referNode.data.comLevel;
       }
 
-      this.$confirm('确定移动机构?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.treeLoading = true;
-        this.$axios
-          .post(this.$axios.config.saa.baseURL + this.$axios.config.saa.dragOrganization, PostDragData)
-          .then(response => {
-            if (response.data.status === 0) {
-              // 判断有没有upperComCode这个节点， 有更新下面的数据， 没有更新整个树
-              let tempNode = this.$refs.taskTree.getNode(PostDragData.upperComCode);
-              if (tempNode) {
-                this.handelTree(PostDragData.upperComCode);
+      this.$confirm("确定移动机构?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          if (type === "inner" && referNode.data.leaf) {
+            referNode.isLeaf = false;
+            referNode.data.leaf = false;
+          }
+          this.treeLoading = true;
+          this.$axios
+            .post(this.$axios.config.saa.baseURL + this.$axios.config.saa.dragOrganization, PostDragData)
+            .then(response => {
+              if (response.data.status === 0) {
+                // 判断有没有upperComCode这个节点， 有更新下面的数据， 没有更新整个树
+                this.$message.success("节点位置变更成功");
               } else {
-                this.handelTree(null, true);
+                this.$refs.taskTree.remove(dragNode.data.comCode);
+                if (this.dragNodeIndex + 1 <= this.dragNodeParent.childNodes.length) {
+                  this.$refs.taskTree.insertBefore(dragNode.data, this.dragNodeParent.childNodes[this.dragNodeIndex]);
+                } else {
+                  this.$refs.taskTree.append(dragNode.data, this.dragNodeParent);
+                }
+                this.$message.error(response.data.statusText);
               }
-            } else {
-              this.$message.error(response.data.statusText);
-            }
-          })
-          .finally(() => {
-            this.treeLoading = false;
-          });
-      }).catch(() => {
-        this.$refs.taskTree.remove(dragNode.data.comCode)
-        if(this.dragNodeIndex + 1 <= this.dragNodeParent.childNodes.length){
-          this.$refs.taskTree.insertBefore(dragNode.data, this.dragNodeParent.childNodes[this.dragNodeIndex])
-        }else{
-          this.$refs.taskTree.append(dragNode.data, this.dragNodeParent)
-        }
-      });
-
+            })
+            .finally(() => {
+              this.treeLoading = false;
+            });
+        })
+        .catch(() => {
+          this.$refs.taskTree.remove(dragNode.data.comCode);
+          if (this.dragNodeIndex + 1 <= this.dragNodeParent.childNodes.length) {
+            this.$refs.taskTree.insertBefore(dragNode.data, this.dragNodeParent.childNodes[this.dragNodeIndex]);
+          } else {
+            this.$refs.taskTree.append(dragNode.data, this.dragNodeParent);
+          }
+        });
     },
     onClickNode(node) {
       this.organizationData = node;

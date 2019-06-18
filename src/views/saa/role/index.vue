@@ -21,14 +21,15 @@
         </el-row>
       </el-form>
       <div style="padding: 20px">
-        <el-row>
-          <el-button type="primary" icon="el-icon-circle-plus" @click="modifyRole('add')">新增</el-button>
+        <el-row style="margin-bottom: 15px;">
+          <el-button type="primary" icon="el-icon-circle-plus" @click="modifyRole('add')">新增角色</el-button>
         </el-row>
-        <el-table :data="roleTableData" tooltip-effect="dark" stripe>
+        <el-table header-cell-class-name="user-table-header" :data="roleTableData" tooltip-effect="dark" stripe>
           <el-table-column type="index" label="序号" width="55" />
           <el-table-column prop="roleCode" label="角色代码" />
           <el-table-column prop="roleName" label="角色名称" />
           <el-table-column prop="remark" label="备注" />
+          <el-table-column prop="userCount" width="100" label="用户数" align="center" />
           <el-table-column prop="validInd" label="是否有效" width="160">
             <template slot-scope="scope">
               <el-switch
@@ -41,8 +42,20 @@
             </template>
           </el-table-column>
           <el-table-column label="操作" width="150px">
+            el-icon-circle-plus-outline
             <template slot-scope="scope">
-              <span title="复制" style="padding: 10px; cursor: pointer; color: #5683bf;" @click="modifyRole('copy', scope.row)">
+              <span
+                title="人员管理"
+                style="padding: 10px; cursor: pointer; color: #5683bf;"
+                @click="
+                  dialogRoleData = scope.row;
+                  showUserDialog = true;
+                ">
+                <svg class="svg-icon">
+                  <use xlink:href="#icon-user-config" />
+                </svg>
+              </span>
+              <span title="复制添加" style="padding: 10px; cursor: pointer; color: #5683bf;" @click="modifyRole('copy', scope.row)">
                 <i class="el-icon-tickets"></i>
               </span>
               <span title="编辑" style="padding: 10px; cursor: pointer; color: #5683bf;" @click="modifyRole('edit', scope.row)">
@@ -77,19 +90,31 @@
         queryRoleList();
       "
     ></edit-role>
+    <manage-user
+      v-model="showUserDialog"
+      :role-data="dialogRoleData"
+      @add-user-close="
+        queryRole._pageNo = 1;
+        queryRoleList();
+      "
+    ></manage-user>
   </div>
 </template>
 
 <script>
 import editRole from "../role/model/edit-role";
+import manageUser from "../role/model/manage-user";
 export default {
   name: "RoleQuery",
   components: {
-    editRole
+    editRole,
+    manageUser
   },
   data() {
     return {
       userTaskTree: [],
+      userComTree: [],
+      showUserDialog: false,
       showRoleDialog: false,
       dialogRoleData: {},
       dialogModel: null,
@@ -166,4 +191,9 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style>
+.user-table-header {
+  border-top: 2px solid #ebeef5;
+  border-bottom: 2px solid #ebeef5 !important;
+}
+</style>
