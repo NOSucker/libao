@@ -8,6 +8,20 @@ module.exports = {
   lintOnSave: false,
   publicPath,
   devServer: {
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://localhost:18020/', //对应自己的接口
+    //     changeOrigin: true,
+    //     ws: true,
+    //     pathRewrite: {
+    //       '^/api': ''
+    //     }
+    //   }
+    // },
+    overlay: {
+      warnings: false,
+      errors: false
+    },
     publicPath
   },
   chainWebpack(config) {

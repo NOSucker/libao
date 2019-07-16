@@ -1,0 +1,39 @@
+
+//from表单字体样式
+.el-form-item__label {
+  font-size: 12px;
+  color: #405ca8;
+}
+
+
+//from表单框体样式
+.el-input--small .el-input__inner {
+  border: 1px solid #80bae7;
+  background: #f6d680 ;
+}
+
+.el-input--small .el-input__inner:focus {
+  box-shadow: 1px 1px 7px  #ccc; 
+}
+
+
+//复选框样式
+.el-checkbox__label {
+  font-size: 12px;
+  
+}
+
+//单选框样式
+.el-radio__label {
+  font-size: 12px;
+}
+
+//头部样式
+.navbar {
+  background: #ffd000 !important;
+}
+
+//input框单独样式
+.cc .el-input__inner{
+  background: #fff;
+}

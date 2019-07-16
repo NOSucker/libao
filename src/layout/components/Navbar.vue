@@ -5,36 +5,6 @@
         <use xlink:href="#icon-nav-menu" />
       </svg>
     </div>
-
-    <div class="right-menu">
-      <template v-if="device !== 'mobile'">
-        <el-tooltip :content="'布局大小'" effect="dark" placement="bottom">
-          <el-dropdown trigger="click" class="right-menu-item hover-effect" size="small" @command="handleSetSize">
-            <div>
-              <svg class="svg-icon">
-                <use xlink:href="#icon-font-size" />
-              </svg>
-            </div>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item v-for="item of sizeOptions" :key="item.value" :disabled="size === item.value" :command="item.value">
-                {{ item.label }}
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </el-tooltip>
-      </template>
-      <el-dropdown class="right-menu-item hover-effect" trigger="click">
-        <div class="avatar-wrapper">
-          <img src="../../assets/logo.png" style="width: 24px;; height: 24px" class="user-avatar" />
-          <i class="el-icon-caret-bottom" />
-        </div>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item divided>
-            <span style="display:block;" @click="logout">登出</span>
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-    </div>
   </div>
 </template>
 
@@ -43,9 +13,7 @@ import { mapState, mapActions } from "vuex";
 
 export default {
   data() {
-    return {
-      sizeOptions: [{ label: "大", value: "default" }, { label: "中", value: "medium" }, { label: "小", value: "small" }, { label: "迷你", value: "mini" }]
-    };
+    return {};
   },
   computed: {
     ...mapState({

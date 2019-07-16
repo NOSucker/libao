@@ -6,7 +6,8 @@
     :show-close="false"
     :modal-append-to-body="true"
     :close-on-click-modal="false"
-    :close-on-press-escape="false">
+    :close-on-press-escape="false"
+  >
     <el-container>
       <el-header style="height: 20vh"></el-header>
       <el-main style="height: 60vh;min-height: 320px">
@@ -52,7 +53,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+// import { mapActions } from "vuex";
 export default {
   name: "Login",
   data() {
@@ -71,8 +72,18 @@ export default {
       }
     };
   },
+  mounted() {
+    // if (!this.$store.getters["app/loginData"]) {
+    //   this.loginVisible = true;
+    // }
+    // this.$store.subscribe(mutation => {
+    //   if (mutation.type == "app/SET_LOGIN_DATA" && !mutation.payload) {
+    //     this.loginVisible = true;
+    //   }
+    // });
+  },
   methods: {
-    ...mapActions("app", ["login"]),
+    // ...mapActions("app", ["login"]),
     submit() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
@@ -90,16 +101,6 @@ export default {
         }
       });
     }
-  },
-  mounted() {
-    if (!this.$store.getters["app/loginData"]) {
-      this.loginVisible = true;
-    }
-    this.$store.subscribe(mutation => {
-      if (mutation.type == "app/SET_LOGIN_DATA" && !mutation.payload) {
-        this.loginVisible = true;
-      }
-    });
   }
 };
 </script>
