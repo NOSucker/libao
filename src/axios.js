@@ -38,6 +38,19 @@ const config = {
     deleteMenu: "/saa/task/delete",
     createMenu: "/saa/task/create",
     updateMenu: "/saa/task/update"
+  },
+  permissionConfig: {
+    baseURL: process.env.VUE_APP_DEV_BASE_URL,
+    // policyPermissionConfig 保单规则校验配置
+    getpolicyPermissionConfigById: "/vipValidateRole/{id}",
+    deletepolicyPermissionConfig: "/vipValidateRole/delete/{id}",
+    createpolicyPermissionConfig: "/vipValidateRole/save",
+    updatepolicyPermissionConfig: "/vipValidateRole/update",
+    getAllpolicyPermissionConfig: "/vipValidateRole/queryAll",
+    getAllBypolicyPermissionConfig: "/vipValidateRole/queryAllByParams",
+    deleteLists: "/vipValidateRole/delete",
+    findInitInfo: "/vipValidateRole/findInitInfo",
+    findAll: "/vipValidateRole/queryAllByParamsNew"
   }
 };
 axios.config = config;

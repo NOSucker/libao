@@ -22,5 +22,11 @@ export default [
     name: "menu",
     meta: { icon: "menu", title: "菜单管理" },
     component: () => import("../views/saa/menu")
+  },
+  {
+    path: "/policyPermissionConfig",
+    name: "policyPermissionConfig",
+    meta: { icon: "role", title: "尊客会校验规则配置" },
+    component: () => import("../views/permissionConfig/policyPermissionConfig")
   }
 ];
