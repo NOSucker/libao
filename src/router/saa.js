@@ -28,5 +28,11 @@ export default [
     name: "policyPermissionConfig",
     meta: { icon: "role", title: "尊客会校验规则配置" },
     component: () => import("../views/permissionConfig/policyPermissionConfig")
+  },
+  {
+    path: "/rightsAndInterests",
+    name: "rightsAndInterests",
+    meta: { icon: "lock", title: "客户权益查询" },
+    component: () => import("../views/rightsAndInterests/rightsAndInterests")
   }
 ];

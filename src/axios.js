@@ -51,6 +51,17 @@ const config = {
     deleteLists: "/vipValidateRole/delete",
     findInitInfo: "/vipValidateRole/findInitInfo",
     findAll: "/vipValidateRole/queryAllByParamsNew"
+  },
+  rightsAndInterests: {
+    baseURL: process.env.VUE_APP_DEV_BASE_URL,
+    // rightsAndInterests 客户权益查询配置
+    getRightsAndInterestsById: "/rightsAndInterests/{id}", //根据主键查找权益信息
+    deleteRightsAndInterestsById: "/rightsAndInterests/delete/{id}", //根据主键删除客户权益信息
+    queryAll: "/rightsAndInterests/queryAll", //查找所有权益信息
+    queryAllByParamsNew: "/rightsAndInterests/queryAllByParamsNew", //分页查询
+    saveRightsAndInterests: "/rightsAndInterests/save", //新增一条数据
+    modifyRightsAndInterests: "/rightsAndInterests/update", //根据主键修改客户权益信息
+    deleteInBatch: "/rightsAndInterests/deleteInBatch" //批量删除客户权益信息
   }
 };
 axios.config = config;
