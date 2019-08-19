@@ -40,12 +40,13 @@ const config = {
     updateMenu: "/saa/task/update"
   },
   permissionConfig: {
-    baseURL: process.env.VUE_APP_DEV_BASE_URL,
+    baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
     // policyPermissionConfig 保单规则校验配置
     getpolicyPermissionConfigById: "/vipValidateRole/{id}",
     deletepolicyPermissionConfig: "/vipValidateRole/delete/{id}",
     createpolicyPermissionConfig: "/vipValidateRole/save",
     updatepolicyPermissionConfig: "/vipValidateRole/update",
+    copypolicyPermissionConfig: "/vipValidateRole/copy",
     getAllpolicyPermissionConfig: "/vipValidateRole/queryAll",
     getAllBypolicyPermissionConfig: "/vipValidateRole/queryAllByParams",
     deleteLists: "/vipValidateRole/delete",
@@ -53,7 +54,7 @@ const config = {
     findAll: "/vipValidateRole/queryAllByParamsNew"
   },
   rightsAndInterests: {
-    baseURL: process.env.VUE_APP_DEV_BASE_URL,
+    baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
     // rightsAndInterests 客户权益查询配置
     getRightsAndInterestsById: "/rightsAndInterests/{id}", //根据主键查找权益信息
     deleteRightsAndInterestsById: "/rightsAndInterests/delete/{id}", //根据主键删除客户权益信息
@@ -62,6 +63,17 @@ const config = {
     saveRightsAndInterests: "/rightsAndInterests/save", //新增一条数据
     modifyRightsAndInterests: "/rightsAndInterests/update", //根据主键修改客户权益信息
     deleteInBatch: "/rightsAndInterests/deleteInBatch" //批量删除客户权益信息
+  },
+  supplier: {
+    baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
+    // supplier 查询代理商
+    queryAllSupplier: "/supplier/findAll", //根据主键查找权益信息
+  },
+  service: {
+    baseURL: process.env.VUE_APP_DEV_BASE_URL,
+    //统一桥接接口
+    // transitInterface: "/platform/service/transitInterface"
+    transitInterface: "/platform/transitInterface/transitInterface/transit"
   }
 };
 axios.config = config;

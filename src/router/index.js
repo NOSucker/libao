@@ -2,17 +2,25 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import saaRouter from "./saa";
 import sampleRouter from "../../examples/router";
+import store from "../store/index";
 // import {Loading} from 'element-ui';
 
 Vue.use(VueRouter);
 const router = new VueRouter({
   routes: [
-    {
+    /*{
       path: "/",
       name: "home",
       meta: { icon: "home", title: "主页" },
       // meta: { requiresAuth: true },  // 路由元数据信息
       component: () => import("../views/demo/Home.vue")
+    },*/
+    {
+      path: "/unlogun",
+      name: "unlogun",
+      /*meta: { icon: "lock", title: "用户未登录警告" },*/
+      // meta: { requiresAuth: true },  // 路由元数据信息
+      component: () => import("../views/demo/Unlogun.vue")
     },
     {
       path: "/about",
@@ -39,7 +47,10 @@ const router = new VueRouter({
     },
     ...saaRouter,
     ...sampleRouter
-  ]
+  ],
+
+  //也为tomcat下打包后存放的路径，跟路径为tomcat的webApps
+  base:'/vue/'
 });
 
 // var routerLoading = null;
@@ -54,7 +65,19 @@ router.beforeEach((to, from, next) => {
   //   text: '跳转中...',
   // })
   // 权限验证，页面有未保存数据跳转等情况的处理
-  next(); // 确保要调用 next 方法，否则钩子就不会被 resolved。
+  // next(); // 确保要调用 next 方法，否则钩子就不会被 resolved。
+  // console.log(router)
+
+  //判断访问用户是否登录
+  if (store.state.user) {
+    next();
+  } else {
+    if (to.path === '/unlogun') {
+      next();
+    } else {
+      next({path: '/unlogun'});
+    }
+  }
 });
 
 router.afterEach(() => {

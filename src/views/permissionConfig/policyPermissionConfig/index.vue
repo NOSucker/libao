@@ -16,7 +16,7 @@
                   label: 'areaName'
                 }"></tree-select>-->
               <el-select v-model="pagerQuery.provice" style="width: 100%">
-                <el-option v-for="para in subList" :key="para.areaId" :label="para.areaName" :value="para.areaId"></el-option>
+                <el-option v-for="para in subList" :key="para.reserve2" :label="para.areaName" :value="para.reserve2"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -68,9 +68,9 @@
               <span title="复制" style="padding: 10px; cursor: pointer; color: #5683bf;" @click="userButtonClick('copy', scope.row)">
                 <i class="el-icon-tickets"></i>
               </span>
-              <span title="编辑" style="padding: 10px; cursor: pointer; color: #5683bf;" @click="userButtonClick('edit', scope.row)">
+              <!--<span title="编辑" style="padding: 10px; cursor: pointer; color: #5683bf;" @click="userButtonClick('edit', scope.row)">
                 <i class="el-icon-edit"></i>
-              </span>
+              </span>-->
             </template>
           </el-table-column>
         </el-table>
@@ -134,6 +134,15 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
+      pageParams: {
+        "requestUrl": this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.findAll,
+        "requestType": "POST",
+        "requestBody": ""
+      },
+      initParams: {
+        "requestUrl": this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.findInitInfo,
+        "requestType": "GET"
+      },
       editData: {},
       editDialogVisible: false,
       editStatus: "",
@@ -155,17 +164,29 @@ export default {
       .then(response => {
         this.tableData = response.data.result;
       });*/
-    this.$axios.post(this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.findAll, this.pagerQuery).then(response => {
-      this.tableData = response.data.result.dataList;
-      this.totalCount = response.data.result.totalCount;
-    });
-    var urls = this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.findInitInfo;
-    this.$axios.get(urls).then(response => {
-      (this.subList = response.data.result.customerAreas), (this.levelTypeLists = response.data.result.levelTypeList);
-    });
+    if (this.$router.app._route.params.code != undefined && this.$store.state.usercode != ':code') {
+      //将带过来的user参数写进vuex状态管理器
+      if (this.$router.app._route.params.code !== ':code') {
+        this.$store.state.usercode = this.$router.app._route.params.code;
+      }
+
+      this.$store.state.user = this.$router.app._route.params.code;
+      this.pageParams.requestBody = JSON.stringify(this.pagerQuery);
+      this.$axios.post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageParams).then(response => {
+        this.tableData = JSON.parse(response.data.responseStr).result.dataList;
+        this.totalCount = JSON.parse(response.data.responseStr).result.totalCount;
+      });
+      var urls = this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface;
+      this.$axios.post(urls, this.initParams).then(response => {
+        (this.subList = JSON.parse(response.data.responseStr).result.customerAreas), (this.levelTypeLists = JSON.parse(response.data.responseStr).result.levelTypeList);
+      });
+    } else {
+      this.$router.push({path: '/unlogun'})
+    }
   },
   methods: {
     queryData() {
+      this.pageParams.requestBody = JSON.stringify(this.pagerQuery);
       this.queryLoading = true;
       /*this.$axios
         .get(this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.getAllBypolicyPermissionConfig, {
@@ -182,10 +203,11 @@ export default {
           this.queryLoading = false;
         });*/
       this.$axios
-        .post(this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.findAll, this.pagerQuery)
+        /*.post(this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.findAll, this.pagerQuery)*/
+        .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageParams)
         .then(response => {
-          this.tableData = response.data.result.dataList;
-          this.totalCount = response.data.result.totalCount;
+          this.tableData = JSON.parse(response.data.responseStr).result.dataList;
+          this.totalCount = JSON.parse(response.data.responseStr).result.totalCount;
         })
         .finally(() => {
           this.queryLoading = false;
@@ -208,17 +230,20 @@ export default {
       this.tableSelection.forEach(select => {
         needDelUser.push(select.vipRolesId);
       });
+      let delParams = {
+        "requestUrl": this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.deleteLists,
+        "requestType": "DELETE",
+        "requestBody": needDelUser
+      }
       this.queryLoading = true;
       this.$axios
-        .delete(this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.deleteLists, {
-          data: needDelUser
-        })
+        .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, delParams)
         .then(response => {
-          if (response.data.msg === "success") {
+          if (JSON.parse(response.data.responseStr).success) {
             this.$message.success("数据删除成功！");
             this.queryData();
           } else {
-            this.$message.error(response.data.statusText);
+            this.$message.error(JSON.parse(response.data.responseStr).msg);
           }
         })
         .finally(() => {

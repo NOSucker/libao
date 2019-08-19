@@ -14,7 +14,7 @@
           <el-col :span="8">
             <el-form-item label="省份" prop="areaCode">
               <el-select v-model="postData.areaCode" style="width: 100%" @change="selectArea">
-                <el-option v-for="para in customerAreas" :key="para.areaId" :label="para.areaName" :value="para.areaId"></el-option>
+                <el-option v-for="para in customerAreas" :key="para.reserve2" :label="para.areaName" :value="para.reserve2"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -26,18 +26,18 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="服务类型" prop="serverTypeName">
-              <el-select v-model="postData.serverTypeName" style="width: 100%">
-                <el-option label="税费代缴" :value="'税费代缴'"></el-option>
-                <el-option label="待办年审" :value="'待办年审'"></el-option>
-                <el-option label="维修接送" :value="'维修接送'"></el-option>
-                <el-option label="非事故道路救援" :value="'非事故道路救援'"></el-option>
-                <el-option label="拖车服务" :value="'拖车服务'"></el-option>
-                <el-option label="机场接送" :value="'机场接送'"></el-option>
-                <el-option label="酒后代驾" :value="'酒后代驾'"></el-option>
-                <el-option label="理赔代步" :value="'理赔代步'"></el-option>
-                <el-option label="停车秘书" :value="'停车秘书'"></el-option>
-                <el-option label="安全检测" :value="'安全检测'"></el-option>
+            <el-form-item label="服务类型" prop="serverTypeCode">
+              <el-select v-model="postData.serverTypeCode" style="width: 100%" @change="selectServerName">
+                <el-option label="税费代缴" :value="'taxpay'"></el-option>
+                <el-option label="待办年审" :value="'vehicle'"></el-option>
+                <el-option label="维修接送" :value="'accidentcar'"></el-option>
+                <el-option label="非事故道路救援" :value="'pannenhilfe'"></el-option>
+                <el-option label="拖车服务" :value="'trailer'"></el-option>
+                <el-option label="机场接送" :value="'airport'"></el-option>
+                <el-option label="酒后代驾" :value="'drink'"></el-option>
+                <el-option label="理赔代步" :value="'claim'"></el-option>
+                <el-option label="停车秘书" :value="'secretary'"></el-option>
+                <el-option label="安全检测" :value="'securityDetection'"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -47,8 +47,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="供应商名称" prop="supplierName">
-              <el-input v-model="postData.supplierName"></el-input>
+            <el-form-item label="供应商名称" prop="supplierId">
+              <el-select v-model="postData.supplierId" filterable placeholder="输入搜索并选择" @change="selectSupplier" style="width: 100%">
+                <el-option
+                  v-for="item in suppliers"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -61,6 +68,14 @@
               <el-select v-model="postData.isDefault" style="width: 100%">
                 <el-option label="是" :value="'Y'"></el-option>
                 <el-option label="否" :value="'N'"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="是否线上" prop="isOnline">
+              <el-select v-model="postData.isOnline" style="width: 100%">
+                <el-option label="是" :value="'online'"></el-option>
+                <el-option label="否" :value="'underline'"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -95,7 +110,8 @@ export default {
       },
       levelTypeLists: [],
       customerAreas: [],
-      carUseTypes: []
+      carUseTypes: [],
+      suppliers: {}
     };
   },
   computed: {
@@ -110,17 +126,28 @@ export default {
     }
   },
   mounted() {
-    var urls = this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.findInitInfo;
-    this.$axios.get(urls).then(response => {
-      (this.customerAreas = response.data.result.customerAreas),
-        (this.levelTypeLists = response.data.result.levelTypeList),
-        (this.carUseTypes = response.data.result.carUseTypeList);
+    let initParams = {
+      "requestUrl": this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.findInitInfo,
+        "requestType": "GET"
+    };
+    let supplierParams = {
+      "requestUrl": this.$axios.config.supplier.baseURL + this.$axios.config.supplier.queryAllSupplier,
+      "requestType": "GET"
+    }
+    let urls = this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface;
+    this.$axios.post(urls, initParams).then(response => {
+      (this.customerAreas = JSON.parse(response.data.responseStr).result.customerAreas),
+        (this.levelTypeLists = JSON.parse(response.data.responseStr).result.levelTypeList),
+        (this.carUseTypes = JSON.parse(response.data.responseStr).result.carUseTypeList);
     });
+    this.$axios.post(urls, supplierParams).then(response => {
+      this.suppliers = JSON.parse(response.data.responseStr).result;
+    })
   },
   methods: {
     selectArea(val) {
       let obj = this.customerAreas.find(item => {
-        return item.areaId === val;
+        return item.reserve2 === val;
       });
       this.postData.areaName = obj.areaName;
     },
@@ -130,22 +157,57 @@ export default {
       });
       this.postData.levelTypeName = obj.value;
     },
+    selectServerName(val) {
+      if ('taxpay' === val) {
+        this.postData.serverTypeName = '税费代缴';
+      } else if ('vehicle' === val) {
+        this.postData.serverTypeName = '待办年审';
+      } else if ('accidentcar' === val) {
+        this.postData.serverTypeName = '维修接送';
+      } else if ('pannenhilfe' === val) {
+        this.postData.serverTypeName = '非事故道路救援';
+      } else if ('trailer' === val) {
+        this.postData.serverTypeName = '拖车服务';
+      } else if ('airport' === val) {
+        this.postData.serverTypeName = '机场接送';
+      } else if ('drink' === val) {
+        this.postData.serverTypeName = '酒后代驾';
+      } else if ('claim' === val) {
+        this.postData.serverTypeName = '理赔代步';
+      } else if ('secretary' === val) {
+        this.postData.serverTypeName = '停车秘书';
+      } else if ('securityDetection' === val) {
+        this.postData.serverTypeName = '安全检测';
+      }
+    },
+    selectSupplier(val) {
+      let obj = this.suppliers.find(item => {
+        return item.value === val;
+      });
+      this.postData.supplierName = obj.label;
+    },
     submitForm() {
+      let insertParams = {
+        "requestUrl": this.$axios.config.rightsAndInterests.baseURL + this.$axios.config.rightsAndInterests.saveRightsAndInterests,
+        "requestType": "POST",
+        "requestBody": JSON.stringify(this.postData)
+      };
+      let updateParams = {
+        "requestUrl": this.$axios.config.rightsAndInterests.baseURL + this.$axios.config.rightsAndInterests.modifyRightsAndInterests,
+        "requestType": "POST",
+        "requestBody": JSON.stringify(this.postData)
+      }
       this.$refs.editForm.validate(valid => {
         if (valid) {
           this.submitLoading = true;
           this.$axios
             .request({
               method: "post",
-              url:
-                this.$axios.config.rightsAndInterests.baseURL +
-                (this.type == "edit"
-                  ? this.$axios.config.rightsAndInterests.modifyRightsAndInterests
-                  : this.$axios.config.rightsAndInterests.saveRightsAndInterests),
-              data: this.postData
+              url: this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface,
+              data: this.type == "edit" ? updateParams : insertParams
             })
             .then(response => {
-              if (!response.data.success) {
+              if (JSON.parse(response.data.responseStr).success != true) {
                 this.$message({
                   showClose: true,
                   duration: 10000,

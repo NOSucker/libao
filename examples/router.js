@@ -1,7 +1,7 @@
 import "./assets/css/common.css"
 
 export default [
-  {
+  /*{
     path: "/tree-select",
     name: "treeSelect",
     meta: { icon: "component", title: "TreeSelect" },
@@ -18,5 +18,5 @@ export default [
     name: "formTrack",
     meta: { icon: "component", title: "FormTrack" },
     component: () => import("./directive/form-track.vue")
-  }
+  }*/
 ]

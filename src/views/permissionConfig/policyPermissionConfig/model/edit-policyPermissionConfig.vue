@@ -13,8 +13,8 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="省份" prop="provice">
-              <el-select v-model="postData.provice" style="width: 100%">
-                <el-option v-for="para in customerAreas" :key="para.areaId" :label="para.areaName" :value="para.areaId"></el-option>
+              <el-select v-model="postData.provice" style="width: 100%" @change="selectProvice">
+                <el-option v-for="para in customerAreas" :key="para.reserve2" :label="para.areaName" :value="para.reserve2"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -227,30 +227,50 @@ export default {
     }
   },
   mounted() {
-    var urls = this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.findInitInfo;
-    this.$axios.get(urls).then(response => {
-      (this.customerAreas = response.data.result.customerAreas),
-        (this.levelTypeLists = response.data.result.levelTypeList),
-        (this.carUseTypes = response.data.result.carUseTypeList);
+    let initParams = {
+      "requestUrl": this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.findInitInfo,
+      "requestType": "GET"
+    };
+    var urls = this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface;
+    this.$axios.post(urls, initParams).then(response => {
+      (this.customerAreas = JSON.parse(response.data.responseStr).result.customerAreas),
+        (this.levelTypeLists = JSON.parse(response.data.responseStr).result.levelTypeList),
+        (this.carUseTypes = JSON.parse(response.data.responseStr).result.carUseTypeList);
     });
   },
   methods: {
+    selectProvice(val) {
+      console.log(this.customerAreas, val)
+      let obj = this.customerAreas.find(item => {
+        return item.reserve2 === val;
+      });
+      this.postData.reverse1 = obj.areaName;
+    },
     submitForm() {
+      let insertParams = {
+        "requestUrl": this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.createpolicyPermissionConfig,
+        "requestType": "POST",
+        "requestBody": JSON.stringify(this.postData)
+      };
+      let updateParams = {
+        "requestUrl": this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.copypolicyPermissionConfig,
+        "requestType": "POST",
+        "requestBody": JSON.stringify(this.postData)
+      }
       this.$refs.editForm.validate(valid => {
         if (valid) {
           this.submitLoading = true;
           this.$axios
             .request({
               method: "post",
-              url:
-                this.$axios.config.permissionConfig.baseURL +
-                (this.type == "edit"
-                  ? this.$axios.config.permissionConfig.updatepolicyPermissionConfig
-                  : this.$axios.config.permissionConfig.createpolicyPermissionConfig),
-              data: this.postData
+              url: this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface,
+                /*(this.type == "new"
+                  ? this.$axios.config.permissionConfig.createpolicyPermissionConfig
+                  : this.$axios.config.permissionConfig.copypolicyPermissionConfig),*/
+              data: this.type == "new" ? insertParams : updateParams
             })
             .then(response => {
-              if (response.data.msg != "success") {
+              if (JSON.parse(response.data.responseStr).success != true) {
                 this.$message({
                   showClose: true,
                   duration: 10000,

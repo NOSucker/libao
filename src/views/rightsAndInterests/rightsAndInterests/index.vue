@@ -5,7 +5,7 @@
       <el-form ref="userForm" :model="pagerQuery" label-width="30%" style=" border-bottom: 1px solid #eee;">
         <el-row>
           <el-col :span="6">
-            <el-form-item label="省份" prop="provice">
+            <el-form-item label="省份" prop="areaCode">
               <!--<tree-select
                 v-model="pagerQuery.reserve1"
                 node-key="areaId"
@@ -15,31 +15,31 @@
                   value: 'areaId',
                   label: 'areaName'
                 }"></tree-select>-->
-              <el-select v-model="pagerQuery.provice" style="width: 100%">
-                <el-option v-for="para in subList" :key="para.areaId" :label="para.areaName" :value="para.areaId"></el-option>
+              <el-select v-model="pagerQuery.areaCode" style="width: 100%">
+                <el-option v-for="para in subList" :key="para.reserve2" :label="para.areaName" :value="para.reserve2"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="客户等级" prop="viplevel">
-              <el-select v-model="pagerQuery.viplevel" style="width: 100%">
+            <el-form-item label="客户等级" prop="levelTypeCode">
+              <el-select v-model="pagerQuery.levelTypeCode" style="width: 100%">
                 <el-option v-for="para in levelTypeLists" :key="para.key" :label="para.value" :value="para.key"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="服务类型" prop="serviceType">
-              <el-select v-model="pagerQuery.serviceType" style="width: 100%">
-                <el-option label="税费代缴" :value="'1'"></el-option>
-                <el-option label="待办年审" :value="'2'"></el-option>
-                <el-option label="维修接送" :value="'3'"></el-option>
-                <el-option label="非事故道路救援" :value="'4'"></el-option>
-                <el-option label="拖车服务" :value="'5'"></el-option>
-                <el-option label="机场接送" :value="'6'"></el-option>
-                <el-option label="酒后代驾" :value="'7'"></el-option>
-                <el-option label="理赔代步" :value="'8'"></el-option>
-                <el-option label="停车秘书" :value="'9'"></el-option>
-                <el-option label="安全检测" :value="'10'"></el-option>
+            <el-form-item label="服务类型" prop="serverTypeCode">
+              <el-select v-model="pagerQuery.serverTypeCode" style="width: 100%">
+                <el-option label="税费代缴" :value="'taxpay'"></el-option>
+                <el-option label="待办年审" :value="'vehicle'"></el-option>
+                <el-option label="维修接送" :value="'accidentcar'"></el-option>
+                <el-option label="非事故道路救援" :value="'pannenhilfe'"></el-option>
+                <el-option label="拖车服务" :value="'trailer'"></el-option>
+                <el-option label="机场接送" :value="'airport'"></el-option>
+                <el-option label="酒后代驾" :value="'drink'"></el-option>
+                <el-option label="理赔代步" :value="'claim'"></el-option>
+                <el-option label="停车秘书" :value="'secretary'"></el-option>
+                <el-option label="安全检测" :value="'securityDetection'"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -64,8 +64,9 @@
           <el-table-column prop="levelTypeName" label="客户级别" />
           <el-table-column prop="serverTypeName" label="服务类型"></el-table-column>
           <el-table-column prop="supplierName" label="代理商"></el-table-column>
-          <el-table-column prop="isDefault" label="是否默认"></el-table-column>
+          <el-table-column prop="isDefault" label="是否默认" :formatter="deFaultFormatter"></el-table-column>
           <el-table-column prop="serverNumber" label="服务次数"></el-table-column>
+          <el-table-column prop="isOnline" label="是否线上" :formatter="onlineFormatter"></el-table-column>
           <el-table-column label="操作" width="150px">
             <template slot-scope="scope">
               <span title="复制" style="padding: 10px; cursor: pointer; color: #5683bf;" @click="userButtonClick('copy', scope.row)">
@@ -131,11 +132,20 @@ export default {
       totalCount: 0,
       queryLoading: false,
       pagerQuery: {
-        provice: null,
-        viplevel: null,
-        serviceType: null,
+        areaCode: null,
+        levelTypeCode: null,
+        serverTypeCode: null,
         pageNum: 1,
         pageSize: 10
+      },
+      pageParams: {
+        "requestUrl": this.$axios.config.rightsAndInterests.baseURL + this.$axios.config.rightsAndInterests.queryAllByParamsNew,
+        "requestType": "POST",
+        "requestBody": ""
+      },
+      initParams: {
+        "requestUrl": this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.findInitInfo,
+        "requestType": "GET"
       },
       editData: {},
       editDialogVisible: false,
@@ -158,19 +168,59 @@ export default {
       .then(response => {
         this.tableData = response.data.result;
       });*/
-    this.$axios
-      .post(this.$axios.config.rightsAndInterests.baseURL + this.$axios.config.rightsAndInterests.queryAllByParamsNew, this.pagerQuery)
-      .then(response => {
-        this.tableData = response.data.result.dataList;
-        this.totalCount = response.data.result.totalCount;
+    /*let pageParams = {
+      "requestUrl": this.$axios.config.rightsAndInterests.baseURL + this.$axios.config.rightsAndInterests.queryAllByParamsNew,
+      "requestType": "POST",
+      "requestBody": this.pagerQuery
+    };*/
+    //判断外部系统跳转进来是否传入usercode值   !this.store.state.user &&
+    // console.log('code', this.$router.app._route.params.code)
+    if (this.$router.app._route.params.code !== undefined && this.$store.state.usercode != ':code') {
+      //将带过来的user参数写进vuex状态管理器
+      if (this.$router.app._route.params.code !== ':code') {
+        this.$store.state.usercode = this.$router.app._route.params.code;
+      }
+
+      //查询数据
+      this.pageParams.requestBody = JSON.stringify(this.pagerQuery);
+      this.$axios
+      /*.post(this.$axios.config.rightsAndInterests.baseURL + this.$axios.config.rightsAndInterests.queryAllByParamsNew, this.pagerQuery)*/
+        .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageParams)
+        .then(response => {
+          this.tableData = JSON.parse(response.data.responseStr).result.dataList;
+          this.totalCount = JSON.parse(response.data.responseStr).result.totalCount;
+        });
+      let urls = this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface;
+      /*let initParams = {
+        "requestUrl": this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.findInitInfo,
+        "requestType": "GET"
+      }*/
+      this.$axios.post(urls, this.initParams).then(response => {
+        (this.subList = JSON.parse(response.data.responseStr).result.customerAreas), (this.levelTypeLists = JSON.parse(response.data.responseStr).result.levelTypeList);
       });
-    var urls = this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.findInitInfo;
-    this.$axios.get(urls).then(response => {
-      (this.subList = response.data.result.customerAreas), (this.levelTypeLists = response.data.result.levelTypeList);
-    });
+    } else {
+      this.$router.push({path: '/unlogun'})
+    }
   },
   methods: {
+    deFaultFormatter(row, column, cellValue, index) {
+      if ('Y' === row.isDefault) {
+        return '是'
+      } else {
+        return '否'
+      }
+      return
+    },
+    onlineFormatter(row, column, cellValue, index) {
+      if ('online' === row.isOnline) {
+        return '是'
+      } else {
+        return '否'
+      }
+      return
+    },
     queryData() {
+      this.pageParams.requestBody = JSON.stringify(this.pagerQuery);
       this.queryLoading = true;
       /*this.$axios
         .get(this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.getAllBypolicyPermissionConfig, {
@@ -187,10 +237,11 @@ export default {
           this.queryLoading = false;
         });*/
       this.$axios
-        .post(this.$axios.config.rightsAndInterests.baseURL + this.$axios.config.rightsAndInterests.queryAllByParamsNew, this.pagerQuery)
+        /*.post(this.$axios.config.rightsAndInterests.baseURL + this.$axios.config.rightsAndInterests.queryAllByParamsNew, this.pagerQuery)*/
+        .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageParams)
         .then(response => {
-          this.tableData = response.data.result.dataList;
-          this.totalCount = response.data.result.totalCount;
+          this.tableData = JSON.parse(response.data.responseStr).result.dataList;
+          this.totalCount = JSON.parse(response.data.responseStr).result.totalCount;
         })
         .finally(() => {
           this.queryLoading = false;
@@ -211,20 +262,22 @@ export default {
       }
       let needDelUser = [];
       this.tableSelection.forEach(select => {
-        // needDelUser.push(select.interestsId);
-        needDelUser.push(select);
+        needDelUser.push(select.interestsId);
       });
+      let delParams = {
+        "requestUrl": this.$axios.config.rightsAndInterests.baseURL + this.$axios.config.rightsAndInterests.deleteInBatch,
+        "requestType": "DELETE",
+        "requestBody": needDelUser
+      }
       this.queryLoading = true;
       this.$axios
-        .delete(this.$axios.config.rightsAndInterests.baseURL + this.$axios.config.rightsAndInterests.deleteInBatch, {
-          data: { rightsAndInterests: JSON.stringify(needDelUser) }
-        })
+        .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, delParams)
         .then(response => {
-          if (response.data.success) {
+          if (JSON.parse(response.data.responseStr).success) {
             this.$message.success("数据删除成功！");
             this.queryData();
           } else {
-            this.$message.error(response.data.statusText);
+            this.$message.error(JSON.parse(response.data.responseStr).msg);
           }
         })
         .finally(() => {

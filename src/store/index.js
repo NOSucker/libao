@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import axios from "../axios";
 import app from "./app";
+import router from "../router/index";
 
 Vue.use(Vuex);
 
@@ -12,11 +13,19 @@ store = new Vuex.Store({
     app
   },
   state: {
-    baseCodeCache: {}
+    baseCodeCache: {},
+    user: true,
+    usercode: ''
   },
   mutations: {
     SET_BASE_CODE: (state, data) => {
       Vue.set(state.baseCodeCache, data.type, data.list);
+    },
+    login: (state, user) => {
+      state.user = user;
+    },
+    logout: (state, user) => {
+      state.user = false;
     }
   },
   actions: {
