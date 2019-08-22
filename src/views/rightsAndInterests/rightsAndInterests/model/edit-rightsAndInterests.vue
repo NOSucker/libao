@@ -43,7 +43,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="服务次数" prop="serverNumber">
-              <el-input v-model="postData.serverNumber"></el-input>
+              <el-input v-model="postData.serverNumber" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -60,7 +60,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="供应商次数" prop="supplierCount">
-              <el-input v-model="postData.supplierCount"></el-input>
+              <el-input v-model="postData.supplierCount" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">

@@ -229,33 +229,51 @@ export default {
       this.editDialogVisible = true;
     },
     deleteUser() {
-      if (this.tableSelection.length < 1) {
-        this.$message.warning("请您选中需要删除的数据后再进行操作");
-        return;
-      }
-      let needDelUser = [];
-      this.tableSelection.forEach(select => {
-        needDelUser.push(select.vipRolesId);
-      });
-      let delParams = {
-        "requestUrl": this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.deleteLists,
-        "requestType": "DELETE",
-        "requestBody": needDelUser
-      }
-      this.queryLoading = true;
-      this.$axios
-        .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, delParams)
-        .then(response => {
-          if (JSON.parse(response.data.responseStr).success) {
-            this.$message.success("数据删除成功！");
-            this.queryData();
-          } else {
-            this.$message.error(JSON.parse(response.data.responseStr).msg);
-          }
-        })
-        .finally(() => {
-          this.queryLoading = false;
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true
+      }).then(() => {
+
+        if (this.tableSelection.length < 1) {
+          this.$message.warning("请您选中需要删除的数据后再进行操作");
+          return;
+        }
+        let needDelUser = [];
+        this.tableSelection.forEach(select => {
+          needDelUser.push(select.vipRolesId);
         });
+        let delParams = {
+          "requestUrl": this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.deleteLists,
+          "requestType": "DELETE",
+          "requestBody": needDelUser
+        }
+        this.queryLoading = true;
+        this.$axios
+          .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, delParams)
+          .then(response => {
+            if (JSON.parse(response.data.responseStr).success) {
+              this.$message.success("数据删除成功！");
+              this.queryData();
+            } else {
+              this.$message.error(JSON.parse(response.data.responseStr).msg);
+            }
+          })
+          .finally(() => {
+            this.queryLoading = false;
+          });
+
+        /*this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });*/
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
     /*comQuery(node) {
       return new Promise(resolve => {

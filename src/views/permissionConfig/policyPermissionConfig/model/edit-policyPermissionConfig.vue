@@ -43,7 +43,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="最大座位数" prop="seatCountNum">
-              <el-input v-model="postData.seatCountNum"></el-input>
+              <el-input v-model="postData.seatCountNum" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -62,22 +62,22 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="除外车辆类型" prop="carTypeExcept">
-              <el-input v-model="postData.carTypeExcept"></el-input>
+              <el-input v-model="postData.carTypeExcept" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="免费拖车距离" prop="freeTrailerDistance">
-              <el-input v-model="postData.freeTrailerDistance"></el-input>
+              <el-input v-model="postData.freeTrailerDistance" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="商业险保费下限" prop="premiumLimit">
-              <el-input v-model="postData.premiumLimit"></el-input>
+              <el-input v-model="postData.premiumLimit" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="商业险保费上限" prop="premiumUpper">
-              <el-input v-model="postData.premiumUpper"></el-input>
+              <el-input v-model="postData.premiumUpper" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -148,37 +148,37 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="险种" prop="insuranceType">
-              <el-input v-model="postData.insuranceType"></el-input>
+              <el-input v-model="postData.insuranceType" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="代理人" prop="agentName">
-              <el-input v-model="postData.agentName"></el-input>
+              <el-input v-model="postData.agentName" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="适用车型" prop="applicableVehicleType">
-              <el-input v-model="postData.applicableVehicleType"></el-input>
+              <el-input v-model="postData.applicableVehicleType" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="除外车型" prop="exceptVehicleType">
-              <el-input v-model="postData.exceptVehicleType"></el-input>
+              <el-input v-model="postData.exceptVehicleType" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="单次事故定损金额" prop="accidentDamageAmount">
-              <el-input v-model="postData.accidentDamageAmount"></el-input>
+              <el-input v-model="postData.accidentDamageAmount" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="出险次数下限" prop="riskFrequencyLimit">
-              <el-input v-model="postData.riskFrequencyLimit"></el-input>
+              <el-input v-model="postData.riskFrequencyLimit" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="出险次数上限" prop="riskFrequencyUpper">
-              <el-input v-model="postData.riskFrequencyUpper"></el-input>
+              <el-input v-model="postData.riskFrequencyUpper" clearable></el-input>
             </el-form-item>
           </el-col>
         </el-row>
