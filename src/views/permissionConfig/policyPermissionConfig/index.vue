@@ -45,7 +45,7 @@
           </el-col>
           <el-col :span="6">
             <el-button style="margin-left: 20px" type="primary" @click="queryData">查询</el-button>
-            <el-button @click="$refs.userForm.resetFields()">重置</el-button>
+            <el-button @click="resetAndQueryData">重置</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -185,6 +185,9 @@ export default {
     }
   },
   methods: {
+    /*
+    * 查询
+    * */
     queryData() {
       this.pageParams.requestBody = JSON.stringify(this.pagerQuery);
       this.queryLoading = true;
@@ -212,6 +215,10 @@ export default {
         .finally(() => {
           this.queryLoading = false;
         });
+    },
+    resetAndQueryData() {
+      this.$refs.userForm.resetFields();
+      this.queryData();
     },
     tableSelectionChange(selection) {
       this.tableSelection = selection;
