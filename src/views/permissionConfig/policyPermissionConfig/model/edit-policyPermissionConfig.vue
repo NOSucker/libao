@@ -185,7 +185,7 @@
       </el-form>
       <span slot="footer">
         <el-button type="primary" @click="submitForm">提交</el-button>
-        <el-button @click="$refs.editForm.resetFields()">重置</el-button>
+        <el-button @click="clearEditData" :disabled="Object.keys(postData).length > 0 ? false : true">重置</el-button>
       </span>
     </el-dialog>
   </div>
@@ -292,6 +292,12 @@ export default {
           return false;
         }
       });
+    },
+    /*
+    * 重置编辑表单
+    * */
+    clearEditData() {
+      this.postData = {};
     },
     dialogOpen() {
       this.postData = {};
