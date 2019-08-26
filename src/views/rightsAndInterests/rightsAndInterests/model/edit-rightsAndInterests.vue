@@ -187,6 +187,12 @@ export default {
       this.postData.supplierName = obj.label;
     },
     submitForm() {
+      //获取操作人code
+      if ("edit" == this.type) {
+        this.postData.updateUser = this.$store.state.usercode;
+      } else {
+        this.postData.createUser = this.$store.state.usercode;
+      }
       let insertParams = {
         "requestUrl": this.$axios.config.rightsAndInterests.baseURL + this.$axios.config.rightsAndInterests.saveRightsAndInterests,
         "requestType": "POST",

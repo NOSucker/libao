@@ -247,6 +247,12 @@ export default {
       this.postData.reverse1 = obj.areaName;
     },
     submitForm() {
+      //获取操作人code
+      if ("new" == this.type) {
+        this.postData.createUser = this.$store.state.usercode;
+      } else {
+        this.postData.updateUser = this.$store.state.usercode;
+      }
       let insertParams = {
         "requestUrl": this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.createpolicyPermissionConfig,
         "requestType": "POST",

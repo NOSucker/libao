@@ -164,13 +164,13 @@ export default {
       .then(response => {
         this.tableData = response.data.result;
       });*/
-    if (this.$router.app._route.params.code != undefined && this.$store.state.usercode != ':code') {
+    //判断url后是否跟了?param=xxx...
+    if (this.$store.state.usercode || this.$router.app.$router.currentRoute.query.usercode) {
       //将带过来的user参数写进vuex状态管理器
-      if (this.$router.app._route.params.code !== ':code') {
-        this.$store.state.usercode = this.$router.app._route.params.code;
+      if (this.$router.app.$router.currentRoute.query.usercode) {
+        this.$store.state.usercode = this.$router.app.$router.currentRoute.query.usercode;
       }
 
-      this.$store.state.user = this.$router.app._route.params.code;
       this.pageParams.requestBody = JSON.stringify(this.pagerQuery);
       this.$axios.post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageParams).then(response => {
         this.tableData = JSON.parse(response.data.responseStr).result.dataList;

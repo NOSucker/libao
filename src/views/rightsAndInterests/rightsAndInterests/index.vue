@@ -173,12 +173,13 @@ export default {
       "requestType": "POST",
       "requestBody": this.pagerQuery
     };*/
+    // console.log(11111111111,this.$router.app.$router.currentRoute.query.usercode)
     //判断外部系统跳转进来是否传入usercode值   !this.store.state.user &&
     // console.log('code', this.$router.app._route.params.code)
-    if (this.$router.app._route.params.code !== undefined && this.$store.state.usercode != ':code') {
+    if (this.$store.state.usercode || this.$router.app.$router.currentRoute.query.usercode) {
       //将带过来的user参数写进vuex状态管理器
-      if (this.$router.app._route.params.code !== ':code') {
-        this.$store.state.usercode = this.$router.app._route.params.code;
+      if (this.$router.app.$router.currentRoute.query.usercode) {
+        this.$store.state.usercode = this.$router.app.$router.currentRoute.query.usercode;
       }
 
       //查询数据

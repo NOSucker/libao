@@ -24,27 +24,15 @@ export default [
     component: () => import("../views/saa/menu")
   },*/
   {
-    path: "/policyPermissionConfig/:code",
-    name: "policyPermissionConfig",
-    meta: { icon: "role", title: "尊客会校验规则配置" },
-    component: () => import("../views/permissionConfig/policyPermissionConfig")
-  },
-  {
     path: "/policyPermissionConfig",
     name: "policyPermissionConfigAuth",
-    // meta: { icon: "role", title: "尊客会校验规则配置认证" },
+    meta: { icon: "role", title: "尊客会校验规则配置认证" },
     component: () => import("../views/permissionConfig/policyPermissionConfig")
-  },
-  {
-    path: "/rightsAndInterests/:code",
-    name: "rightsAndInterests",
-    meta: { icon: "lock", title: "客户权益查询" },
-    component: () => import("../views/rightsAndInterests/rightsAndInterests")
   },
   {
     path: "/rightsAndInterests",
     name: "rightsAndInterestsAuth",
-    // meta: { icon: "lock", title: "客户权益查询认证" },
+    meta: { icon: "lock", title: "客户权益查询认证" },
     component: () => import("../views/rightsAndInterests/rightsAndInterests")
   },
 ];
