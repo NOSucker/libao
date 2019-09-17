@@ -90,6 +90,15 @@ const config = {
     queryAll: "/menu/queryAll",    //查询全部菜单
     queryAllLevel1Menu: "/menu/queryAllLevel1Menu",   //查询全部一级菜单
     queryMenuByParentId: "/menu/queryMenuByParentId",   //根据parentId查询菜单
+    transitInterface: "/platform/transitInterface/transitInterface/transit"
+  },
+  smsTemplates: {
+    baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
+    queryAll: "/smsTemplates/queryAll", //分页查询
+    findInitInfo: "/smsTemplates/findInitInfo",//初始化信息
+    saveSmsTemplates: "/smsTemplates/save", //新增一条数据
+    modifySmsTemplates:"/smsTemplates/modify",//修改一条数据
+    deleteInBatch: "/smsTemplates/deleteInBatch" //批量删除客户权益信息
   }
 };
 axios.config = config;

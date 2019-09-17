@@ -36,6 +36,12 @@ export default [
     component: () => import("../views/rightsAndInterests/rightsAndInterests")
   },
   {
+    path: "/smsTemplates",
+    name: "smsTemplatesAuth",
+    meta: { icon: "lock", title: "短信模板" },
+    component: () => import("../views/sms/smsTemplates")
+  },
+  {
     path: "/smsMass",
     name: "smsMass",
     meta: { icon: "font-size", title: "短信群发" },
