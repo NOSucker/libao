@@ -74,6 +74,14 @@ const config = {
     //统一桥接接口
     // transitInterface: "/platform/service/transitInterface"
     transitInterface: "/platform/transitInterface/transitInterface/transit"
+  },
+  smsTemplates: {
+    baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
+    queryAll: "/smsTemplates/queryAll", //分页查询
+    findInitInfo: "/smsTemplates/findInitInfo",//初始化信息
+    saveSmsTemplates: "/smsTemplates/save", //新增一条数据
+    modifySmsTemplates:"/smsTemplates/modify",//修改一条数据
+    deleteInBatch: "/smsTemplates/deleteInBatch" //批量删除客户权益信息
   }
 };
 axios.config = config;

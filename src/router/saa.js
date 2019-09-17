@@ -35,4 +35,10 @@ export default [
     meta: { icon: "lock", title: "客户权益查询认证" },
     component: () => import("../views/rightsAndInterests/rightsAndInterests")
   },
+  {
+    path: "/smsTemplates",
+    name: "smsTemplatesAuth",
+    meta: { icon: "lock", title: "短信模板" },
+    component: () => import("../views/sms/smsTemplates")
+  },
 ];
