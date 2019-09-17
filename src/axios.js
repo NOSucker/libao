@@ -73,7 +73,23 @@ const config = {
     baseURL: process.env.VUE_APP_DEV_BASE_URL,
     //统一桥接接口
     // transitInterface: "/platform/service/transitInterface"
-    transitInterface: "/platform/transitInterface/transitInterface/transit"
+    transitInterface: "/platform/transitInterface/transitInterface/transit",
+    insertsNewByXuanBird: "/platform/transitInterface/transitInterface/insertsNewByXuanBird"
+  },
+  sms: {
+    baseUrl: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
+    queryCarInsuranceList: "/sms/queryCarInsuranceList",    //查询车险险种
+    querySmsLevelList: '/sms/querySmsLevelList',   //查询客户等级
+    querySmsBranchList: '/sms/querySmsBranchList',    //查询分公司
+    querySmsSubList: '/sms/querySmsSubList',    //根据areaCode查询子公司
+    querySendingSesCounts: '/sms/querySendingSesCounts',    //查询发送信息条数
+  },
+  menu: {
+    baseUrl: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
+    //菜单接口相关
+    queryAll: "/menu/queryAll",    //查询全部菜单
+    queryAllLevel1Menu: "/menu/queryAllLevel1Menu",   //查询全部一级菜单
+    queryMenuByParentId: "/menu/queryMenuByParentId",   //根据parentId查询菜单
   }
 };
 axios.config = config;

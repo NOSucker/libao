@@ -35,4 +35,10 @@ export default [
     meta: { icon: "lock", title: "客户权益查询认证" },
     component: () => import("../views/rightsAndInterests/rightsAndInterests")
   },
+  {
+    path: "/smsMass",
+    name: "smsMass",
+    meta: { icon: "font-size", title: "短信群发" },
+    component: () => import("../views/smsMass/smsMass")
+  },
 ];
