@@ -37,8 +37,8 @@
         <el-row :gutter="20" style="padding: 10px 0;">
           <el-col :span="5">
             <el-form-item label="短信类型" prop="smsType">
-              <el-select v-model="formData.smsType" style="width: 100%">
-                <el-option v-for="para in smsTypeList" :key="para.key" :label="para.value" :value="para.key"></el-option>
+              <el-select v-model="formData.smsType" style="width: 100%" @change="querySmsTemplateList">
+                <el-option v-for="para in smsTypeList" :key="para.id" :label="para.showName" :value="para.id"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -51,7 +51,7 @@
                 <el-option v-for="para in smsTemplateList" :key="para.reserve2" :label="para.areaName" :value="para.reserve2"></el-option>
               </el-select>-->
               <el-radio-group v-model="formData.smsTemplate" size="mini" fill="#f6d680" text-color="#000000" @change="radioSelected">
-                <el-radio-button v-for="para in smsTemplateList" :key="para.key" :label="para.value" :value="para.key"></el-radio-button>
+                <el-radio-button v-for="para in smsTemplateList" :key="para.smsId" :label="para.smsTheme" :value="para.smsId"></el-radio-button>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -99,9 +99,9 @@
               //三级机构
               subList: [],
               //短信类型
-              smsType: 'kehuguanhuai',
+              smsType: '',
               //短信模板
-              smsTemplate: '大雾',
+              smsTemplate: '',
               smsTemplateCode: '',
               //发送内容
               content: '',
@@ -126,47 +126,9 @@
             //三级机构
             thirdLevelOrgList: [],
             //短信类型
-            smsTypeList: [
-              {
-                key: 'kehuguanhuai',
-                value: '客户关怀'
-              }
-            ],
+            smsTypeList: [],
             //短信模板
-            smsTemplateList: [
-              {
-                key: 'dawu',
-                value: '大雾'
-              },
-              {
-                key: 'baoyutianqi',
-                value: '暴雨天气'
-              },
-              {
-                key: 'taifengtianqi',
-                value: '台风天气'
-              },
-              {
-                key: 'honglao',
-                value: '洪涝'
-              },
-              {
-                key: 'daxue',
-                value: '大雪'
-              },
-              {
-                key: 'gaowen',
-                value: '高温'
-              },
-              {
-                key: 'leidian',
-                value: '雷电'
-              },
-              {
-                key: 'dizhen',
-                value: '地震'
-              },
-            ],
+            smsTemplateList: [],
             //是否选择分公司
             isSelectedBranch: false,
           }
@@ -184,22 +146,23 @@
         this.queryCarInsuranceList();
         this.querySmsLevelList();
         this.querySmsBranchList();
+        this.querySmsTypeList();
       },
       methods: {
-          queryCarInsuranceList() {
-            let param = {
-              "requestUrl": this.$axios.config.sms.baseUrl + this.$axios.config.sms.queryCarInsuranceList,
-              "requestType": "GET"
-            }
-            this.$axios.post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
-              .then(response => {
-                if (JSON.parse(response.data.responseStr).success) {
-                  this.insuranceList = JSON.parse(response.data.responseStr).result;
-                } else {
-                  this.$message.error(JSON.parse(response.data.responseStr).msg);
-                }
-            });
-          },
+        queryCarInsuranceList() {
+          let param = {
+            "requestUrl": this.$axios.config.sms.baseUrl + this.$axios.config.sms.queryCarInsuranceList,
+            "requestType": "GET"
+          }
+          this.$axios.post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
+            .then(response => {
+              if (JSON.parse(response.data.responseStr).success) {
+                this.insuranceList = JSON.parse(response.data.responseStr).result;
+              } else {
+                this.$message.error(JSON.parse(response.data.responseStr).msg);
+              }
+          });
+        },
         querySmsLevelList() {
           let param = {
             "requestUrl": this.$axios.config.sms.baseUrl + this.$axios.config.sms.querySmsLevelList,
@@ -246,11 +209,58 @@
 
         },
         radioSelected(val) {
+          if (!val) {
+            val = this.formData.smsTemplate;
+          }
           this.smsTemplateList.forEach(e => {
-            if (e.value === val) {
-              this.formData.smsTemplateCode = e.key;
+            if (e.smsTheme === val) {
+              this.formData.smsTemplateCode = e.smsId;
+              this.formData.content = e.smsContent;
             }
           });
+        },
+        querySmsTypeList() {
+          let param = {
+            "requestUrl": this.$axios.config.sms.baseUrl + this.$axios.config.sms.querySmsTypeList,
+            "requestType": "GET"
+          }
+          this.$axios.post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
+            .then(response => {
+              if (JSON.parse(response.data.responseStr).success) {
+                this.smsTypeList = JSON.parse(response.data.responseStr).result;
+                //默认加载第一个短信类型
+                this.formData.smsType = this.smsTypeList[0].id;
+                this.querySmsTemplateList();
+              } else {
+                this.$message.error(JSON.parse(response.data.responseStr).msg);
+              }
+            });
+        },
+        querySmsTemplateList(val) {
+          if (!val) {
+            val = this.formData.smsType;
+          }
+          let param = {
+            "requestUrl": this.$axios.config.sms.baseUrl + this.$axios.config.sms.querySmsTemplateList + '/' + val,
+            "requestType": "GET"
+          }
+          this.$axios.post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
+            .then(response => {
+              if (JSON.parse(response.data.responseStr).success) {
+                this.smsTemplateList = JSON.parse(response.data.responseStr).result;
+                //默认选中第一个模板
+                this.formData.smsTemplate = this.smsTemplateList[0].smsTheme;
+                //查询模板之后，默认加载第一个模板到发送内容
+                this.smsTemplateList.forEach(e => {
+                  if (e.smsTheme === this.formData.smsTemplate) {
+                    this.formData.smsTemplateCode = e.smsId;
+                    this.formData.content = e.smsContent;
+                  }
+                });
+              } else {
+                this.$message.error(JSON.parse(response.data.responseStr).msg);
+              }
+            });
         },
 
         submitForm() {

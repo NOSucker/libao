@@ -83,6 +83,8 @@ const config = {
     querySmsBranchList: '/sms/querySmsBranchList',    //查询分公司
     querySmsSubList: '/sms/querySmsSubList',    //根据areaCode查询子公司
     querySendingSesCounts: '/sms/querySendingSesCounts',    //查询发送信息条数
+    querySmsTypeList: '/sms/querySmsTypeList',    //查询短信类型
+    querySmsTemplateList: '/sms/querySmsTemplateList',    //根据类型查询短信模板
   },
   menu: {
     baseUrl: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
