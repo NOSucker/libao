@@ -38,13 +38,13 @@ export default [
   {
     path: "/smsTemplates",
     name: "smsTemplatesAuth",
-    meta: { icon: "lock", title: "短信模板" },
+    meta: { icon: "clipboard-list-solid", title: "短信模板" },
     component: () => import("../views/sms/smsTemplates")
   },
   {
     path: "/smsMass",
     name: "smsMass",
-    meta: { icon: "font-size", title: "短信群发" },
+    meta: { icon: "comment-solid", title: "短信群发" },
     component: () => import("../views/smsMass/smsMass")
   },
 ];

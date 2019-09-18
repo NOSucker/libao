@@ -66,7 +66,7 @@
         </el-row>
 
         <el-row :gutter="20" style="padding: 0 0 10px 0;">
-          <el-col :offset="2" :span="7">
+          <el-col :offset="2" :span="8">
             <span>共计 <i>{{charCounts}}</i> 个字符，按 <i>{{smsCounts}}</i> 条短信计费</span>
           </el-col>
           <el-col :span="10">
@@ -143,10 +143,19 @@
         }
       },
       mounted() {
-        this.queryCarInsuranceList();
-        this.querySmsLevelList();
-        this.querySmsBranchList();
-        this.querySmsTypeList();
+        if (this.$store.state.usercode || this.$router.app.$router.currentRoute.query.usercode) {
+          //将带过来的user参数写进vuex状态管理器
+          if (this.$router.app.$router.currentRoute.query.usercode) {
+            this.$store.state.usercode = this.$router.app.$router.currentRoute.query.usercode;
+          }
+
+          this.queryCarInsuranceList();
+          this.querySmsLevelList();
+          this.querySmsBranchList();
+          this.querySmsTypeList();
+        } else {
+          this.$router.push({path: '/unlogun'})
+        }
       },
       methods: {
         queryCarInsuranceList() {
