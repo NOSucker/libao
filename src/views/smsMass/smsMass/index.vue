@@ -25,7 +25,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="5">
+          <el-col :span="6">
             <el-form-item label="三级机构" prop="subList">
               <el-select v-model="formData.subList" multiple collapse-tags clearable placeholder="请优先选择分公司项" :disabled="!isSelectedBranch" style="width: 100%">
                 <el-option v-for="para in thirdLevelOrgList" :key="para.key" :label="para.value" :value="para.key"></el-option>
@@ -58,7 +58,7 @@
         </el-row>
 
         <el-row :gutter="20" style="padding: 10px 0 0 0;">
-          <el-col :span="20">
+          <el-col :span="21">
             <el-form-item label-width="7%" label="发送内容" prop="content">
               <el-input type="textarea" v-model="formData.content" :autosize="{ minRows: 2, maxRows: 10}" style="width: 100%"></el-input>
             </el-form-item>
