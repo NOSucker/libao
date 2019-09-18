@@ -169,11 +169,9 @@ export default {
       this.postData = {};
     },
     setSecondStatus(val) {
-      alert(111);
       let urls = this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface;
       this.initParams.requestUrl = this.oldurl+"/"+val;
       this.$axios.post(urls, this.initParams).then(response => {
-         alert(111);
         (this.smsTemplateConfigsTwo = JSON.parse(response.data.responseStr).result);
       });
     },
