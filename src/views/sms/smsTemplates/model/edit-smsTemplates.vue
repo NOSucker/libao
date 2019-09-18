@@ -191,12 +191,12 @@ export default {
       });
     },
     dialogOpen() {
-      this.initinfo();
       this.postData = {};
       if (this.type === "new") {
         this.editDialogTitle = "新增短信模板";
       }
       if (this.type !== "new") {
+        this.initinfo();
         this.postData = JSON.parse(JSON.stringify(this.userData));
         if (this.type === "edit") {
           this.editDialogTitle = "修改短信模板";

@@ -72,8 +72,8 @@
           <el-col :span="10">
             <el-button-group>
               <el-button type="primary" @click="submitForm">发送</el-button>
-              <el-button type="primary">保存</el-button>
-              <el-button type="primary">新增</el-button>
+              <!--<el-button type="primary">保存</el-button>
+              <el-button type="primary">新增</el-button>-->
             </el-button-group>
           </el-col>
         </el-row>
