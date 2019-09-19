@@ -1,3 +1,7 @@
+<style scoped>
+
+</style>
+
 <template>
   <div v-loading="submitLoading">
     <h2 style="background: #f8fbff;font-size: 14px;padding: 10px;margin-bottom: 0;">短信群发</h2>
@@ -106,7 +110,8 @@
               //发送内容
               content: '',
               //操作人
-              createUser: ''
+              createUser: '',
+              smsTemplates: {}
             },
             validateRules: {
               insuranceType: [{ required: true, message: "请选择险种", trigger: "change" }],
@@ -138,7 +143,7 @@
           return this.formData.content.replace(/[^\x00-\xff]/g,'**').length;
         },
         smsCounts() {
-          let count = (this.formData.content.replace(/[^\x00-\xff]/g,'**').length);
+          let count = (this.formData.content.replace(/[^\x00-\xff]/g,'**').length) + 12;
           return Math.floor(count / 140) + (count % 140 == 0 ? 0 : 1);
         }
       },
@@ -225,6 +230,7 @@
             if (e.smsTheme === val) {
               this.formData.smsTemplateCode = e.smsId;
               this.formData.content = e.smsContent;
+              this.formData.smsTemplates = e;
             }
           });
         },
@@ -264,8 +270,29 @@
                   if (e.smsTheme === this.formData.smsTemplate) {
                     this.formData.smsTemplateCode = e.smsId;
                     this.formData.content = e.smsContent;
+                    this.formData.smsTemplates = e;
+                    this.queryOtherData();
                   }
                 });
+
+              } else {
+                this.$message.error(JSON.parse(response.data.responseStr).msg);
+              }
+            });
+        },
+
+        queryOtherData() {
+          let param = {
+            "requestUrl": this.$axios.config.sms.baseUrl + this.$axios.config.sms.queryOtherData,
+            "requestType": "GET"
+          }
+          this.$axios.post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
+            .then(response => {
+              if (JSON.parse(response.data.responseStr).success) {
+                let data = JSON.parse(response.data.responseStr).result;
+                this.formData.smsTemplates.field4 = data.orgList[0].showName;
+                this.formData.smsTemplates.field5 = this.smsTypeList[0].showName;
+                this.formData.smsTemplates.field6 = data.itemList[0].showName;
               } else {
                 this.$message.error(JSON.parse(response.data.responseStr).msg);
               }
@@ -357,7 +384,3 @@
       }
     }
 </script>
-
-<style scoped>
-
-</style>
