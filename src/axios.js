@@ -85,6 +85,7 @@ const config = {
     querySendingSesCounts: '/sms/querySendingSesCounts',    //查询发送信息条数
     querySmsTypeList: '/sms/querySmsTypeList',    //查询短信类型
     querySmsTemplateList: '/sms/querySmsTemplateList',    //根据类型查询短信模板
+    queryOtherData: '/sms/queryOtherData',    //查询其他关键信息
   },
   menu: {
     baseUrl: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
@@ -92,7 +93,7 @@ const config = {
     queryAll: "/menu/queryAll",    //查询全部菜单
     queryAllLevel1Menu: "/menu/queryAllLevel1Menu",   //查询全部一级菜单
     queryMenuByParentId: "/menu/queryMenuByParentId",   //根据parentId查询菜单
-    transitInterface: "/platform/transitInterface/transitInterface/transit"
+    saveOrUpdate: "/menu/saveOrUpdate",   //保存or更新菜单
   },
   smsTemplates: {
     baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,

@@ -16,13 +16,13 @@ export default [
     name: "organization",
     meta: { icon: "organization", title: "机构管理" },
     component: () => import("../views/saa/organization")
-  },
+  },*/
   {
     path: "/menu",
     name: "menu",
     meta: { icon: "menu", title: "菜单管理" },
     component: () => import("../views/saa/menu")
-  },*/
+  },
   {
     path: "/policyPermissionConfig",
     name: "policyPermissionConfigAuth",
