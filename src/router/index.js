@@ -50,7 +50,7 @@ const router = new VueRouter({
   ],
 
   //也为tomcat下打包后存放的路径，跟路径为tomcat的webApps
-  base:'/vue/'
+  base:'/app/'
 });
 
 // var routerLoading = null;
