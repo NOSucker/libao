@@ -27,11 +27,12 @@ const config = {
     addUserToRole: "/saa/adduser/{roleCode}", //在指定的角色下添加用户
     // saa 机构相关
     getSubCompany: "/syscompany/sub/{comCode}",
-    createOrganization: "/syscompany/create",
-    deleteOrganization: "/syscompany/delete",
-    updateOrganization: "/syscompany/update",
+    //getAllOrgan:"/platform/serivce/QueryAllOrgan",
+    createOrganization: "/syscompany/create", //新增
+    deleteOrganization: "/syscompany/delete", //删除
+    updateOrganization: "/syscompany/update", //更新
     availableOrganization: "/syscompany/available", // 根据用户userCode查看有效的机构
-    dragOrganization: "/syscompany/drag",
+    dragOrganization: "/syscompany/drag", //拖拽
     // saa 菜单相关
     getMenuWithUser: "/saa/task/tree/{userCode}", //根据用户userCode查看菜单信息
     getSubMenu: "/saa/task/sub/{taskCode}", // 获取菜单的子节点
@@ -64,10 +65,52 @@ const config = {
     modifyRightsAndInterests: "/rightsAndInterests/update", //根据主键修改客户权益信息
     deleteInBatch: "/rightsAndInterests/deleteInBatch" //批量删除客户权益信息
   },
+  contactInfo: {
+    baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
+    //常用联系人增删改查
+    contactInfoInsert: "/platform/serivce/phoneNumberInsert", //常用联系人新增
+    contactInfoQuery: "/platform/serivce/phoneNumberSelect", //常用联系人查询
+    //queryAllByParamsNew: "/rightsAndInterests/queryAllByParamsNew", //分页查询
+    contactInfoUpdate: "/platform/serivce/phoneNumberUpdate", //常用联系人修改
+    // modifyRightsAndInterests: "/rightsAndInterests/update", //根据主键修改客户权益信息
+    contactInfoDelete: "/platform/serivce/phoneNumberDelete", //常用联系人删除
+    contactInfoDeleteList: "/platform/serivce/deleteList", //批量删除常用联系人
+    contactInfoQueryPage: "/platform/serivce/phoneNumberQueryPage" //分页查询
+  },
+  user: {
+    baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
+    //用户增删查
+    userAdd: "/platform/serivce/userAdd", //用户新增
+    userQuery: "/platform/serivce/userQuery", //用户根据条件查询
+    // contactInfoUpdate: "/platform/serivce/phoneNumberUpdate", //常用联系人修改
+    // modifyRightsAndInterests: "/rightsAndInterests/update", //根据主键修改客户权益信息
+    userDelete: "/platform/serivce/userDelete", //用户删除
+    // contactInfoDeleteList:"/platform/serivce/deleteList",//批量删除常用联系人
+    // contactInfoQueryPage:"/platform/serivce/phoneNumberQueryPage"//分页查询
+    userQueryAll: "/platform/serivce/userQueryAll", //进来就会查询全部
+    userUpdate: "/platform/serivce/userUpdate", //修改用户信息
+    //新增的4个查询路径
+    userQuerySkillsGroup: "/platform/serivce/querySkillsGroup", //查询用户技能组
+    userqueryUserSource: "/platform/serivce/queryUserSource", //查询用户来源
+    userqueryUserSex: "/platform/serivce/queryUserSex", //查询用户性别
+    userqueryUserVain: "/platform/serivce/queryUserVain" //查询用户是否有效以及是否是班长
+  },
+  organ: {
+    baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
+    //getSubCompany: "/syscompany/sub/{comCode}",
+    getAllOrgan: "/platform/serivce/QueryAllOrgan",
+    createOrganization: "/syscompany/create", //新增
+    deleteOrganization: "/syscompany/delete", //删除
+    updateOrganization: "/syscompany/update", //更新
+    queryOrganByParentId: "/platform/serivce/QueryOrganDetail", //跟据父id查询子节点
+    dragOrganization: "/syscompany/drag", //拖拽
+    queryRootOrgan: "/platform/serivce/QueryRootOrgan" //查找根节点
+  },
+
   supplier: {
     baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
     // supplier 查询代理商
-    queryAllSupplier: "/supplier/findAll", //根据主键查找权益信息
+    queryAllSupplier: "/supplier/findAll" //根据主键查找权益信息
   },
   service: {
     baseURL: process.env.VUE_APP_DEV_BASE_URL,
