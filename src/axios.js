@@ -94,6 +94,18 @@ const config = {
     queryAllLevel1Menu: "/menu/queryAllLevel1Menu",   //查询全部一级菜单
     queryMenuByParentId: "/menu/queryMenuByParentId",   //根据parentId查询菜单
     saveOrUpdate: "/menu/saveOrUpdate",   //保存or更新菜单
+    deleteMenu: "/menu/delete",   //删除菜单
+    queryMenuNodeList: "/menu/queryMenuNodeList",   //查询菜单节点类型
+  },
+  role: {
+    baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
+    //角色接口相关
+    queryByPage: "/role/queryByPage",    //分页查询角色列表
+    deletById: "/role/deleteByRoleId",    //通过id删除角色
+    queryOrganFilterList: "/role/queryOrganFilterByType",     //查询修改页面需要的默认机构权限列表
+    saveOrUpdate: "/role/saveOrUpdate",   //新增/修改角色及其菜单权限
+    queryUserRoleByPage: "/role/queryUserRoleByPage",    //分页查询用户角色
+    deleteByUserRoleIds: "/role/deleteByUserRoleIds",   //批量删除用户角色
   },
   smsTemplates: {
     baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
