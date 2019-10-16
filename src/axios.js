@@ -93,7 +93,8 @@ const config = {
     userQuerySkillsGroup: "/platform/serivce/querySkillsGroup", //查询用户技能组
     userqueryUserSource: "/platform/serivce/queryUserSource", //查询用户来源
     userqueryUserSex: "/platform/serivce/queryUserSex", //查询用户性别
-    userqueryUserVain: "/platform/serivce/queryUserVain" //查询用户是否有效以及是否是班长
+    userqueryUserVain: "/platform/serivce/queryUserVain", //查询用户是否有效以及是否是班长
+    login: "/platform/serivce/login",   //用户登录
   },
   organ: {
     baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
@@ -134,6 +135,7 @@ const config = {
     baseUrl: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
     //菜单接口相关
     queryAll: "/menu/queryAll",    //查询全部菜单
+    selectAllMenuByUser: "/menu/selectAllMenuByUser",   //根据用户查询其权限菜单
     queryAllLevel1Menu: "/menu/queryAllLevel1Menu",   //查询全部一级菜单
     queryMenuByParentId: "/menu/queryMenuByParentId",   //根据parentId查询菜单
     saveOrUpdate: "/menu/saveOrUpdate",   //保存or更新菜单
@@ -148,7 +150,8 @@ const config = {
     queryOrganFilterList: "/role/queryOrganFilterByType",     //查询修改页面需要的默认机构权限列表
     saveOrUpdate: "/role/saveOrUpdate",   //新增/修改角色及其菜单权限
     queryUserRoleByPage: "/role/queryUserRoleByPage",    //分页查询用户角色
-    deleteByUserRoleIds: "/role/deleteByUserRoleIds",   //批量删除用户角色
+    deleteUserRole: "/role/deleteUserRole",   //批量删除用户角色
+    saveUserRole: "/role/saveUserRole",   //保存用户角色
   },
   smsTemplates: {
     baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,

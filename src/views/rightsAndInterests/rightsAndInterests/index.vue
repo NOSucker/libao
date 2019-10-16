@@ -176,21 +176,21 @@ export default {
     // console.log(11111111111,this.$router.app.$router.currentRoute.query.usercode)
     //判断外部系统跳转进来是否传入usercode值   !this.store.state.user &&
     // console.log('code', this.$router.app._route.params.code)
-    if (this.$store.state.usercode || this.$router.app.$router.currentRoute.query.usercode) {
+    /*if (this.$store.state.usercode || this.$router.app.$router.currentRoute.query.usercode) {
       //将带过来的user参数写进vuex状态管理器
       if (this.$router.app.$router.currentRoute.query.usercode) {
         this.$store.state.usercode = this.$router.app.$router.currentRoute.query.usercode;
-      }
+      }*/
 
       //查询数据
       this.pageParams.requestBody = JSON.stringify(this.pagerQuery);
       this.$axios
-      /*.post(this.$axios.config.rightsAndInterests.baseURL + this.$axios.config.rightsAndInterests.queryAllByParamsNew, this.pagerQuery)*/
-        .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageParams)
-        .then(response => {
-          this.tableData = JSON.parse(response.data.responseStr).result.dataList;
-          this.totalCount = JSON.parse(response.data.responseStr).result.totalCount;
-        });
+    /*.post(this.$axios.config.rightsAndInterests.baseURL + this.$axios.config.rightsAndInterests.queryAllByParamsNew, this.pagerQuery)*/
+      .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageParams)
+      .then(response => {
+        this.tableData = JSON.parse(response.data.responseStr).result.dataList;
+        this.totalCount = JSON.parse(response.data.responseStr).result.totalCount;
+      });
       let urls = this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface;
       /*let initParams = {
         "requestUrl": this.$axios.config.permissionConfig.baseURL + this.$axios.config.permissionConfig.findInitInfo,
@@ -199,9 +199,9 @@ export default {
       this.$axios.post(urls, this.initParams).then(response => {
         (this.subList = JSON.parse(response.data.responseStr).result.customerAreas), (this.levelTypeLists = JSON.parse(response.data.responseStr).result.levelTypeList);
       });
-    } else {
+    /*} else {
       this.$router.push({path: '/unlogun'})
-    }
+    }*/
   },
   methods: {
     deFaultFormatter(row, column, cellValue, index) {

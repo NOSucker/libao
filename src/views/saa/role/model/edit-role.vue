@@ -23,7 +23,7 @@
                 style="margin-top: 20px"
                 :default-expanded-keys="expandedList"
                 :default-checked-keys="checkedList"
-                node-key="taskCode"
+                node-key="menuId"
                 :data="showTreeData"
                 :props="props"
                 show-checkbox></el-tree>
@@ -31,16 +31,33 @@
           </div>
         </el-col>
         <el-col :span="16">
-          <el-form ref="editForm" :model="rolePageData" :rules="validateRules" label-width="80px">
+          <el-form ref="editForm" :model="rolePageData" :rules="validateRules" label-width="110px">
             <el-row>
               <el-col :span="12">
-                <el-form-item label="角色代码" prop="roleCode">
-                  <el-input v-model="rolePageData.roleCode" :disabled="this.type === 'edit'"></el-input>
+                <el-form-item label="角色代码" prop="roleCode" required>
+                  <el-input v-model="rolePageData.roleCode" placeholder="请输入角色代码" :disabled="this.type === 'edit'"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="角色名称" prop="roleName">
-                  <el-input v-model="rolePageData.roleName"></el-input>
+                <el-form-item label="角色名称" prop="roleName" required>
+                  <el-input v-model="rolePageData.roleName" placeholder="请输入角色名称"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="默认机构数据权限" prop="organFilter">
+                  <el-select v-model="rolePageData.organFilter" placeholder="请选中默认机构数据权限">
+                    <el-option v-for="para in organFilterList" :key="para.key" :label="para.value" :value="para.key"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="计时器绿色时长" prop="greenSecond">
+                  <el-input v-model="rolePageData.greenSecond" placeholder="请输入计时器绿色时长"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="计时器黄色时长" prop="yellowSecond">
+                  <el-input v-model="rolePageData.yellowSecond" placeholder="请输入计时器黄色时长"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="24">
@@ -49,7 +66,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row style="text-align: right">
+            <el-row style="text-align: right;">
               <el-button type="primary" @click="submitForm">提交</el-button>
               <el-button @click="$refs.editForm.resetFields()">重置</el-button>
             </el-row>
@@ -67,20 +84,32 @@ export default {
     value: Boolean,
     type: String,
     treeData: Array,
-    roleData: Object
+    roleData: Object,
+    organFilterData: Array,
   },
   data() {
     return {
+      organFilterList: [],
       needQueryListData: false,
       checkedList: [],
       expandedList: [],
       showTreeData: [],
       props: {
-        label: "taskName",
-        children: "subLists"
+        label: "menuName",
+        children: "children"
       },
-      rolePageData: {},
-      validateRules: {},
+      rolePageData: {
+        roleCode: '',
+        roleName: '',
+        organFilter: '',
+        greenSecond: '',
+        yellowSecond: '',
+        remark: ''
+      },
+      validateRules: {
+        roleCode: [{ required: true, message: "请输入角色代码", trigger: "blur" }],
+        roleName: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
+      },
       submitLoading: false
     };
   },
@@ -112,29 +141,46 @@ export default {
   watch: {
     treeData(newV) {
       this.showTreeData = JSON.parse(JSON.stringify(newV));
+    },
+    organFilterData(val) {
+      if (val && val.length > 0) {
+        this.organFilterList = [];
+        // this.organFilterList = JSON.parse(JSON.stringify(val));
+        Object.assign(this.organFilterList, JSON.parse(JSON.stringify(val)));
+      }
     }
   },
-  mounted() {},
+  mounted() {
+
+  },
   methods: {
     submitForm() {
       let checkedTree = this.$refs.taskTree.getCheckedKeys();
-      let theUrl = this.$axios.config.saa.createRole;
-      let PostData = [this.rolePageData];
-      this.rolePageData.taskCodeList = checkedTree;
-      if (this.type === "edit") {
-        theUrl = this.$axios.config.saa.updateRole;
+      let PostData = this.rolePageData;
+      if (this.type !== "add") {
         PostData = this.rolePageData;
+        delete PostData.userCounts;
+        delete PostData.menuList;
       }
+      let data = {
+        role: PostData,
+        menuIdList: checkedTree
+      }
+      let param = {
+        "requestUrl": this.$axios.config.role.baseURL + this.$axios.config.role.saveOrUpdate,
+        "requestType": "POST",
+        "requestBody": JSON.stringify(data)
+      };
       this.submitLoading = true;
       this.$axios
-        .post(this.$axios.config.saa.baseURL + theUrl, PostData)
+        .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
         .then(response => {
-          if (response.data.status === 0) {
+          if (JSON.parse(response.data.responseStr).success) {
             this.$message.success(this.type === "edit" ? "角色更新" : "角色添加" + "成功!");
             this.$emit("role-edit-close");
             this.$emit("input", false);
           } else {
-            this.$message.error(response.data.statusText);
+            this.$message.error(JSON.parse(response.data.responseStr).msg);
           }
         })
         .finally(() => {
@@ -149,8 +195,9 @@ export default {
       if (this.type === "copy") {
         if (this.roleData) {
           this.rolePageData = JSON.parse(JSON.stringify(this.roleData));
-          this.$set(this.rolePageData, "roleCode", null);
-          this.$set(this.rolePageData, "roleName", null);
+          this.$set(this.rolePageData, "roleId", null);
+          /*this.$set(this.rolePageData, "roleCode", null);
+          this.$set(this.rolePageData, "roleName", null);*/
         }
       }
       if (this.type === "edit") {
@@ -159,9 +206,16 @@ export default {
         }
       }
       if (this.type !== "add") {
-        this.checkedList = this.rolePageData.taskCodeList;
+        // this.checkedList = JSON.parse(JSON.stringify(this.roleData.menuList));
+        Object.assign(this.checkedList, JSON.parse(JSON.stringify(this.roleData.menuList)));
+      } else {
+        //默认为all
+        if (!this.rolePageData.organFilter || this.rolePageData.organFilter === '') {
+          this.rolePageData.organFilter = this.organFilterList[0].key;
+        }
       }
       this.showTreeData = JSON.parse(JSON.stringify(this.treeData));
+
       this.setExpandedList();
     },
     setExpandedList() {

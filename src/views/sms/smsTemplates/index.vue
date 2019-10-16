@@ -167,11 +167,11 @@ export default {
   },
   mounted() {
   
-    if (this.$store.state.usercode || this.$router.app.$router.currentRoute.query.usercode) {
+    /*if (this.$store.state.usercode || this.$router.app.$router.currentRoute.query.usercode) {
       //将带过来的user参数写进vuex状态管理器
       if (this.$router.app.$router.currentRoute.query.usercode) {
         this.$store.state.usercode = this.$router.app.$router.currentRoute.query.usercode;
-      }
+      }*/
 
       //查询数据
       this.pageParams.requestBody = JSON.stringify(this.pagerQuery);
@@ -186,9 +186,9 @@ export default {
       this.$axios.post(urls, this.initParams).then(response => {
         (this.smsTemplateConfigs = JSON.parse(response.data.responseStr).result);
       });
-    } else {
+    /*} else {
       this.$router.push({path: '/unlogun'})
-    }
+    }*/
   },
   methods: {
     

@@ -148,19 +148,19 @@
         }
       },
       mounted() {
-        if (this.$store.state.usercode || this.$router.app.$router.currentRoute.query.usercode) {
+        /*if (this.$store.state.usercode || this.$router.app.$router.currentRoute.query.usercode) {
           //将带过来的user参数写进vuex状态管理器
           if (this.$router.app.$router.currentRoute.query.usercode) {
             this.$store.state.usercode = this.$router.app.$router.currentRoute.query.usercode;
-          }
+          }*/
 
           this.queryCarInsuranceList();
           this.querySmsLevelList();
           this.querySmsBranchList();
           this.querySmsTypeList();
-        } else {
+        /*} else {
           this.$router.push({path: '/unlogun'})
-        }
+        }*/
       },
       methods: {
         queryCarInsuranceList() {

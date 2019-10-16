@@ -15,16 +15,23 @@
         :collapse-transition="false"
         mode="vertical"
         :background-color="variables.menuBg">
-        <div v-for="route in $router.options.routes" :key="route.path" class="menu-wrapper">
-          <router-link v-if="route.meta" :to="route.path">
-            <el-menu-item :index="route.path">
+        <sidebar-item :menu="menuList" />
+        <!--<div v-for="route in $router.options.routes" :key="route.path" class="menu-wrapper">
+          <router-link :to="route.path">
+            <el-menu-item v-if="route.meta && (!route.children || route.children.length == 0)" :index="route.path">
               <svg class="svg-icon">
                 <use :xlink:href="'#icon-' + route.meta.icon" />
               </svg>
               <span slot="title">{{ route.meta.title }}</span>
             </el-menu-item>
+            <el-submenu :index="item.path" :model="item" v-if="item.meta && (route.children || route.children.length !== 0)" v-for="(item,index) in route.children">
+              <svg class="svg-icon">
+                <use :xlink:href="'#icon-' + item.meta.icon" />
+              </svg>
+              <span slot="title">{{ item.meta.title }}</span>
+            </el-submenu>
           </router-link>
-        </div>
+        </div>-->
       </el-menu>
     </el-scrollbar>
   </div>
@@ -33,18 +40,30 @@
 <script>
 import { mapState } from "vuex";
 import variables from "@/styles/variables.scss";
+import SidebarItem from "../components/SidebarItem"
 
 export default {
+  // name: "SubItem", //至关重要的一步，一定要写name，递归的时候使用
+  components: { SidebarItem },
   data() {
     return {
       title: process.env.VUE_APP_TITLE,
-      variables: variables
+      variables: variables,
+      menuList: this.$router.options.userRoutes,
+      usercode: this.$store.state.usercode
     };
   },
   computed: {
     ...mapState({
       sidebar: state => state.app.sidebar
     })
+  },
+  beforeMount() {
+    if (this.$store.state.usercode && this.$store.state.usercode !== '') {
+      setTimeout(() => {
+        this.sidebar.opened = true;
+      }, 500);
+    }
   }
 };
 </script>

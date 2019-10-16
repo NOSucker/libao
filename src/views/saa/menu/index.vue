@@ -13,7 +13,7 @@
               element-loading-background="rgba(0, 0, 0, 0.8)"
             >
               <div class="my-tree-header">
-                <span style="margin-left: 10px;" @click="clickRoot">系统菜单根节点</span>
+                <a style="margin-left: 10px;" @click="clickRoot">系统菜单根节点</a>
               </div>
               <el-tree
                 ref="menuTree"
@@ -24,7 +24,14 @@
                 lazy
                 :data="menuTreeData"
                 @node-click="menuNodeClick"
-              ></el-tree>
+              >
+                <span class="custom-tree-node" slot-scope="{ node, data }">
+                  <span>
+                    <i :class="data.openIcon"></i>
+                    <span style="margin-left: 5px;">{{ data.menuName }}</span>
+                  </span>
+                </span>
+              </el-tree>
             </el-card>
           </div>
         </el-col>
@@ -32,71 +39,92 @@
           <el-form ref="menuForm" :model="menuData" label-width="80px">
             <el-row>
               <el-col :span="10">
-                <el-form-item prop="upperTaskName" label="上级目录">
-                  <el-input v-model="menuData.upperTaskName" placeholder="无上级目录，将作为根菜单" :disabled="true"></el-input>
+                <el-form-item prop="parentId" label="上级目录">
+                  <el-input v-model="menuData.parentId" placeholder="无上级目录，将作为根菜单" :disabled="true"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="10">
                 <el-form-item label="菜单类型" prop="menuType" :rules="[{ required: pageModel !== 'view', message: '请输入菜单类型', trigger: 'blur' }]">
-                  <el-input v-model="menuData.menuType" :disabled="pageModel === 'view' || pageModel === 'edit'"></el-input>
+                  <el-select v-model="menuData.menuType" disabled>
+                    <el-option v-for="para in menuNodeList" :key="para.key" :label="para.value" :value="para.key"></el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
+              <el-col :span="10" v-if="pageModel === 'addSub' || showExtre === true">
+                <el-form-item label="功能代码" prop="taskCode" :rules="[{ required: pageModel !== 'view', message: '请输入功能代码', trigger: 'blur' }]">
+                  <el-input v-model="menuData.taskCode" :disabled="pageModel === 'view'"></el-input>
+                </el-form-item>
+              </el-col>
             <el-col :span="10">
               <el-form-item :label="pageModel === 'view' ? '菜单名称' : '目录名称'" prop="menuName" :rules="[{ required: pageModel !== 'view', message: '请输入目录名称', trigger: 'blur' }]">
-                <el-input v-model="menuData.menuName" :disabled="pageModel === 'view' || pageModel === 'edit'"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="10">
-              <el-form-item label="功能代码" prop="taskCode" :rules="[{ required: pageModel !== 'view', message: '请输入功能代码', trigger: 'blur' }]">
-                <el-input v-model="menuData.taskCode" :disabled="pageModel === 'view' || pageModel === 'edit'"></el-input>
+                <el-input v-model="menuData.menuName" :disabled="pageModel === 'view'"></el-input>
               </el-form-item>
             </el-col>
             </el-row>
             <el-row>
               <el-col :span="10">
-                <el-form-item label="打开图标" prop="openIcon" :rules="[{ required: pageModel !== 'view', message: '请输入打开图标', trigger: 'blur' }]">
-                  <el-input v-model="menuData.openIcon" :disabled="pageModel === 'view' || pageModel === 'edit'"></el-input>
+                <el-form-item prop="menuEnName" label="菜单英文名">
+                  <el-input v-model="menuData.menuEnName" :placeholder="pageModel !== 'view' ? '请输入英文名' : ''" :disabled="pageModel === 'view'"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="10">
-                <el-form-item label="关闭图标" prop="closeIcon" :rules="[{ required: pageModel !== 'view', message: '请输入关闭图标', trigger: 'blur' }]">
-                  <el-input v-model="menuData.closeIcon" :disabled="pageModel === 'view' || pageModel === 'edit'"></el-input>
+                <el-form-item prop="menuIcon" label="菜单图标">
+                  <el-select v-model="menuData.menuIcon" :placeholder="pageModel !== 'view' ? '请选择图标' : ''" :disabled="pageModel === 'view'">
+                    <el-option v-for="(item, index) in menuIconList" :key="index" :value="item">
+                      <svg class="svg-icon">
+                        <use :xlink:href="'#icon-' + item" />
+                      </svg>
+                      <span style="float: right; color: #8492a6; font-size: 13px">{{ item }}</span>
+                    </el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
-              <el-col :span="10">
-                <el-form-item label="序号" prop="displayNo" :rules="[{ required: pageModel !== 'view', message: '请输入序号', trigger: 'blur' }]">
-                  <el-input-number v-model="menuData.displayNo" :disabled="pageModel === 'view' || pageModel === 'edit'" controls-position="right" :min="1" :max="6"></el-input-number>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="10">
-                <el-form-item label="菜单名称" prop="menuName" :rules="[{ required: pageModel !== 'view', message: '请输入菜单名称', trigger: 'blur' }]">
-                  <el-input v-model="menuData.menuName" :disabled="pageModel === 'view'"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="10">
+              <el-col :span="20" v-if="pageModel === 'addSub' || showExtre === true">
                 <el-form-item prop="url" label="URL">
                   <el-input v-model="menuData.url" :disabled="pageModel === 'view'"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row v-if="pageModel === 'add' || pageModel === 'edit'" style="text-align: center;padding-top: 15px; border-top: 1px solid #eee;">
+            <el-row>
+              <el-col :span="10">
+                <el-form-item label="打开图标" prop="openIcon">
+                  <i v-model="menuData.openIcon" :class="pageModel === 'addSub' ? 'el-icon-document' : 'el-icon-folder-opened'"></i>
+                </el-form-item>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item label="关闭图标" prop="closeIcon">
+                  <i v-model="menuData.closeIcon" :class="pageModel === 'addSub' ? 'el-icon-document' : 'el-icon-folder'"></i>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="10" v-if="pageModel === 'addSub' || showExtre === true">
+                <el-form-item prop="menuPath" label="路径" :rules="[{ required: pageModel !== 'view', message: '请输入路径', trigger: 'blur' }]">
+                  <el-input v-model="menuData.menuPath" :disabled="pageModel === 'view'"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item label="序号" prop="displayNo" :rules="[{ required: pageModel !== 'view', message: '请输入序号', trigger: 'blur' }]">
+                  <el-input-number v-model="menuData.displayNo" :disabled="pageModel === 'view'" controls-position="right" :min="1" :max="6"></el-input-number>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row v-if="pageModel === 'add' || pageModel === 'addSub' || pageModel === 'edit'" style="text-align: center;padding-top: 15px; border-top: 1px solid #eee;">
               <el-button type="primary" @click="submitForm">提交</el-button>
               <el-button @click="$refs.menuForm.resetFields()">重置</el-button>
               <el-button @click="backToView">返回</el-button>
             </el-row>
-            <el-row v-if="use === false" style="text-align: center;padding-top: 15px; border-top: 1px solid #eee;">
+            <el-row v-if="!use && pageModel !== 'add' && pageModel !== 'addSub'" style="text-align: center;padding-top: 15px; border-top: 1px solid #eee;">
               <el-button v-if="'root' === this.parentMenuData.menuType || 'dir' === this.parentMenuData.menuType" @click="operationMenu('add')">创建目录</el-button>
             </el-row>
-            <el-row v-if="pageModel === 'view' && use === true" style="text-align: center;padding-top: 15px; border-top: 1px solid #eee;">
+            <el-row v-if="pageModel === 'view' && use" style="text-align: center;padding-top: 15px; border-top: 1px solid #eee;">
               <!--<el-button v-if="menuData.level < 3" @click="operationMenu('add')">{{ buttonName }}</el-button>-->
               <el-button v-if="'root' === this.parentMenuData.menuType || 'dir' === this.parentMenuData.menuType" @click="operationMenu('add')">创建目录</el-button>
-              <el-button @click="operationMenu('add')">创建子页面</el-button>
+              <el-button v-if="showPage" @click="operationMenu('addSub')">创建子页面</el-button>
               <el-button @click="operationMenu('edit')">修改</el-button>
               <el-button v-if="menuData.validind !== '0'" type="danger" @click="deleteMenu">删除</el-button>
               <el-button v-if="menuData.validind === '0'" type="success" @click="recoverMenu">还原有效</el-button>
@@ -118,11 +146,16 @@ export default {
         label: "menuName",
         children: "children"
       },
+      menuNodeList: [],
       use: false,
       pageModel: "view",
+      showExtre: false,
+      showPage: true,
       treeLoading: false,
       treeMask: false,
       submitLoading: false,
+      //当前所选节点是否含子节点
+      isParent: false,
       parentMenuData: {
         menuId: 'menu5acfcbb1cfbc4c3e9247db3325210b06',
         tenantId: 'default',
@@ -137,7 +170,29 @@ export default {
         menuType: 'root',
         menuName: '系统菜单根节点',
         sysMenu: 'Y',
-        sysMenuId: null
+        sysMenuId: null,
+        menuEnName: null,
+        menuIcon: null,
+        menuPath: null
+      },
+      parentMenuDataNew: {
+        menuId: 'menu5acfcbb1cfbc4c3e9247db3325210b06',
+        tenantId: 'default',
+        url: null,
+        remark: null,
+        taskCode: null,
+        displayNo: 1,
+        parentId: null,
+        moduleId: null,
+        openIcon: null,
+        closeIcon: null,
+        menuType: 'root',
+        menuName: '系统菜单根节点',
+        sysMenu: 'Y',
+        sysMenuId: null,
+        menuEnNameL: null,
+        menuIcon: null,
+        menuPath: null
       },
       menuData: {
         upperTaskName: null,
@@ -155,7 +210,10 @@ export default {
         menuType: null,
         menuName: null,
         sysMenu: null,
-        sysMenuId: null
+        sysMenuId: null,
+        menuEnName: null,
+        menuIcon: null,
+        menuPath: null
       },
       menuDataNew: {
         upperTaskName: null,
@@ -173,7 +231,10 @@ export default {
         menuType: null,
         menuName: null,
         sysMenu: null,
-        sysMenuId: null
+        sysMenuId: null,
+        menuEnNameL: null,
+        menuIcon: null,
+        menuPath: null
       }
     };
   },
@@ -187,6 +248,17 @@ export default {
           return "创建子页面";
         }
       }
+    },
+    menuIconList: {
+      set() {},
+      get() {
+        let list = []
+        require.context('../../../icons/svg', false, /.svg$/).keys().forEach(fileName => {
+          // 剥去文件名开头的 ./ 和结尾的扩展名
+          list.push(fileName.replace(/^.\/(.*).svg$/, '$1'))
+        });
+        return list;
+      }
     }
   },
   watch: {
@@ -196,32 +268,72 @@ export default {
       } else {
         this.treeMask = false;
       }
+
+      if (newV === 'add') {
+        this.menuData.menuType = 'dir';
+      } else if (newV === 'addSub') {
+        this.menuData.menuType = 'indexPage'
+      }
     }
   },
+  mounted() {
+    this.queryMenuNodeList();
+  },
   methods: {
+    queryMenuNodeList() {
+      let param = {
+        "requestUrl": this.$axios.config.menu.baseUrl + this.$axios.config.menu.queryMenuNodeList,
+        "requestType": "GET",
+      }
+      this.$axios
+        .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
+        .then(response => {
+          if (JSON.parse(response.data.responseStr).success) {
+            this.menuNodeList = JSON.parse(response.data.responseStr).result;
+          } else {
+            this.$message.error(JSON.parse(response.data.responseStr).msg);
+          }
+        });
+    },
     clickRoot() {
       this.use = false;
-      this.menuData = this.menuDataNew;
+      this.menuData = JSON.parse(JSON.stringify(this.menuDataNew));
+      // this.parentMenuData = JSON.parse(JSON.stringify(this.parentMenuDataNew));
     },
     menuNodeClick(node) {
       this.use = true;
       this.menuData = JSON.parse(JSON.stringify(node));
-      if (this.pageModel === "add") {
+      if (node) {
+        this.isParent = node.isParent;
+        this.parentMenuData = node;
+      }
+      if (this.pageModel === "add" || this.pageModel === "addSub") {
         /*this.$set(this.menuData, "upperTaskCode", node.upperTaskCode);
         this.$set(this.menuData, "upperTaskName", node.upperTaskName);
         this.$set(this.menuData, "level", node.level ? node.level + 1 : 1);*/
         if (node) {
           this.$set(this.menuData, "parentId", node.parentId);
         } else {
-          this.$set(this.menuData, "parentId", 'menucc01253c617948f1933b1a390eaec884');
+          this.$set(this.menuData, "parentId", 'menu5acfcbb1cfbc4c3e9247db3325210b06');
         }
       }
+      if (node.menuType === 'indexPage') {
+        this.showExtre = true;
+        this.showPage = true;
+      } else if (node.menuType === 'page') {
+        this.showPage = false;
+      } else {
+        this.showExtre = false;
+        this.showPage = true;
+      }
+    },
+    click(key, data) {
+      console.log(key,data)
     },
     loadMenuNode(node, resolve) {
       if (node.data.length !== 0 && node.data) {
         this.parentMenuData = node.data;
       }
-      console.log(1111, this.parentMenuData)
       let parentId = '';
       if (node.data.length !== 0) {
         //以当前所选节点的id作为查询的parentId去查到以此id为parentId的所有子节点
@@ -235,70 +347,72 @@ export default {
         "requestUrl": this.$axios.config.menu.baseUrl + this.$axios.config.menu.queryMenuByParentId + parentId,
         "requestType": "GET"
       }
-      if (node.data.length === 0) {
-        // 第一次加载获取当前登陆用户可以看见的机构
-        this.treeLoading = true;
-        // const theUserCode = JSON.parse(localStorage.getItem("userInfo")).userCode;
-        this.$axios
+      setTimeout(() => {
+        if (node.data.length === 0) {
+          // 第一次加载获取当前登陆用户可以看见的机构
+          this.treeLoading = true;
+          // const theUserCode = JSON.parse(localStorage.getItem("userInfo")).userCode;
+          this.$axios
           // .get(this.$axios.config.saa.baseURL + this.$axios.config.saa.getMenuWithUser.format({ userCode: theUserCode }))
-          .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
-          .then(response => {
-            if (JSON.parse(response.data.responseStr).success) {
-              if (node.data.menuId || node.data) {
-                // 第一次应该不会执行到这里 但是为了安全写一下
-                if (JSON.parse(response.data.responseStr) && JSON.parse(response.data.responseStr).result && JSON.parse(response.data.responseStr).result.length > 0) {
-                  this.menuTreeData = JSON.parse(response.data.responseStr).result;
+            .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
+            .then(response => {
+              if (JSON.parse(response.data.responseStr).success) {
+                if (node.data.menuId || node.data) {
+                  // 第一次应该不会执行到这里 但是为了安全写一下
+                  if (JSON.parse(response.data.responseStr) && JSON.parse(response.data.responseStr).result && JSON.parse(response.data.responseStr).result.length > 0) {
+                    this.menuTreeData = JSON.parse(response.data.responseStr).result;
+                  } else {
+                    resolve([]);
+                  }
                 } else {
-                  resolve([]);
+                  resolve(response.data.data);
                 }
               } else {
-                resolve(response.data.data);
+                this.$message.error(JSON.parse(response.data.responseStr).msg);
               }
-            } else {
-              this.$message.error(JSON.parse(response.data.responseStr).msg);
-            }
-          })
-          .catch(() => {
-            resolve([]);
-          })
-          .finally(() => {
-            this.treeLoading = false;
-          });
-      } else {
-        // 获取下级机构
-        this.treeLoading = true;
-        this.$axios
+            })
+            .catch(() => {
+              resolve([]);
+            })
+            .finally(() => {
+              this.treeLoading = false;
+            });
+        } else {
+          // 获取下级机构
+          this.treeLoading = true;
+          this.$axios
           // .get(this.$axios.config.saa.baseURL + this.$axios.config.saa.getSubMenu.format({ taskCode: node.data.taskCode }))
-          .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
-          .then(response => {
-            if (JSON.parse(response.data.responseStr).success) {
-              if (node.data && node.data.menuId) {
-                if (JSON.parse(response.data.responseStr) && JSON.parse(response.data.responseStr).result && JSON.parse(response.data.responseStr).result.length > 0) {
-                  resolve(JSON.parse(response.data.responseStr).result);
+            .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
+            .then(response => {
+              if (JSON.parse(response.data.responseStr).success) {
+                if (node.data && node.data.menuId) {
+                  if (JSON.parse(response.data.responseStr) && JSON.parse(response.data.responseStr).result && JSON.parse(response.data.responseStr).result.length > 0) {
+                    resolve(JSON.parse(response.data.responseStr).result);
+                  } else {
+                    resolve([]);
+                  }
                 } else {
-                  resolve([]);
+                  resolve(response.data.data);
                 }
               } else {
-                resolve(response.data.data);
+                this.$message.error(JSON.parse(response.data.responseStr).msg);
               }
-            } else {
-              this.$message.error(JSON.parse(response.data.responseStr).msg);
-            }
-          })
-          .catch(() => {
-            resolve([]);
-          })
-          .finally(() => {
-            this.treeLoading = false;
-          });
-      }
+            })
+            .catch(() => {
+              resolve([]);
+            })
+            .finally(() => {
+              this.treeLoading = false;
+            });
+        }
+      }, 300);
     },
     operationMenu(type) {
-      if (type === "edit" && !this.menuData.taskCode) {
+      if (type === "edit" && !this.menuData.parentId) {
         this.$message.error("请您选择一个需要修改的菜单！");
         return;
       }
-      if (type === "add") {
+      if (type === "add" || type === 'addSub') {
         this.menuData = {
           /*upperTaskName: null,
           upperTaskCode: null,
@@ -310,13 +424,17 @@ export default {
         };
         let node = this.$refs.menuTree.getCurrentNode();
         if (node) {
-          /*this.$set(this.menuData, "upperTaskName", node.upperTaskName);
-          this.$set(this.menuData, "upperTaskCode", node.upperTaskCode);
-          this.$set(this.menuData, "lever", node.level + 1);*/
-          this.$set(this.menuData, "parentId", node.menuId);
+          if (!this.use) {
+            this.$set(this.menuData, "parentId", "menu5acfcbb1cfbc4c3e9247db3325210b06")
+          } else {
+            /*this.$set(this.menuData, "upperTaskName", node.upperTaskName);
+            this.$set(this.menuData, "upperTaskCode", node.upperTaskCode);
+            this.$set(this.menuData, "lever", node.level + 1);*/
+            this.$set(this.menuData, "parentId", node.menuId);
+          }
         } else {
           //如果未获取带节点，则为设置父节点为根节点
-          this.$set(this.menuData, "parentId", "menucc01253c617948f1933b1a390eaec884")
+          this.$set(this.menuData, "parentId", "menu5acfcbb1cfbc4c3e9247db3325210b06")
         }
       }
       this.pageModel = type;
@@ -324,13 +442,20 @@ export default {
     backToView() {
       this.pageModel = "view";
       this.$nextTick(() => {
-        this.$refs.menuForm.validateField("taskCode");
+        this.$refs.menuForm.validateField("menuType");
         this.$refs.menuForm.validateField("menuName");
+        this.$refs.menuForm.validateField("openIcon");
+        this.$refs.menuForm.validateField("closeIcon");
+        this.$refs.menuForm.validateField("displayNo");
       });
     },
     deleteMenu() {
-      if (!this.menuData.taskCode) {
+      if (!this.menuData.parentId) {
         this.$message.error("请您选择一个需要删除的菜单！");
+        return;
+      }
+      if (this.isParent) {
+        this.$message.error("当前所选菜单含子菜单，不能跨级删除，请先删除子菜单");
         return;
       }
       this.$confirm("您确定要删除此菜单吗?", "提示", {
@@ -339,17 +464,19 @@ export default {
         type: "warning"
       })
         .then(() => {
+          let param = {
+            "requestUrl": this.$axios.config.menu.baseUrl + this.$axios.config.menu.deleteMenu + '/' + this.menuData.menuId,
+            "requestType": "GET"
+          }
           this.submitLoading = true;
           this.$axios
-            .delete(this.$axios.config.saa.baseURL + this.$axios.config.saa.deleteMenu, {
-              data: [this.menuData.taskCode]
-            })
+            .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
             .then(res => {
-              if (res.data.status === 0) {
+              if (JSON.parse(res.data.responseStr).success) {
                 this.$message.success("删除成功!");
                 this.handleTreeData();
               } else {
-                this.$message.success(res.data.statusText);
+                this.$message.success(JSON.parse(res.data.responseStr).msg);
               }
             })
             .finally(() => {
@@ -364,17 +491,23 @@ export default {
         });
     },
     handleTreeData() {
-      if (!this.menuData.upperTaskCode) {
+      //如果是根目录直接查询根目录下级，否则查询所选节点下级
+      if (this.menuData.parentId === 'menu5acfcbb1cfbc4c3e9247db3325210b06') {
         this.menuTreeData = [];
+        let param = {
+          "requestUrl": this.$axios.config.menu.baseUrl + this.$axios.config.menu.queryMenuByParentId + '/' + 'menu5acfcbb1cfbc4c3e9247db3325210b06',
+          "requestType": "GET"
+        }
         this.treeLoading = true;
-        const theUserCode = JSON.parse(localStorage.getItem("userInfo")).userCode;
+        // const theUserCode = JSON.parse(localStorage.getItem("userInfo")).userCode;
         this.$axios
-          .get(this.$axios.config.saa.baseURL + this.$axios.config.saa.getMenuWithUser.format({ userCode: theUserCode }))
+          /*.get(this.$axios.config.saa.baseURL + this.$axios.config.saa.getMenuWithUser.format({ userCode: theUserCode }))*/
+          .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
           .then(response => {
-            if (response.data.status === 0) {
-              this.menuTreeData = response.data.data;
+            if (JSON.parse(response.data.responseStr).success) {
+              this.menuTreeData = JSON.parse(response.data.responseStr).result;
             } else {
-              this.$message.error(response.data.statusText);
+              this.$message.error(JSON.parse(response.data.responseStr).msg);
             }
           })
           .finally(() => {
@@ -382,22 +515,26 @@ export default {
           });
         this.pageModel = "view";
       } else {
-        let currentTask = this.menuData.upperTaskCode;
+        let currentTask = this.menuData.parentId;
+        let param = {
+          "requestUrl": this.$axios.config.menu.baseUrl + this.$axios.config.menu.queryMenuByParentId + '/' + currentTask,
+          "requestType": "GET"
+        }
         // 更新tree节点数据
         this.$axios
-          .get(this.$axios.config.saa.baseURL + this.$axios.config.saa.getSubMenu.format({ taskCode: currentTask }))
+          .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
           .then(response => {
-            if (response.data.status === 0) {
-              if (response.data.data && response.data.data.subLists && response.data.data.subLists.length > 0) {
+            if (JSON.parse(response.data.responseStr).success) {
+              if (JSON.parse(response.data.responseStr) && JSON.parse(response.data.responseStr).result && JSON.parse(response.data.responseStr).result.length > 0) {
                 let currentNode = this.$refs.menuTree.getNode(currentTask);
-                currentNode.data.subLists.splice(0, currentNode.data.subLists.length);
-                this.$refs.menuTree.updateKeyChildren(currentTask, response.data.data.subLists);
+                currentNode.childNodes.splice(0, currentNode.childNodes.length);
+                this.$refs.menuTree.updateKeyChildren(currentTask, JSON.parse(response.data.responseStr).result);
               } else {
                 this.$refs.menuTree.updateKeyChildren(currentTask, []);
               }
               this.pageModel = "view";
             } else {
-              this.$message.error(response.data.statusText);
+              this.$message.error(JSON.parse(response.data.responseStr).msg);
             }
           })
           .catch(err => {
@@ -419,6 +556,13 @@ export default {
     submitForm() {
       this.$refs.menuForm.validate(valid => {
         if (valid) {
+          if (this.menuData.menuType === 'dir') {
+            this.menuData.closeIcon = 'el-icon-folder-opened';
+            this.menuData.openIcon = 'el-icon-folder-opened';
+          } else if (this.menuData.menuType === 'page' || this.menuData.menuType === 'indexPage') {
+            this.menuData.closeIcon = 'el-icon-document';
+            this.menuData.openIcon = 'el-icon-document';
+          }
           let PostData = {
             "requestUrl": this.$axios.config.menu.baseUrl + this.$axios.config.menu.saveOrUpdate,
             "requestType": "POST",
@@ -439,7 +583,6 @@ export default {
           this.$axios
             .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, PostData)
             .then(response => {
-              console.log(3333333333,response)
               if (JSON.parse(response.data.responseStr).success) {
                 this.$message.success("操作成功!");
                 this.handleTreeData();
@@ -448,6 +591,7 @@ export default {
               }
             })
             .finally(() => {
+              this.showExtre = false;
               this.submitLoading = false;
             });
         }
@@ -497,4 +641,7 @@ export default {
   font-size: 15px;
   color: #c1c1c4;
 }
+  .custom-tree-node {
+    font-size: 14px;
+  }
 </style>

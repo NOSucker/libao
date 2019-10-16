@@ -4,14 +4,22 @@ export default [
     name: "user",
     meta: { icon: "users", title: "用户管理" },
     component: () => import("../views/saa/user")
-  },
+  },*/
   {
     path: "/role",
     name: "role",
     meta: { icon: "role", title: "角色管理" },
-    component: () => import("../views/saa/role/index")
+    component: () => import("../views/saa/role/index"),
+    children: [
+      {
+        path: "/menu1",
+        name: "menu1",
+        meta: { icon: "menu", title: "菜单管理1" },
+        component: () => import("../views/saa/menu")
+      }
+    ]
   },
-  {
+  /*{
     path: "/organization",
     name: "organization",
     meta: { icon: "organization", title: "机构管理" },
@@ -26,7 +34,7 @@ export default [
   {
     path: "/policyPermissionConfig",
     name: "policyPermissionConfigAuth",
-    meta: { icon: "role", title: "尊客会校验规则配置认证" },
+    meta: { icon: "component", title: "尊客会校验规则配置认证" },
     component: () => import("../views/permissionConfig/policyPermissionConfig")
   },
   {

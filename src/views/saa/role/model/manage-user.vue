@@ -17,7 +17,7 @@
         <div style="width: 100%; height: 20px; line-height: 20px; font-size: 18px; margin: 15px 0;text-align: left;">
           管理已添加用户
           <span style="float: right; margin-bottom: 10px;">
-            <el-button type="primary" icon="el-icon-circle-plus" @click="changeToAdd">新增角色</el-button>
+            <el-button type="primary" icon="el-icon-circle-plus" @click="changeToAdd">新增该角色用户</el-button>
           </span>
         </div>
         <el-col :span="24">
@@ -25,26 +25,26 @@
             <el-table-column type="selection" width="55" />
             <el-table-column prop="userCode" label="用户代码" />
             <el-table-column prop="userName" label="用户名称" />
-            <el-table-column prop="regTime" label="注册时间">
+            <el-table-column prop="registerDate" label="注册时间">
               <template slot-scope="scope">
-                {{ scope.row.regTime | dataFilter("yyyy年MM月dd日") }}
+                {{ scope.row.registerDate | dataFilter("yyyy年MM月dd日") }}
               </template>
             </el-table-column>
-            <el-table-column prop="comName" label="机构" />
-            <el-table-column prop="validStatus" label="是否有效">
+            <el-table-column prop="organName" label="机构" />
+            <!--<el-table-column prop="userStatus" label="是否有效">
               <template slot-scope="scope">
                 <el-switch
-                  v-model="scope.row.validStatus"
+                  v-model="scope.row.userStatus"
                   active-value="1"
                   inactive-value="0"
                   disabled="disabled"
                   active-color="#13ce66"
                   inactive-color="#ff4949"></el-switch>
               </template>
-            </el-table-column>
+            </el-table-column>-->
           </el-table>
           <el-pagination
-            :current-page.sync="queryUserData.pageNo"
+            :current-page.sync="queryUserData.pageNum"
             background
             :page-sizes="[10, 20, 30, 50]"
             :page-size.sync="queryUserData.pageSize"
@@ -53,7 +53,7 @@
             :total="totalCount"
             @current-change="queryExistingUsers"
             @size-change="
-              queryUserData.pageNo = 1;
+              queryUserData.pageNum = 1;
               queryExistingUsers();
             "/>
         </el-col>
@@ -70,26 +70,26 @@
             <el-table-column type="selection" width="55" />
             <el-table-column prop="userCode" label="用户代码" />
             <el-table-column prop="userName" label="用户名称" />
-            <el-table-column prop="regTime" label="注册时间">
+            <el-table-column prop="registerDate" label="注册时间">
               <template slot-scope="scope">
-                {{ scope.row.regTime | dataFilter("yyyy年MM月dd日") }}
+                {{ scope.row.registerDate | dataFilter("yyyy年MM月dd日") }}
               </template>
             </el-table-column>
-            <el-table-column prop="comName" label="机构" />
-            <el-table-column prop="validStatus" label="是否有效">
+            <el-table-column prop="organName" label="机构" />
+            <!--<el-table-column prop="userStatus" label="是否有效">
               <template slot-scope="scope">
                 <el-switch
-                  v-model="scope.row.validStatus"
+                  v-model="scope.row.userStatus"
                   active-value="1"
                   inactive-value="0"
                   disabled="disabled"
                   active-color="#13ce66"
                   inactive-color="#ff4949"></el-switch>
               </template>
-            </el-table-column>
+            </el-table-column>-->
           </el-table>
           <el-pagination
-            :current-page.sync="queryUserData.pageNo"
+            :current-page.sync="queryUserData.pageNum"
             background
             :page-sizes="[10, 20, 30, 50]"
             :page-size.sync="queryUserData.pageSize"
@@ -98,7 +98,7 @@
             :total="totalCount"
             @current-change="queryData"
             @size-change="
-              queryUserData.pageNo = 1;
+              queryUserData.pageNum = 1;
               queryData();
             "/>
         </el-col>
@@ -140,8 +140,19 @@ export default {
       usersData: [], // 可添加用户
       existingUsersData: [], // 已有用户
       queryUserData: {
-        pageNo: 1,
+        roleId: String,
+        pageNum: 1,
         pageSize: 10
+      },
+      pageUserRoleParams: {
+        "requestUrl": this.$axios.config.role.baseURL + this.$axios.config.role.queryUserRoleByPage,
+        "requestType": "POST",
+        "requestBody": ""
+      },
+      pageUserParams: {
+        "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.userQuery,
+        "requestType": "POST",
+        "requestBody": ""
       },
       tableSelection: []
     };
@@ -164,18 +175,27 @@ export default {
       }
       let PostUsersCode = [];
       this.tableSelection.forEach(select => {
-        PostUsersCode.push(select.userCode);
+        PostUsersCode.push(select.userId);
       });
+      let param = {
+        roleId: this.roleData.roleId,
+        userIds: PostUsersCode
+      }
+      let postParam = {
+        "requestUrl": this.$axios.config.role.baseURL + this.$axios.config.role.saveUserRole,
+        "requestType": "POST",
+        "requestBody": JSON.stringify(param)
+      }
       this.submitLoading = true;
       this.$axios
-        .post(this.$axios.config.saa.baseURL + this.$axios.config.saa.addUserToRole.format({ roleCode: this.roleData.roleCode }), PostUsersCode)
+        .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, postParam)
         .then(response => {
-          if (response.data.status === 0) {
+          if (JSON.parse(response.data.responseStr).success) {
             this.$message.success("成员添加成功!");
             this.$emit("add-user-close");
             this.$emit("input", false);
           } else {
-            this.$message.error(response.data.statusText);
+            this.$message.error(JSON.parse(response.data.responseStr).msg);
           }
         })
         .finally(() => {
@@ -183,24 +203,21 @@ export default {
         });
     },
     dialogOpen() {
+      this.queryUserData.roleId = this.roleData.roleId;
       this.queryExistingUsers();
     },
     // 查询可添加用户列表
     queryData() {
+      this.pageUserParams.requestBody = JSON.stringify(this.queryUserData);
       this.submitLoading = true;
       this.$axios
-        .get(this.$axios.config.saa.baseURL + this.$axios.config.saa.outsideRoleCode.format({ roleCode: this.roleData.roleCode }), {
-          params: {
-            _pageNo: this.queryUserData.pageNo,
-            _pageSize: this.queryUserData.pageSize
-          }
-        })
+        .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageUserParams)
         .then(response => {
-          if (response.data.status === 0) {
-            this.totalCount = response.data.data.totalCount;
-            this.usersData = response.data.data.data;
+          if (JSON.parse(response.data.responseStr).repCode === 'success') {
+            this.usersData = JSON.parse(response.data.responseStr).result.dataList;
+            this.totalCount = JSON.parse(response.data.responseStr).result.totalCount;
           } else {
-            this.$message.error(response.data.statusText);
+            this.$message.error('系统异常，分页查询失败');
           }
         })
         .finally(() => {
@@ -209,20 +226,16 @@ export default {
     },
     // 查询已有用户列表
     queryExistingUsers() {
+      this.pageUserRoleParams.requestBody = JSON.stringify(this.queryUserData);
       this.submitLoading = true;
       this.$axios
-        .get(this.$axios.config.saa.baseURL + this.$axios.config.saa.existingUserQuery.format({ roleCode: this.roleData.roleCode }), {
-          params: {
-            _pageNo: this.queryUserData.pageNo,
-            _pageSize: this.queryUserData.pageSize
-          }
-        })
+        .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageUserRoleParams)
         .then(response => {
-          if (response.data.status === 0) {
-            this.totalCount = response.data.data.totalCount;
-            this.existingUsersData = response.data.data.data;
+          if (JSON.parse(response.data.responseStr).success) {
+            this.existingUsersData = JSON.parse(response.data.responseStr).result.dataList;
+            this.totalCount = JSON.parse(response.data.responseStr).result.totalCount;
           } else {
-            this.$message.error(response.data.statusText);
+            this.$message.error(JSON.parse(response.data.responseStr).msg);
           }
         })
         .finally(() => {
@@ -234,7 +247,8 @@ export default {
     },
     initPublicData() {
       this.rolePageData = {
-        pageNo: 1,
+        roleId: this.roleData.roleId,
+        pageNum: 1,
         pageSize: 10
       };
       this.totalCount = 0;
@@ -264,21 +278,29 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.submitLoading = true;
           let PostUsersCode = [];
           this.tableSelection.forEach(select => {
-            PostUsersCode.push(select.userCode);
+            PostUsersCode.push(select.userId);
           });
-          console.log(this.roleData.roleCode);
+          let param = {
+            roleId: this.roleData.roleId,
+            userIds: PostUsersCode
+          }
+          let delParams = {
+            "requestUrl": this.$axios.config.role.baseURL + this.$axios.config.role.deleteUserRole,
+            "requestType": "DELETE",
+            "requestBody": JSON.stringify(param)
+          }
+          this.submitLoading = true;
           this.$axios
-            .post(this.$axios.config.saa.baseURL + this.$axios.config.saa.deleteUsersFromRole.format({ roleCode: this.roleData.roleCode }), PostUsersCode)
+            .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, delParams)
             .then(response => {
-              if (response.data.status === 0) {
+              if (JSON.parse(response.data.responseStr).success) {
                 this.$message.success("删除成功!");
                 this.$emit("add-user-close");
                 this.$emit("input", false);
               } else {
-                this.$message.error(response.data.statusText);
+                this.$message.error(JSON.parse(response.data.responseStr).msg);
               }
             })
             .finally(() => {
