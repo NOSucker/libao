@@ -11,21 +11,21 @@
       @open="dialogOpen">
       <el-form ref="editForm" :model="postData" :rules="validateRules" label-width="50%">
         <el-row>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="省份" prop="provice">
               <el-select v-model="postData.provice" style="width: 100%" @change="selectProvice">
                 <el-option v-for="para in customerAreas" :key="para.reserve2" :label="para.areaName" :value="para.reserve2"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="客户等级" prop="viplevel">
               <el-select v-model="postData.viplevel" style="width: 100%">
                 <el-option v-for="para in levelTypeLists" :key="para.key" :label="para.value" :value="para.key"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="服务类型" prop="serviceType">
               <el-select v-model="postData.serviceType" style="width: 100%">
                 <el-option label="税费代缴" :value="'1'"></el-option>
@@ -41,46 +41,46 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="最大座位数" prop="seatCountNum">
               <el-input v-model="postData.seatCountNum" clearable></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="车辆使用性质" prop="carUseType">
               <el-select v-model="postData.carUseType" style="width: 100%">
                 <el-option v-for="para in carUseTypes" :key="para.key" :label="para.value" :value="para.key"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="车辆类型" prop="carType">
               <el-select v-model="postData.carType" style="width: 100%">
                 <el-option label="客车" :value="'客车'"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="除外车辆类型" prop="carTypeExcept">
               <el-input v-model="postData.carTypeExcept" clearable></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="免费拖车距离" prop="freeTrailerDistance">
               <el-input v-model="postData.freeTrailerDistance" clearable></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="商业险保费下限" prop="premiumLimit">
               <el-input v-model="postData.premiumLimit" clearable></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="商业险保费上限" prop="premiumUpper">
               <el-input v-model="postData.premiumUpper" clearable></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="是否新车" prop="isNewCar">
               <el-select v-model="postData.isNewCar" style="width: 100%">
                 <el-option label="是" :value="'1'"></el-option>
@@ -88,7 +88,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="是否续约" prop="renewaOfContract">
               <el-select v-model="postData.renewaOfContract" style="width: 100%">
                 <el-option label="是" :value="'1'"></el-option>
@@ -96,7 +96,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="是否投保车损险" prop="isDlw">
               <el-select v-model="postData.isDlw" style="width: 100%">
                 <el-option label="是" :value="'1'"></el-option>
@@ -104,7 +104,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="是否转保" prop="isChangeInsurance">
               <el-select v-model="postData.isChangeInsurance" style="width: 100%">
                 <el-option label="是" :value="'1'"></el-option>
@@ -112,7 +112,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="是否无赔" prop="isNoLoss">
               <el-select v-model="postData.isNoLoss" style="width: 100%">
                 <el-option label="是" :value="'1'"></el-option>
@@ -120,7 +120,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="是否过户" prop="isTransfer">
               <el-select v-model="postData.isTransfer" style="width: 100%">
                 <el-option label="是" :value="'1'"></el-option>
@@ -128,7 +128,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="是否脱保" prop="isInsuredOrNot">
               <el-select v-model="postData.isInsuredOrNot" style="width: 100%">
                 <el-option label="是" :value="'1'"></el-option>
@@ -136,47 +136,47 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="投保日期为特定日期后取消服务" prop="">
               <el-date-picker v-model="postData.cancellationDate" value-format="yyyy-MM-dd" style="width: 100%"></el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="投保日期为特定日期后规则生效" prop="">
               <el-date-picker v-model="postData.effectiveDate" value-format="yyyy-MM-dd" style="width: 100%"></el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="险种" prop="insuranceType">
               <el-input v-model="postData.insuranceType" clearable></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="代理人" prop="agentName">
               <el-input v-model="postData.agentName" clearable></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="适用车型" prop="applicableVehicleType">
               <el-input v-model="postData.applicableVehicleType" clearable></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="除外车型" prop="exceptVehicleType">
               <el-input v-model="postData.exceptVehicleType" clearable></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="单次事故定损金额" prop="accidentDamageAmount">
               <el-input v-model="postData.accidentDamageAmount" clearable></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="出险次数下限" prop="riskFrequencyLimit">
               <el-input v-model="postData.riskFrequencyLimit" clearable></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="1">
             <el-form-item label="出险次数上限" prop="riskFrequencyUpper">
               <el-input v-model="postData.riskFrequencyUpper" clearable></el-input>
             </el-form-item>
@@ -184,8 +184,8 @@
         </el-row>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" @click="submitForm">提交</el-button>
-        <el-button @click="clearEditData" :disabled="Object.keys(postData).length > 0 ? false : true">重置</el-button>
+        <el-button type="primary" @click="submitForm" icon="el-icon-finished">提交</el-button>
+        <el-button @click="clearEditData" :disabled="Object.keys(postData).length > 0 ? false : true" icon="el-icon-refresh">重置</el-button>
       </span>
     </el-dialog>
   </div>

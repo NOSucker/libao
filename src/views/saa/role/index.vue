@@ -15,8 +15,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-button style="margin-left: 20px" type="primary" @click="queryRoleList">查询</el-button>
-            <el-button @click="resetRoleForm('roleForm')">重置</el-button>
+            <el-button style="margin-left: 20px" type="primary" @click="queryRoleList" icon="el-icon-search">查询</el-button>
+            <el-button @click="resetRoleForm('roleForm')" icon="el-icon-refresh">重置</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -208,6 +208,10 @@ export default {
     },
     // 删除role信息
     deleteThisRole(data) {
+      if (data.userCounts > 0) {
+        this.$message.error("请先解除该角色所有用户");
+        return;
+      }
       this.$confirm('此操作将永久删除该行数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -231,7 +235,7 @@ export default {
             }
           })
           .finally(() => {
-            this.queryLoading = false;
+            // this.queryLoading = false;
           });
       }).catch(() => {
         this.$message({

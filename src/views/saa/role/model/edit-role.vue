@@ -67,8 +67,8 @@
               </el-col>
             </el-row>
             <el-row style="text-align: right;">
-              <el-button type="primary" @click="submitForm">提交</el-button>
-              <el-button @click="$refs.editForm.resetFields()">重置</el-button>
+              <el-button type="primary" @click="submitForm" icon="el-icon-finished">提交</el-button>
+              <el-button @click="$refs.editForm.resetFields()" icon="el-icon-refresh">重置</el-button>
             </el-row>
           </el-form>
         </el-col>
@@ -161,6 +161,7 @@ export default {
         PostData = this.rolePageData;
         delete PostData.userCounts;
         delete PostData.menuList;
+        delete PostData.roleTypeName;
       }
       let data = {
         role: PostData,
@@ -176,7 +177,7 @@ export default {
         .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
         .then(response => {
           if (JSON.parse(response.data.responseStr).success) {
-            this.$message.success(this.type === "edit" ? "角色更新" : "角色添加" + "成功!");
+            this.$message.success((this.type === "edit" ? "角色更新" : "角色添加") + "成功!");
             this.$emit("role-edit-close");
             this.$emit("input", false);
           } else {

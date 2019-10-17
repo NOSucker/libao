@@ -17,7 +17,7 @@
         <div style="width: 100%; height: 20px; line-height: 20px; font-size: 18px; margin: 15px 0;text-align: left;">
           管理已添加用户
           <span style="float: right; margin-bottom: 10px;">
-            <el-button type="primary" icon="el-icon-circle-plus" @click="changeToAdd">新增该角色用户</el-button>
+            <el-button type="primary" icon="el-icon-circle-plus" @click="changeToAdd">添加该角色用户</el-button>
           </span>
         </div>
         <el-col :span="24">
@@ -104,9 +104,9 @@
         </el-col>
       </el-row>
       <span slot="footer" class="dialog-footer">
-        <el-button v-if="modelType === 'add'" type="primary" @click="submitForm">提交</el-button>
-        <el-button v-if="modelType === 'manage'" type="danger" @click="deleteUser">删除</el-button>
-        <el-button @click="$emit('input', false)">关闭</el-button>
+        <el-button v-if="modelType === 'add'" type="primary" @click="submitForm" icon="el-icon-finished">提交</el-button>
+        <el-button v-if="modelType === 'manage'" type="danger" @click="deleteUser" icon="el-icon-remove">移除</el-button>
+        <el-button @click="$emit('input', false)" icon="el-icon-circle-close">关闭</el-button>
       </span>
     </el-dialog>
   </div>

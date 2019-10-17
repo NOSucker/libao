@@ -62,7 +62,7 @@ export default {
     if (this.$store.state.usercode && this.$store.state.usercode !== '') {
       setTimeout(() => {
         this.sidebar.opened = true;
-      }, 500);
+      }, 1000);
     }
   }
 };

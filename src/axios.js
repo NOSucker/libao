@@ -163,7 +163,7 @@ const config = {
   }
 };
 axios.config = config;
-axios.defaults.timeout = 20000; // 请求超时时间
+axios.defaults.timeout = 180000; // 请求超时时间
 axios.defaults.baseURL = process.env.VUE_APP_BASE_URL; // 根据环境变量设置默认请求后台地址
 
 /**

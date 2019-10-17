@@ -44,8 +44,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-button style="margin-left: 20px" type="primary" @click="queryData">查询</el-button>
-            <el-button @click="resetAndQueryData">重置</el-button>
+            <el-button style="margin-left: 20px" type="primary" @click="queryData" icon="el-icon-search">查询</el-button>
+            <el-button @click="resetAndQueryData" icon="el-icon-refresh">重置</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -172,9 +172,13 @@ export default {
       }*/
 
       this.pageParams.requestBody = JSON.stringify(this.pagerQuery);
+      this.queryLoading = true;
       this.$axios.post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageParams).then(response => {
         this.tableData = JSON.parse(response.data.responseStr).result.dataList;
         this.totalCount = JSON.parse(response.data.responseStr).result.totalCount;
+      })
+      .finally(() => {
+        this.queryLoading = false;
       });
       var urls = this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface;
       this.$axios.post(urls, this.initParams).then(response => {

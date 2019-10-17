@@ -109,24 +109,24 @@
               </el-col>
               <el-col :span="10">
                 <el-form-item label="序号" prop="displayNo" :rules="[{ required: pageModel !== 'view', message: '请输入序号', trigger: 'blur' }]">
-                  <el-input-number v-model="menuData.displayNo" :disabled="pageModel === 'view'" controls-position="right" :min="1" :max="6"></el-input-number>
+                  <el-input-number v-model="menuData.displayNo" :disabled="pageModel === 'view'" size="mini" :min="1"></el-input-number>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row v-if="pageModel === 'add' || pageModel === 'addSub' || pageModel === 'edit'" style="text-align: center;padding-top: 15px; border-top: 1px solid #eee;">
-              <el-button type="primary" @click="submitForm">提交</el-button>
-              <el-button @click="$refs.menuForm.resetFields()">重置</el-button>
-              <el-button @click="backToView">返回</el-button>
+              <el-button type="primary" @click="submitForm" icon="el-icon-finished">提交</el-button>
+              <el-button @click="$refs.menuForm.resetFields()" icon="el-icon-refresh">重置</el-button>
+              <el-button @click="backToView" icon="el-icon-back">返回</el-button>
             </el-row>
             <el-row v-if="!use && pageModel !== 'add' && pageModel !== 'addSub'" style="text-align: center;padding-top: 15px; border-top: 1px solid #eee;">
-              <el-button v-if="'root' === this.parentMenuData.menuType || 'dir' === this.parentMenuData.menuType" @click="operationMenu('add')">创建目录</el-button>
+              <el-button v-if="'root' === this.parentMenuData.menuType || 'dir' === this.parentMenuData.menuType" @click="operationMenu('add')" icon="el-icon-circle-plus">创建目录</el-button>
             </el-row>
             <el-row v-if="pageModel === 'view' && use" style="text-align: center;padding-top: 15px; border-top: 1px solid #eee;">
               <!--<el-button v-if="menuData.level < 3" @click="operationMenu('add')">{{ buttonName }}</el-button>-->
-              <el-button v-if="'root' === this.parentMenuData.menuType || 'dir' === this.parentMenuData.menuType" @click="operationMenu('add')">创建目录</el-button>
-              <el-button v-if="showPage" @click="operationMenu('addSub')">创建子页面</el-button>
-              <el-button @click="operationMenu('edit')">修改</el-button>
-              <el-button v-if="menuData.validind !== '0'" type="danger" @click="deleteMenu">删除</el-button>
+              <el-button v-if="'root' === this.parentMenuData.menuType || 'dir' === this.parentMenuData.menuType" @click="operationMenu('add')" icon="el-icon-circle-plus">创建目录</el-button>
+              <el-button v-if="showPage" @click="operationMenu('addSub')" icon="el-icon-circle-plus">创建子页面</el-button>
+              <el-button @click="operationMenu('edit')" icon="el-icon-edit-outline">修改</el-button>
+              <el-button v-if="menuData.validind !== '0'" type="danger" @click="deleteMenu" icon="el-icon-remove">删除</el-button>
               <el-button v-if="menuData.validind === '0'" type="success" @click="recoverMenu">还原有效</el-button>
             </el-row>
           </el-form>
@@ -202,7 +202,7 @@ export default {
         url: null,
         remark: null,
         taskCode: null,
-        displayNo: null,
+        displayNo: 1,
         parentId: null,
         moduleId: null,
         openIcon: null,
@@ -405,7 +405,7 @@ export default {
               this.treeLoading = false;
             });
         }
-      }, 300);
+      }, 100);
     },
     operationMenu(type) {
       if (type === "edit" && !this.menuData.parentId) {

@@ -11,21 +11,21 @@
       @open="dialogOpen">
       <el-form ref="editForm" :model="postData" :rules="validateRules" label-width="50%">
         <el-row>
-          <el-col :span="8">
+          <el-col :span="8" :pull="2">
             <el-form-item label="省份" prop="areaCode">
               <el-select v-model="postData.areaCode" style="width: 100%" @change="selectArea">
                 <el-option v-for="para in customerAreas" :key="para.reserve2" :label="para.areaName" :value="para.reserve2"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="2">
             <el-form-item label="客户等级" prop="levelTypeCode">
               <el-select v-model="postData.levelTypeCode" style="width: 100%" @change="selectLevel">
                 <el-option v-for="para in levelTypeLists" :key="para.key" :label="para.value" :value="para.key"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="2">
             <el-form-item label="服务类型" prop="serverTypeCode">
               <el-select v-model="postData.serverTypeCode" style="width: 100%" @change="selectServerName">
                 <el-option label="税费代缴" :value="'taxpay'"></el-option>
@@ -41,12 +41,12 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="2">
             <el-form-item label="服务次数" prop="serverNumber">
               <el-input v-model="postData.serverNumber" clearable></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="2">
             <el-form-item label="供应商名称" prop="supplierId">
               <el-select v-model="postData.supplierId" filterable placeholder="输入搜索并选择" @change="selectSupplier" style="width: 100%">
                 <el-option
@@ -58,12 +58,12 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="2">
             <el-form-item label="供应商次数" prop="supplierCount">
               <el-input v-model="postData.supplierCount" clearable></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="2">
             <el-form-item label="是否默认" prop="isDefault">
               <el-select v-model="postData.isDefault" style="width: 100%">
                 <el-option label="是" :value="'Y'"></el-option>
@@ -71,7 +71,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" :pull="2">
             <el-form-item label="是否线上" prop="isOnline">
               <el-select v-model="postData.isOnline" style="width: 100%">
                 <el-option label="是" :value="'online'"></el-option>
@@ -82,8 +82,8 @@
         </el-row>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" @click="submitForm">提交</el-button>
-        <el-button @click="clearEditData" :disabled="Object.keys(postData).length > 0 ? false : true">重置</el-button>
+        <el-button type="primary" @click="submitForm" icon="el-icon-finished">提交</el-button>
+        <el-button @click="clearEditData" :disabled="Object.keys(postData).length > 0 ? false : true" icon="el-icon-refresh">重置</el-button>
       </span>
     </el-dialog>
   </div>
