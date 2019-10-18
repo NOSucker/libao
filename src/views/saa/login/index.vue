@@ -10,10 +10,10 @@
   >
     <el-container>
       <el-header style="height: 20vh"></el-header>
-      <el-main style="height: 60vh;min-height: 320px">
+      <el-main style="min-height: 320px">     <!--height: 60vh;-->
         <el-row style="height: 100%">
-          <el-col :xs="0" :md="9" :lg="9" :xl="9">&nbsp;</el-col>
-          <el-col :xs="24" :md="6" :lg="6" :xl="6" style="height: 100%">
+          <el-col :xs="0" :md="16" :lg="16" :xl="16">&nbsp;</el-col>
+          <el-col :xs="24" :md="5" :lg="5" :xl="5" style="height: 100%">
             <el-card v-loading="loginLoading" class="box-card" style="height: 100%">
               <el-form ref="loginForm" label-position="top" :rules="rules" :model="formLogin" size="default">
                 <el-form-item prop="userCode">
@@ -44,7 +44,7 @@
               </el-form>
             </el-card>
           </el-col>
-          <el-col :xs="0" :md="9" :lg="9" :xl="9">&nbsp;</el-col>
+          <el-col :xs="0" :md="3" :lg="3" :xl="3">&nbsp;</el-col>
         </el-row>
       </el-main>
       <el-footer style="height: 20vh"></el-footer>
