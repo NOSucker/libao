@@ -10,10 +10,10 @@
       width="80%"
       @open="dialogOpen"
     >
-      <el-form ref="editForm" :model="postData" :rules="validateRules" label-width="80px">
+      <el-form ref="editForm" :model="postData" :rules="validateRules" label-width="50%">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="用户姓名" prop="userName">
+            <el-form-item label="用户名" prop="userName">
               <el-input v-model="postData.userName"></el-input>
             </el-form-item>
           </el-col>
@@ -22,14 +22,9 @@
               <el-input v-model="postData.userCode"></el-input>
             </el-form-item>
           </el-col>
-          <el-col v-if="type !== 'edit'" :span="8">
-            <el-form-item label="密码" prop="password">
-              <el-input v-model="postData.password" show-password></el-input>
-            </el-form-item>
-          </el-col>
           <el-col :span="8">
-            <el-form-item label="组织机构" prop="comCode">
-              <tree-select
+            <el-form-item label="组织机构" prop="organId">
+       <!--   <tree-select
                 v-model="postData.comCode"
                 node-key="comCode"
                 :remote-method="comQuery"
@@ -37,35 +32,105 @@
                   children: 'subList',
                   value: 'comCode',
                   label: 'comName'
-                }"></tree-select>
+                }"></tree-select>-->
+            <!--  <el-select v-model="postData.organId" style="width: 100%">
+              &lt;!&ndash;  <el-option label="事业部" value="事业部"></el-option>&ndash;&gt;
+              </el-select>-->
+              <select-tree
+                v-model="postData.organId"
+                :options="options"
+                :value="1"
+                :default-props="options.organName"
+                :default-check-nodes="showTreeData"
+                :disabled="type === 'view'"
+                @fromChild="getChild"
+              >
+              </select-tree>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="手机号码" prop="mobile">
-              <el-input v-model="postData.mobilePhone"></el-input>
+          <el-form-item label="手机号码" prop="mobile">
+            <el-input v-model="postData.mobile"></el-input>
+          </el-form-item>
+        </el-col>
+          <el-col :span="8">
+            <el-form-item label="电话" prop="telePhone">
+              <el-input v-model="postData.telePhone"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="电子邮箱" prop="mobile">
+            <el-form-item label="电子邮箱" prop="email">
               <el-input v-model="postData.email"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="证件号码" prop="">
-              <el-input v-model="postData.id"></el-input>
+            <el-form-item label="证件号码" prop="idCardNo">
+              <el-input v-model="postData.idCardNo" style="background: #FFFFFF !important;"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="性别" prop="sex">
               <el-select v-model="postData.sex" style="width: 100%">
-                <el-option label="男" :value="'1'"></el-option>
-                <el-option label="女" :value="'2'"></el-option>
+                <el-option v-for="para in userSex" :key="para.key" :label="para.value" :value="para.key"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="出生日期" prop="">
-              <el-date-picker v-model="postData.birthday" value-format="yyyy-MM-dd" style="width: 100%"></el-date-picker>
+            <el-form-item label="有效" prop="vain">
+              <el-select v-model="postData.vain" style="width: 100%">
+                <el-option v-for="para in userVain" :key="para.key" :label="para.value" :value="para.key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="班长" prop="monitor">
+              <el-select v-model="postData.monitor" style="width: 100%">
+                <el-option v-for="para in userVain" :key="para.key" :label="para.value" :value="para.key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="8">
+            <el-form-item label="出生年月" prop="birthday">
+              <el-date-picker v-model="postData.birthday" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%"></el-date-picker>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="8">
+            <el-form-item label="过期日期" prop="expirationDate">
+              <el-date-picker v-model="postData.expirationDate"  type="datetime" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%"></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="办公室电话" prop="officephone">
+              <el-input v-model="postData.officephone"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="员工类型" prop="stafftype">
+              <el-select v-model="postData.stafftype" style="width: 100%">
+                <el-option label="正式" value="正式"></el-option>
+                <el-option label="试用" value="试用"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="邮件签名" prop="emailsignature">
+              <el-input v-model="postData.emailsignature"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="技能组" prop="skillsGroup">
+              <el-select v-model="postData.skillsGroup" style="width: 100%">
+                <el-option v-for="para in userSkillsGroup" :key="para.key" :label="para.value" :value="para.key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="用户来源" prop="userSource">
+              <el-select v-model="postData.userSource" style="width: 100%">
+                <el-option v-for="para in userSource" :key="para.key" :label="para.value" :value="para.key"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -80,10 +145,12 @@
 
 <script>
 import TreeSelect from "../../../../components/tree-select";
+import selectTree from  "../../organization/component/selectTree";
 export default {
   name: "EditUser",
   components: {
-    TreeSelect
+    TreeSelect,
+    selectTree
   },
   props: {
     value: Boolean,
@@ -93,14 +160,26 @@ export default {
   data() {
     return {
       submitLoading: false,
-      postData: {},
+      postData: {
+        is: 'Y'
+       /* userName: '',
+        userCode: '',
+        id: ''*/
+        //value-format="yyyy-MM-dd"
+      },
       editDialogTitle: "",
       validateRules: {
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
         userCode: [{ required: true, message: "请输入用户代码", trigger: "blur" }, { min: 6, max: 20, message: "长度在 8 到 20 个字符", trigger: "blur" }],
         userName: [{ required: true, message: "请输入用户姓名", trigger: "blur" }, { min: 2, max: 24, message: "长度在 2 到 24 个字符", trigger: "blur" }],
-        comCode: [{ required: true, message: "请选择组织机构" }]
-      }
+        organId: [{ required: true, message: "请选择组织机构", trigger: "blur" }]
+      },
+      userSkillsGroup: [],
+      userSource: [],
+      userSex: [],
+      userVain: [],
+      options:[],
+      showTreeData: []
     };
   },
   computed: {
@@ -114,23 +193,85 @@ export default {
       }
     }
   },
+  mounted() {
+    //用户技能组
+    let initSkillsGroup = {
+      "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.userQuerySkillsGroup,
+      "requestType": "GET"
+    };
+    //用户来源
+    let initUserSource = {
+      "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.userqueryUserSource,
+      "requestType": "GET"
+    };
+    //用户性别
+    let initUserSex = {
+      "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.userqueryUserSex,
+      "requestType": "GET"
+    };
+    //用户是否有效和是否班长
+    let initUserVain = {
+      "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.userqueryUserVain,
+      "requestType": "GET"
+    }
+    let queryAllOrgans = {
+      "requestUrl": this.$axios.config.organ.baseURL + this.$axios.config.organ.getAllOrgan,
+      "requestType": "GET"
+    }
+
+    let urls = this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface;
+   //技能组
+    this.$axios.post(urls, initSkillsGroup).then(response => {
+      this.userSkillsGroup = JSON.parse(response.data.responseStr).result;
+    });
+    //用户来源
+    this.$axios.post(urls, initUserSource).then(response => {
+      this.userSource = JSON.parse(response.data.responseStr).result;
+    });
+    //用户性别
+    this.$axios.post(urls, initUserSex).then(response => {
+      this.userSex = JSON.parse(response.data.responseStr).result;
+    });
+    //是否有效及是否班长
+    this.$axios.post(urls, initUserVain).then(response => {
+      this.userVain = JSON.parse(response.data.responseStr).result;
+    });
+    //查询所有的机构
+    this.$axios.post(urls, queryAllOrgans).then(response => {
+      this.options = JSON.parse(response.data.responseStr).result;
+      console.log(9898494,this.options.organId);
+    })
+
+  },
+
   methods: {
     submitForm() {
+
+      let addParam = {
+        "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.userAdd,
+        "requestType": "POST",
+        "requestBody": JSON.stringify(this.postData)
+      };
+      let updateParam = {
+        "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.userUpdate,
+        "requestType": "POST",
+        "requestBody": JSON.stringify(this.postData)
+      };
       this.$refs.editForm.validate(valid => {
         if (valid) {
           this.submitLoading = true;
           this.$axios
             .request({
               method: "post",
-              url: this.$axios.config.saa.baseURL + (this.type == "edit" ? this.$axios.config.saa.userEdit : this.$axios.config.saa.userCreate),
-              data: this.postData
+              url: this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface,
+              data: this.type == "edit" ? updateParam : addParam
             })
             .then(response => {
-              if (response.data.status != 0) {
+              if (JSON.parse(response.data.responseStr).errorCode != 200) {
                 this.$message({
                   showClose: true,
                   duration: 10000,
-                  message: response.data.statusText,
+                  message:JSON.parse(response.data.responseStr).errorMsg ,
                   type: "error"
                 });
               } else {
@@ -148,6 +289,11 @@ export default {
           return false;
         }
       });
+    },
+    getChild(data){
+      console.log(88487878,data);
+      var Str=data.join(",");
+      this.postData.organId=Str;
     },
     comQuery(node) {
       // 如果没有点击节点 也就是初始化的时候， 通过用户的userCode去调用接口，返回这个用户有权限操作的接口

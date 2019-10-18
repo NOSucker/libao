@@ -15,7 +15,35 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-button style="margin-left: 20px" type="primary" @click="queryData">查询</el-button>
+            <el-form-item label="性别" prop="sex">
+              <el-select v-model="pagerQuery.sex" style="width: 100%">
+                <el-option label="男" value="男"></el-option>
+                <el-option label="女" value="女"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="用户来源" prop="userSource">
+              <el-select v-model="pagerQuery.userSource" style="width: 100%">
+                <el-option label="CRM" value="CRM"></el-option>
+                <el-option label="电销" value="电销"></el-option>
+                <el-option label="四川分公司" value="四川分公司"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="注册日期" prop="registerDate">
+              <el-date-picker v-model="pagerQuery.registerDate" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%"></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="到期日期" prop="expirationDate">
+              <el-date-picker v-model="pagerQuery.expirationDate" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%"></el-date-picker>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="6">
+            <el-button style="margin-left: 100px" type="primary" @click="queryData">查询</el-button>
             <el-button @click="$refs.userForm.resetFields()">重置</el-button>
           </el-col>
         </el-row>
@@ -33,36 +61,39 @@
           <el-table-column type="selection" width="55" />
           <el-table-column prop="userCode" label="用户代码" />
           <el-table-column prop="userName" label="用户名称" />
-          <el-table-column prop="regTime" label="注册时间">
+          <el-table-column prop="monitor" label="班长" />
+          <el-table-column prop="init" label="初始化" />
+          <el-table-column prop="userSource" label="用户来源" />
+          <el-table-column prop="registerDate" label="注册时间">
             <template slot-scope="scope">
-              {{ scope.row.regTime | dataFilter("yyyy年MM月dd日") }}
+              {{ scope.row.registerDate | dataFilter("yyyy年MM月dd日") }}
             </template>
           </el-table-column>
-          <el-table-column prop="comName" label="机构" />
-          <el-table-column prop="validStatus" label="是否有效">
-            <template slot-scope="scope">
-              <el-switch
-                v-model="scope.row.validStatus"
-                active-value="1"
-                inactive-value="0"
-                disabled="disabled"
-                active-color="#13ce66"
-                inactive-color="#ff4949"></el-switch>
-            </template>
-          </el-table-column>
+          <el-table-column prop="organName" label="机构" /><!--原来的机构prop叫comName-->
+          <el-table-column prop="vain" label="是否有效" />
+           <!-- <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.validStatus"
+              active-value="1"
+              inactive-value="0"
+              disabled="disabled"
+              active-color="#13ce66"
+              inactive-color="#ff4949"></el-switch>
+          </template>
+          </el-table-column>-->
           <el-table-column label="操作" width="150px">
             <template slot-scope="scope">
               <span title="复制" style="padding: 10px; cursor: pointer; color: #5683bf;" @click="userButtonClick('copy', scope.row)">
                 <i class="el-icon-tickets"></i>
               </span>
-              <span title="编辑" style="padding: 10px; cursor: pointer; color: #5683bf;" @click="userButtonClick('edit', scope.row)">
+              <span title="修改" style="padding: 10px; cursor: pointer; color: #5683bf;" @click="userButtonClick('edit', scope.row)">
                 <i class="el-icon-edit"></i>
               </span>
             </template>
           </el-table-column>
         </el-table>
         <el-pagination
-          :current-page.sync="pagerQuery.pageNo"
+          :current-page.sync="pagerQuery.pageNum"
           background
           :page-sizes="[10, 20, 30, 50]"
           :page-size.sync="pagerQuery.pageSize"
@@ -71,7 +102,7 @@
           :total="totalCount"
           @current-change="queryData"
           @size-change="
-            pagerQuery.pageNo = 1;
+            pagerQuery.pageNum = 1;
             queryData();
           "/>
       </div>
@@ -116,9 +147,37 @@ export default {
       pagerQuery: {
         userCode: null,
         userName: null,
-        pageNo: 1,
+        sex:null,
+        registerDate:null,
+        expirationDate:null,
+        userSource:null,
+        pageNum: 1,
         pageSize: 10
+
       },
+      userAddParams: {
+        "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.userAdd,
+        "requestType": "POST",
+        "requestBody": ""
+      },
+      userQueryParams: {
+        "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.userQuery,
+        "requestType": "POST",
+        "requestBody": ''
+      },
+
+      userDeleteParams: {
+        "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.userDelete,
+        "requestType": "POST",
+        "requestBody": ""
+      },
+      userQueryAllParams: {
+        "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.userQueryAll,
+        "requestType": "POST",
+        "requestBody": ""
+      },
+
+
       editData: {},
       editDialogVisible: false,
       editStatus: ""
@@ -132,19 +191,19 @@ export default {
       return this.tableSelection.length < 1;
     }
   },
+  mounted() {
+    this.queryData();
+  },
   methods: {
     queryData() {
       this.queryLoading = true;
+      this.userQueryParams.requestBody = JSON.stringify(this.pagerQuery);
       this.$axios
-        .post(this.$axios.config.saa.baseURL + this.$axios.config.saa.userQuery, this.pagerQuery, {
-          params: {
-            _pageNo: this.pagerQuery.pageNo,
-            _pageSize: this.pagerQuery.pageSize
-          }
-        })
+        .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.userQueryParams)
         .then(response => {
-          this.tableData = response.data.data;
-          this.totalCount = response.data.totalCount;
+          this.tableData = JSON.parse(response.data.responseStr).result.dataList;
+          this.totalCount = JSON.parse(response.data.responseStr).result.totalCount;
+          //this.totalCount = response.data.totalCount;
         })
         .finally(() => {
           this.queryLoading = false;
@@ -152,6 +211,7 @@ export default {
     },
     tableSelectionChange(selection) {
       this.tableSelection = selection;
+
     },
     userButtonClick(type, data) {
       this.editData = data;
@@ -159,30 +219,51 @@ export default {
       this.editDialogVisible = true;
     },
     deleteUser() {
-      if (this.tableSelection.length < 1) {
-        this.$message.warning("请您选中需要删除的用户后再进行操作");
-        return;
-      }
-      let needDelUser = [];
-      this.tableSelection.forEach(select => {
-        needDelUser.push(select.userCode);
-      });
-      this.queryLoading = true;
-      this.$axios
-        .delete(this.$axios.config.saa.baseURL + this.$axios.config.saa.userDelete, {
-          data: needDelUser
-        })
-        .then(response => {
-          if (response.data.status === 0) {
-            this.$message.success("角色删除成功！");
-            this.queryData();
-          } else {
-            this.$message.error(response.data.statusText);
-          }
-        })
-        .finally(() => {
-          this.queryLoading = false;
+      this.$confirm('此操作将永久删除所选数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true
+      }).then(() => {
+
+        if (this.tableSelection.length < 1) {
+          this.$message.warning("请您选中需要删除的数据后再进行操作");
+          return;
+        }
+        let needDelUser = [];
+        this.tableSelection.forEach(select => {
+          needDelUser.push(select.userCode);
         });
+        let delParams = {
+          "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.userDelete,
+          "requestType": "DELETE",
+          "requestBody": needDelUser
+        }
+        this.queryLoading = true;
+        this.$axios
+          .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, delParams)
+          .then(response => {
+            if (JSON.parse(response.data.responseStr).success) {
+              this.$message.success("数据删除成功！");
+              this.queryData();
+            } else {
+              this.$message.error(JSON.parse(response.data.responseStr).msg);
+            }
+          })
+          .finally(() => {
+            this.queryLoading = false;
+          });
+
+        /*this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });*/
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
   }
 };

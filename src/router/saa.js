@@ -1,10 +1,10 @@
 export default [
-  /*{
+  {
     path: "/user",
     name: "user",
     meta: { icon: "users", title: "用户管理" },
     component: () => import("../views/saa/user")
-  },*/
+  },
   {
     path: "/role",
     name: "role",
@@ -19,12 +19,12 @@ export default [
       }
     ]
   },
-  /*{
+  {
     path: "/organization",
     name: "organization",
     meta: { icon: "organization", title: "机构管理" },
     component: () => import("../views/saa/organization")
-  },*/
+  },
   {
     path: "/menu",
     name: "menu",
