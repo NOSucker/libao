@@ -94,18 +94,23 @@ const config = {
     userqueryUserSource: "/platform/serivce/queryUserSource", //查询用户来源
     userqueryUserSex: "/platform/serivce/queryUserSex", //查询用户性别
     userqueryUserVain: "/platform/serivce/queryUserVain", //查询用户是否有效以及是否是班长
-    login: "/platform/serivce/login",   //用户登录
+    login: "/platform/serivce/login" //用户登录
   },
   organ: {
     baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
     //getSubCompany: "/syscompany/sub/{comCode}",
-    getAllOrgan: "/platform/serivce/QueryAllOrgan",
-    createOrganization: "/syscompany/create", //新增
-    deleteOrganization: "/syscompany/delete", //删除
-    updateOrganization: "/syscompany/update", //更新
+    getAllOrgan: "/platform/serivce/QueryAllOrgan", //查找所有机构信息
+    createOrUpdateOrganization: "/platform/serivce/saveOrUpdate", //新增或者更新
+    deleteOrgan: "/platform/serivce/delete", //删除
     queryOrganByParentId: "/platform/serivce/QueryOrganDetail", //跟据父id查询子节点
-    dragOrganization: "/syscompany/drag", //拖拽
-    queryRootOrgan: "/platform/serivce/QueryRootOrgan" //查找根节点
+    //dragOrganization: "/syscompany/drag", //拖拽
+    queryRootOrgan: "/platform/serivce/QueryRootOrgan", //查找根节点
+    queryParentName: "/platform/serivce/QueryParentName", //把父id作为id查询父id名称
+    queryManngerGroup: "/platform/serivce/QueryManngerGroup", //查询可管理组
+    queryConsultationGroup: "/platform/serivce/QueryConsultationGroup", //查询可咨询组
+    queryIsChild: "/platform/serivce/QueryIsChild", //查询当前节点是否有子节点
+    queryUserCount: "/platform/serivce/QueryUserCount", //查询当前节点的用户数量
+    updatUserOrgan: "/platform/serivce/updateUserOrgan" //引入用户(改变当前用户的机构)
   },
 
   supplier: {
