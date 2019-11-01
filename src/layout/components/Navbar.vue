@@ -5,6 +5,7 @@
         <use xlink:href="#icon-nav-menu" />
       </svg>
     </div>
+    <u class="nav-menu-logout" @click="logout">logout</u>
   </div>
 </template>
 
@@ -36,6 +37,38 @@ export default {
       this.$nextTick(() => {
         this.$router.replace({
           path: "/redirect" + this.$route.fullPath
+        });
+      });
+    },
+    logout() {
+      this.$confirm('是否退出?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info',
+        center: true
+      }).then(() => {
+        let params = {
+          "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.logout,
+          "requestType": "POST",
+          "requestBody": JSON.stringify({userCode: this.$store.state.usercode})
+        }
+        this.$axios
+          .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, params)
+          .then(response => {
+            if (JSON.parse(response.data.responseStr).success) {
+              this.$router.push({path: '/login'});
+              this.$store.state.usercode = '';
+            } else {
+              this.$message.error(JSON.parse(response.data.responseStr).msg);
+            }
+          })
+          .finally(() => {
+
+          });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消退出'
         });
       });
     }
@@ -71,6 +104,21 @@ export default {
 
     &:hover {
       background: rgba(0, 0, 0, 0.025);
+    }
+  }
+
+  .nav-menu-logout {
+    line-height: 46px;
+    height: 100%;
+    float: right;
+    padding: 0 15px;
+    cursor: pointer;
+    transition: background 0.3s;
+    -webkit-tap-highlight-color: transparent;
+
+    &:hover {
+      /*background: rgba(0, 0, 0, 0.025);*/
+      color: #5f5f5f;
     }
   }
 

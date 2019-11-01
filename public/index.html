@@ -8,6 +8,26 @@
     <title><%= VUE_APP_TITLE %></title>
   </head>
   <body>
+    <script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+    <script>
+      window.onbeforeunload = function (e) {
+        /*if(event.clientX>document.body.clientWidth && event.clientY < 0 || event.altKey){
+          alert("你关闭了浏览器");
+          setTimeout(() => {
+            setTimeout(beforeloadResult, 50)
+          }, 10000);
+        }*/
+        e = e || window.event;
+
+        // 兼容IE8和Firefox 4之前的版本
+        if (e) {
+          e.returnValue = "exit?";
+        }
+
+        // Chrome, Safari, Firefox 4+, Opera 12+ , IE 9+
+        return "exit?";  //注释了
+      };
+    </script>
     <noscript>
       <strong>We're sorry but vue-ins-seed doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>

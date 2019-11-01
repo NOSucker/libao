@@ -156,6 +156,9 @@ export default {
   methods: {
     submitForm() {
       let checkedTree = this.$refs.taskTree.getCheckedKeys();
+      this.$refs.taskTree.getHalfCheckedKeys().forEach(e => {
+        checkedTree.push(e);
+      })
       let PostData = this.rolePageData;
       if (this.type !== "add") {
         PostData = this.rolePageData;
@@ -193,6 +196,23 @@ export default {
       this.expandedList = [];
       this.showTreeData = [];
       this.rolePageData = {};
+      this.showTreeData = JSON.parse(JSON.stringify(this.treeData));
+      if (this.type !== "add") {
+        let originRoleDataMenuList = JSON.parse(JSON.stringify(this.roleData.menuList));
+        this.getParentMenuId(this.treeData[0]).forEach(e => {
+          if (originRoleDataMenuList.indexOf(e) !== -1) {
+            originRoleDataMenuList.splice(originRoleDataMenuList.indexOf(e), 1);
+          }
+        });
+        // this.checkedList = JSON.parse(JSON.stringify(this.roleData.menuList));
+        Object.assign(this.checkedList, JSON.parse(JSON.stringify(originRoleDataMenuList)));
+        // this.roleData = JSON.parse(JSON.stringify(originRoleData));
+      } else {
+        //默认为all
+        if (!this.rolePageData.organFilter || this.rolePageData.organFilter === '') {
+          this.rolePageData.organFilter = this.organFilterList[0].key;
+        }
+      }
       if (this.type === "copy") {
         if (this.roleData) {
           this.rolePageData = JSON.parse(JSON.stringify(this.roleData));
@@ -206,18 +226,20 @@ export default {
           this.rolePageData = JSON.parse(JSON.stringify(this.roleData));
         }
       }
-      if (this.type !== "add") {
-        // this.checkedList = JSON.parse(JSON.stringify(this.roleData.menuList));
-        Object.assign(this.checkedList, JSON.parse(JSON.stringify(this.roleData.menuList)));
-      } else {
-        //默认为all
-        if (!this.rolePageData.organFilter || this.rolePageData.organFilter === '') {
-          this.rolePageData.organFilter = this.organFilterList[0].key;
-        }
-      }
-      this.showTreeData = JSON.parse(JSON.stringify(this.treeData));
 
       this.setExpandedList();
+    },
+    getParentMenuId(obj) {
+      let arr = [];
+      if (obj && obj.children && obj.children.length > 0) {
+        obj.children.forEach(e => {
+          if (e && e.children && e.children.length > 0) {
+            arr = arr.concat(this.getParentMenuId(e));
+          }
+        });
+        arr.push(obj.menuId);
+      }
+      return arr;
     },
     setExpandedList() {
       let tempArr = [];

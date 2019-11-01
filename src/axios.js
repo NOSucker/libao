@@ -94,7 +94,9 @@ const config = {
     userqueryUserSource: "/platform/serivce/queryUserSource", //查询用户来源
     userqueryUserSex: "/platform/serivce/queryUserSex", //查询用户性别
     userqueryUserVain: "/platform/serivce/queryUserVain", //查询用户是否有效以及是否是班长
-    login: "/platform/serivce/login" //用户登录
+    login: "/platform/serivce/login", //用户登录
+    getValidateCode: "/validateCode/validateCode",  //获取验证码
+    logout: "/platform/serivce/logout",   //用户登出
   },
   organ: {
     baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,

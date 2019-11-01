@@ -40,7 +40,7 @@
             <el-row>
               <el-col :span="10">
                 <el-form-item prop="parentId" label="上级目录">
-                  <el-input v-model="menuData.parentId" placeholder="无上级目录，将作为根菜单" :disabled="true"></el-input>
+                  <el-input v-model="menuData.parentName" placeholder="无上级目录，将作为根菜单" :disabled="true"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="10">
@@ -173,7 +173,8 @@ export default {
         sysMenuId: null,
         menuEnName: null,
         menuIcon: null,
-        menuPath: null
+        menuPath: null,
+        parentName: null
       },
       parentMenuDataNew: {
         menuId: 'menu5acfcbb1cfbc4c3e9247db3325210b06',
@@ -190,9 +191,10 @@ export default {
         menuName: '系统菜单根节点',
         sysMenu: 'Y',
         sysMenuId: null,
-        menuEnNameL: null,
+        menuEnName: null,
         menuIcon: null,
-        menuPath: null
+        menuPath: null,
+        parentName: null
       },
       menuData: {
         upperTaskName: null,
@@ -213,7 +215,8 @@ export default {
         sysMenuId: null,
         menuEnName: null,
         menuIcon: null,
-        menuPath: null
+        menuPath: null,
+        parentName: null
       },
       menuDataNew: {
         upperTaskName: null,
@@ -232,9 +235,10 @@ export default {
         menuName: null,
         sysMenu: null,
         sysMenuId: null,
-        menuEnNameL: null,
+        menuEnName: null,
         menuIcon: null,
-        menuPath: null
+        menuPath: null,
+        parentName: null
       }
     };
   },

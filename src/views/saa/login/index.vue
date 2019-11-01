@@ -36,7 +36,7 @@
                       <use :xlink:href="'#icon-iconmonstr-shield-27'" />
                     </svg>
                     <template slot="append">
-                      <img class="login-code" src="../../../assets/login-code.png" />
+                      <img class="login-code" @click="getValidateCode" :src="validatePic" />
                     </template>
                   </el-input>
                 </el-form-item>
@@ -62,15 +62,20 @@ export default {
     return {
       loginVisible: false,
       loginLoading: false,
+      validateCode: '',
+      validatePic: '',
       formLogin: {
-        userCode: "admin",
-        password: "adminadmin",
-        code: "v9am"
+        userCode: "",
+        password: "",
+        code: "",
+        cip: "",
+        cname: "",
       },
       rules: {
         userCode: [{ required: true, message: "请输入用户名", trigger: "blur" }],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-        code: [{ required: true, message: "请输入验证码", trigger: "blur" }]
+        code: [{ required: true, message: "请输入验证码", trigger: "blur" },
+          {validator: this.validCode, trigger: "blur"}]
       }
     };
   },
@@ -80,8 +85,11 @@ export default {
     })
   },
   mounted() {
+    this.formLogin.cip = returnCitySN['cip'];
+    this.formLogin.cname = returnCitySN['cname'];
     if (!this.$store.state.usercode) {
       this.loginVisible = true;
+      this.getValidateCode();
     }
     this.$store.subscribe(mutation => {
       if (mutation.type == "app/SET_LOGIN_DATA" && !mutation.payload) {
@@ -91,6 +99,29 @@ export default {
   },
   methods: {
     // ...mapActions("app", ["login"]),
+    //获取验证码
+    getValidateCode() {
+      let param = {
+        "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.getValidateCode,
+        "requestType": "GET"
+      }
+      this.$axios
+        .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
+        .then(response => {
+          if (JSON.parse(response.data.responseStr).result.code) {
+            this.validateCode = JSON.parse(response.data.responseStr).result.code;
+            this.validatePic = "data:image/jpeg;base64," + decodeURI(JSON.parse(response.data.responseStr).result.codePic);
+          } else {
+            this.$message.error(JSON.parse(response.data.responseStr).msg);
+          }
+        });
+    },
+    validCode (rule, value, callback){
+      if (value.toUpperCase() !== this.validateCode.toUpperCase()){
+        return callback( new Error( '验证码错误' ));
+      }
+      callback();
+    },
     submit() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
@@ -138,6 +169,8 @@ export default {
                 this.loginVisible = false;
                 if (this.$router.app.$router.currentRoute.params.oldPath) {
                   this.$router.push({path: this.$router.app.$router.currentRoute.params.oldPath});
+                } else {
+                  this.$router.push({path: '/#'});
                 }
               } else {
                 this.$message.error(JSON.parse(response.data.responseStr).msg);
@@ -191,6 +224,7 @@ export default {
   padding: 0px;
 }
 .login-code {
+  width: 90px;
   height: 38px;
   display: block;
   margin: 0px -20px;
