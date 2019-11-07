@@ -94,7 +94,14 @@ const config = {
     userqueryUserSource: "/platform/serivce/queryUserSource", //查询用户来源
     userqueryUserSex: "/platform/serivce/queryUserSex", //查询用户性别
     userqueryUserVain: "/platform/serivce/queryUserVain", //查询用户是否有效以及是否是班长
-    login: "/platform/serivce/login", //用户登录
+    login: "/platform/serivce/login", //用户登录,
+    userRoleQuery: "/platform/serivce/userRoleQuery", //根据用户查询所属角色
+    queryAllRole: "/platform/serivce/allRoleQuery", //查找所有角色
+    insertUserRole: "/platform/serivce/userRoleAdd", //新增用户角色
+    deleteSelectUserRole: "/platform/serivce/userRoleDelete", //批量删除当前用户的角色信息
+    upPriority: "/platform/serivce/upPriority", //提高当前角色优先级
+    lowPriority: "/platform/serivce/lowPriority", //降低当前角色优先级
+    setUserRoleDate: "/platform/serivce/setDate", //设置过期日期
     getValidateCode: "/validateCode/validateCode",  //获取验证码
     logout: "/platform/serivce/logout",   //用户登出
   },
@@ -112,7 +119,8 @@ const config = {
     queryConsultationGroup: "/platform/serivce/QueryConsultationGroup", //查询可咨询组
     queryIsChild: "/platform/serivce/QueryIsChild", //查询当前节点是否有子节点
     queryUserCount: "/platform/serivce/QueryUserCount", //查询当前节点的用户数量
-    updatUserOrgan: "/platform/serivce/updateUserOrgan" //引入用户(改变当前用户的机构)
+    updatUserOrgan: "/platform/serivce/updateUserOrgan", //引入用户(改变当前用户的机构)
+    queryOrganName: "/platform/serivce/QueryOrganById/{Id}" //根据主键查找机构名称
   },
 
   supplier: {
@@ -129,43 +137,43 @@ const config = {
   },
   sms: {
     baseUrl: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
-    queryCarInsuranceList: "/sms/queryCarInsuranceList",    //查询车险险种
-    querySmsLevelList: '/sms/querySmsLevelList',   //查询客户等级
-    querySmsBranchList: '/sms/querySmsBranchList',    //查询分公司
-    querySmsSubList: '/sms/querySmsSubList',    //根据areaCode查询子公司
-    querySendingSesCounts: '/sms/querySendingSesCounts',    //查询发送信息条数
-    querySmsTypeList: '/sms/querySmsTypeList',    //查询短信类型
-    querySmsTemplateList: '/sms/querySmsTemplateList',    //根据类型查询短信模板
-    queryOtherData: '/sms/queryOtherData',    //查询其他关键信息
+    queryCarInsuranceList: "/sms/queryCarInsuranceList", //查询车险险种
+    querySmsLevelList: "/sms/querySmsLevelList", //查询客户等级
+    querySmsBranchList: "/sms/querySmsBranchList", //查询分公司
+    querySmsSubList: "/sms/querySmsSubList", //根据areaCode查询子公司
+    querySendingSesCounts: "/sms/querySendingSesCounts", //查询发送信息条数
+    querySmsTypeList: "/sms/querySmsTypeList", //查询短信类型
+    querySmsTemplateList: "/sms/querySmsTemplateList", //根据类型查询短信模板
+    queryOtherData: "/sms/queryOtherData" //查询其他关键信息
   },
   menu: {
     baseUrl: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
     //菜单接口相关
-    queryAll: "/menu/queryAll",    //查询全部菜单
-    selectAllMenuByUser: "/menu/selectAllMenuByUser",   //根据用户查询其权限菜单
-    queryAllLevel1Menu: "/menu/queryAllLevel1Menu",   //查询全部一级菜单
-    queryMenuByParentId: "/menu/queryMenuByParentId",   //根据parentId查询菜单
-    saveOrUpdate: "/menu/saveOrUpdate",   //保存or更新菜单
-    deleteMenu: "/menu/delete",   //删除菜单
-    queryMenuNodeList: "/menu/queryMenuNodeList",   //查询菜单节点类型
+    queryAll: "/menu/queryAll", //查询全部菜单
+    selectAllMenuByUser: "/menu/selectAllMenuByUser", //根据用户查询其权限菜单
+    queryAllLevel1Menu: "/menu/queryAllLevel1Menu", //查询全部一级菜单
+    queryMenuByParentId: "/menu/queryMenuByParentId", //根据parentId查询菜单
+    saveOrUpdate: "/menu/saveOrUpdate", //保存or更新菜单
+    deleteMenu: "/menu/delete", //删除菜单
+    queryMenuNodeList: "/menu/queryMenuNodeList" //查询菜单节点类型
   },
   role: {
     baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
     //角色接口相关
-    queryByPage: "/role/queryByPage",    //分页查询角色列表
-    deletById: "/role/deleteByRoleId",    //通过id删除角色
-    queryOrganFilterList: "/role/queryOrganFilterByType",     //查询修改页面需要的默认机构权限列表
-    saveOrUpdate: "/role/saveOrUpdate",   //新增/修改角色及其菜单权限
-    queryUserRoleByPage: "/role/queryUserRoleByPage",    //分页查询用户角色
-    deleteUserRole: "/role/deleteUserRole",   //批量删除用户角色
-    saveUserRole: "/role/saveUserRole",   //保存用户角色
+    queryByPage: "/role/queryByPage", //分页查询角色列表
+    deletById: "/role/deleteByRoleId", //通过id删除角色
+    queryOrganFilterList: "/role/queryOrganFilterByType", //查询修改页面需要的默认机构权限列表
+    saveOrUpdate: "/role/saveOrUpdate", //新增/修改角色及其菜单权限
+    queryUserRoleByPage: "/role/queryUserRoleByPage", //分页查询用户角色
+    deleteUserRole: "/role/deleteUserRole", //批量删除用户角色
+    saveUserRole: "/role/saveUserRole" //保存用户角色
   },
   smsTemplates: {
     baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
     queryAll: "/smsTemplates/queryAll", //分页查询
-    findInitInfo: "/smsTemplates/findInitInfo",//初始化信息
+    findInitInfo: "/smsTemplates/findInitInfo", //初始化信息
     saveSmsTemplates: "/smsTemplates/save", //新增一条数据
-    modifySmsTemplates:"/smsTemplates/modify",//修改一条数据
+    modifySmsTemplates: "/smsTemplates/modify", //修改一条数据
     deleteInBatch: "/smsTemplates/deleteInBatch" //批量删除客户权益信息
   }
 };
