@@ -69,20 +69,19 @@
               {{ scope.row.registerDate | dataFilter("yyyy年MM月dd日") }}
             </template>
           </el-table-column>
-          <el-table-column prop="organName" label="机构" /><!--原来的机构prop叫comName-->
+          <el-table-column prop="organName" label="机构" />
+          <!--原来的机构prop叫comName-->
           <el-table-column prop="vain" label="是否有效" />
-           <!-- <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.validStatus"
-              active-value="1"
-              inactive-value="0"
-              disabled="disabled"
-              active-color="#13ce66"
-              inactive-color="#ff4949"></el-switch>
-          </template>
-          </el-table-column>-->
           <el-table-column label="操作" width="150px">
             <template slot-scope="scope">
+              <span title="详细信息" style="padding: 10px; cursor: pointer; color: #5683bf;" @click="userButtonClick('query', scope.row)">
+                <i class="el-icon-info"></i>
+              </span>
+              <span title="角色" style="padding: 10px; cursor: pointer; color: #5683bf;" @click="userRoleButtonClick('role', scope.row)">
+                <svg class="svg-icon">
+                  <use xlink:href="#icon-user-config" />
+                </svg>
+              </span>
               <span title="复制" style="padding: 10px; cursor: pointer; color: #5683bf;" @click="userButtonClick('copy', scope.row)">
                 <i class="el-icon-tickets"></i>
               </span>
@@ -114,16 +113,18 @@
       @role-edit-close="
         pagerQuery._pageNo = 1;
         queryData();
-      "
-    ></edit-user>
+      "></edit-user>
+    <role-user v-model="roleDialogVisible" :type="roleUserStatus" :role-user-data="roleUserData" :click-param="clickParam"></role-user>
   </div>
 </template>
 
 <script>
 import editUser from "../user/model/edit-user";
+import roleUser from "../user/model/role-user";
 export default {
   components: {
-    editUser
+    editUser,
+    roleUser
   },
   filters: {
     dataFilter(val, format) {
@@ -139,6 +140,7 @@ export default {
   },
   data() {
     return {
+      clickParam: false, //用于点击角色查询当前用户的角色
       value1: null,
       tableData: [],
       tableSelection: [],
@@ -147,36 +149,37 @@ export default {
       pagerQuery: {
         userCode: null,
         userName: null,
-        sex:null,
-        registerDate:null,
-        expirationDate:null,
-        userSource:null,
+        sex: null,
+        registerDate: null,
+        expirationDate: null,
+        userSource: null,
         pageNum: 1,
         pageSize: 10
-
       },
       userAddParams: {
-        "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.userAdd,
-        "requestType": "POST",
-        "requestBody": ""
+        requestUrl: this.$axios.config.user.baseURL + this.$axios.config.user.userAdd,
+        requestType: "POST",
+        requestBody: ""
       },
       userQueryParams: {
-        "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.userQuery,
-        "requestType": "POST",
-        "requestBody": ''
+        requestUrl: this.$axios.config.user.baseURL + this.$axios.config.user.userQuery,
+        requestType: "POST",
+        requestBody: ""
       },
 
       userDeleteParams: {
-        "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.userDelete,
-        "requestType": "POST",
-        "requestBody": ""
+        requestUrl: this.$axios.config.user.baseURL + this.$axios.config.user.userDelete,
+        requestType: "POST",
+        requestBody: ""
       },
       userQueryAllParams: {
-        "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.userQueryAll,
-        "requestType": "POST",
-        "requestBody": ""
+        requestUrl: this.$axios.config.user.baseURL + this.$axios.config.user.userQueryAll,
+        requestType: "POST",
+        requestBody: ""
       },
-
+      roleUserData: {},
+      roleDialogVisible: false,
+      roleUserStatus: "",
 
       editData: {},
       editDialogVisible: false,
@@ -211,7 +214,12 @@ export default {
     },
     tableSelectionChange(selection) {
       this.tableSelection = selection;
-
+    },
+    userRoleButtonClick(type, data) {
+      this.roleUserData = data;
+      this.roleUserStatus = type;
+      this.roleDialogVisible = true;
+      this.clickParam = true;
     },
     userButtonClick(type, data) {
       this.editData = data;
@@ -219,51 +227,52 @@ export default {
       this.editDialogVisible = true;
     },
     deleteUser() {
-      this.$confirm('此操作将永久删除所选数据, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
+      this.$confirm("此操作将永久删除所选数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
         center: true
-      }).then(() => {
-
-        if (this.tableSelection.length < 1) {
-          this.$message.warning("请您选中需要删除的数据后再进行操作");
-          return;
-        }
-        let needDelUser = [];
-        this.tableSelection.forEach(select => {
-          needDelUser.push(select.userCode);
-        });
-        let delParams = {
-          "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.userDelete,
-          "requestType": "DELETE",
-          "requestBody": needDelUser
-        }
-        this.queryLoading = true;
-        this.$axios
-          .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, delParams)
-          .then(response => {
-            if (JSON.parse(response.data.responseStr).success) {
-              this.$message.success("数据删除成功！");
-              this.queryData();
-            } else {
-              this.$message.error(JSON.parse(response.data.responseStr).msg);
-            }
-          })
-          .finally(() => {
-            this.queryLoading = false;
+      })
+        .then(() => {
+          if (this.tableSelection.length < 1) {
+            this.$message.warning("请您选中需要删除的数据后再进行操作");
+            return;
+          }
+          let needDelUser = [];
+          this.tableSelection.forEach(select => {
+            needDelUser.push(select.userCode);
           });
+          let delParams = {
+            requestUrl: this.$axios.config.user.baseURL + this.$axios.config.user.userDelete,
+            requestType: "DELETE",
+            requestBody: needDelUser
+          };
+          this.queryLoading = true;
+          this.$axios
+            .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, delParams)
+            .then(response => {
+              if (JSON.parse(response.data.responseStr).success) {
+                this.$message.success("数据删除成功！");
+                this.queryData();
+              } else {
+                this.$message.error(JSON.parse(response.data.responseStr).msg);
+              }
+            })
+            .finally(() => {
+              this.queryLoading = false;
+            });
 
-        /*this.$message({
-          type: 'success',
-          message: '删除成功!'
-        });*/
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
+          /*this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });*/
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
         });
-      });
     }
   }
 };
