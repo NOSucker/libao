@@ -13,10 +13,15 @@
         drag
         :action="uploadUrl"
         :data="uploadData"
+        :before-upload="beforeUpload"
+        :on-success="uploadSuccess"
+        :on-error="uploadFail"
+        :on-progress="uploadProgress"
+        :on-change="change"
         multiple>
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        <div class="el-upload__tip" slot="tip">只能上传xls/xlsx文件</div>
+        <div class="el-upload__tip" slot="tip">只能上传xls/xlsx文件，最近一个文件上传状态：<i class="el-icon-loading" v-if="loading"></i><span :style="{color: status && status == '成功' ? 'green' : 'red'}">{{status}}</span></div>
       </el-upload>
     </el-dialog>
   </div>
@@ -40,14 +45,16 @@
         },
         data() {
           return {
+            loading: false,
+            status: '',
             uploadPageTitle: '',
             uploadUrl: this.$axios.config.service.baseURL + this.$axios.config.service.uploadFile,
             fileUploadUrl: this.$axios.config.file.baseURL + this.$axios.config.file.fileUpload,
             multifileUpload: this.$axios.config.file.baseURL + this.$axios.config.file.multifileUpload,
             uploadData: {
-              userCode: this.$store.state.usercode,
-              requestUrl: this.$axios.config.file.baseURL + this.$axios.config.file.multifileUpload,
-              requestType: 'POST'
+              "userCode": this.$store.state.usercode,
+              "requestUrl": this.$axios.config.file.baseURL + this.$axios.config.file.multifileUpload,
+              "requestType": 'POST'
             },
             data: {
               userCode: this.$store.state.usercode
@@ -60,6 +67,26 @@
         methods: {
           dialogOpen() {
 
+          },
+          beforeUpload(file) {
+            this.loading = true;
+            this.status = '';
+          },
+          uploadSuccess(response, file, fileList) {
+            this.loading = false;
+            if (response.code && response.code == '200') {
+              this.status = '成功';
+            }
+          },
+          uploadFail(err, file, fileList) {
+            this.loading = false;
+            console.log(err, file, fileList)
+          },
+          uploadProgress(event, file, fileList) {
+            console.log(event, file, fileList)
+          },
+          change(file, fileList) {
+            console.log(file, fileList)
           }
         }
     }
@@ -71,5 +98,8 @@
   }
   .upload-page .el-dialog__body {
     border-bottom: 1px solid #eee;
+  }
+  .el-upload-return__tip {
+    color: red;
   }
 </style>

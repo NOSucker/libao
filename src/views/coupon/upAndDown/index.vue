@@ -18,7 +18,12 @@
           <el-table-column prop="importDate" label="导入时间"></el-table-column>
           <el-table-column prop="importNum" label="导入总条数" align="center"></el-table-column>
           <el-table-column prop="importSuccessNum" label="导入成功条数" align="center"></el-table-column>
-          <el-table-column prop="importFailNum" label="导入失败条数" align="center"></el-table-column>
+          <el-table-column prop="importFailNum" label="导入失败条数" align="center">
+            <template slot-scope="scope">
+              <span v-if="scope.row.importFailNum !== 0" style="padding: 10px; cursor: pointer; color: #bf01a6;" @click="view(scope.row.batchCode)">{{scope.row.importFailNum}}</span>
+              <span v-else style="padding: 10px;">{{scope.row.importFailNum}}</span>
+            </template>
+          </el-table-column>
           <!--<el-table-column label="操作" width="150px">
             <template slot-scope="scope">
               <span title="复制" style="padding: 10px; cursor: pointer; color: #5683bf;" @click="userButtonClick('copy', scope.row)">
@@ -46,15 +51,17 @@
       </div>
     </div>
     <upload-dialog v-model="uploadDialogVisible"></upload-dialog>
+    <failed-uploads v-model="failedUploadDialogVisible" :data="batchCode"></failed-uploads>
   </div>
 </template>
 
 <script>
   import axios from "../../../../src/axios.js";
   import uploadDialog from "../upAndDown/model/upload-dialog";
+  import failedUploads from "../upAndDown/model/failed-uploads";
     export default {
         name: "index",
-        components: {uploadDialog},
+        components: {uploadDialog, failedUploads},
         filters: {
           dataFilter(val, format) {
             if (!val) {
@@ -89,7 +96,9 @@
               "requestUrl": this.$axios.config.file.baseURL + this.$axios.config.file.downloadFile,
               "requestType": "GET"
             },
-            uploadDialogVisible: false
+            uploadDialogVisible: false,
+            failedUploadDialogVisible: false,
+            batchCode: '',
           }
         },
         mounted() {
@@ -112,7 +121,7 @@
           tableSelectionChange(selection) {
             this.tableSelection = selection;
           },
-          uploadFile(type, data) {
+          uploadFile() {
             this.uploadDialogVisible = true;
           },
           downloadFile() {
@@ -123,11 +132,11 @@
                 this.download(response.request);
               });*/
             axios({
-              /*method: 'post',
-              url: this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface,
-              data: this.downloadParams,*/
-              method: 'get',
-              url: this.$axios.config.file.baseURL + this.$axios.config.file.downloadFile,
+              method: 'post',
+              url: this.$axios.config.service.baseURL + this.$axios.config.service.downloadFile,
+              data: this.downloadParams,
+              /*method: 'get',
+              url: this.$axios.config.file.baseURL + this.$axios.config.file.downloadFile,*/
               responseType: 'blob'
             }).then(response => {
               console.log(111111111,response)
@@ -149,6 +158,11 @@
 
             document.body.appendChild(link)
             link.click()
+          },
+          // 增 修改  复制角色调用dialog的方法
+          view(val) {
+            this.failedUploadDialogVisible = true;
+            this.batchCode = val;
           },
         }
     }
