@@ -228,6 +228,7 @@ export default {
   height: 38px;
   display: block;
   margin: 0px -20px;
+  cursor: pointer;
   border-top-right-radius: 2px;
   border-bottom-right-radius: 2px;
 }

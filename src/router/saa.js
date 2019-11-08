@@ -47,4 +47,10 @@ export default [
     meta: { icon: "comment-solid", title: "短信群发" },
     component: () => import("../views/smsMass/smsMass")
   },
+  {
+    path: "/coupon",
+    name: "coupon",
+    meta: { icon: "comment-solid", title: "券码导入" },
+    component: () => import("../views/coupon/upAndDown")
+  }
 ];

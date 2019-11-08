@@ -31,7 +31,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="三级机构" prop="subList">
-              <el-select v-model="formData.subList" multiple collapse-tags clearable placeholder="请优先选择分公司项" :disabled="!isSelectedBranch" style="width: 100%">
+              <el-select v-model="formData.subList" multiple collapse-tags clearable :placeholder="!isSelectedBranch ? '请优先选择分公司项' : '请选择'" :disabled="!isSelectedBranch" style="width: 100%">
                 <el-option v-for="para in thirdLevelOrgList" :key="para.key" :label="para.value" :value="para.key"></el-option>
               </el-select>
             </el-form-item>

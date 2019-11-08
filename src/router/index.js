@@ -75,7 +75,7 @@ router.beforeEach((to, from, next) => {
   // next(); // 确保要调用 next 方法，否则钩子就不会被 resolved。
   // console.log(router)
 
-  //判断访问用户是否登录(判断是否传id过来)
+  //判断访问用户是否登录(判断是否传id过来)   （跳转过来必须登录的话就注释掉此操作）
   if (to.query.usercode) {
     store.state.usercode = to.query.usercode;
   }

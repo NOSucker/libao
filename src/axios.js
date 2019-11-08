@@ -125,7 +125,8 @@ const config = {
     //统一桥接接口
     // transitInterface: "/platform/service/transitInterface"
     transitInterface: "/platform/transitInterface/transitInterface/transit",
-    insertsNewByXuanBird: "/platform/transitInterface/transitInterface/insertsNewByXuanBird"
+    insertsNewByXuanBird: "/platform/transitInterface/transitInterface/insertsNewByXuanBird",
+    uploadFile: "/platform/transitInterface/transitInterface/file"
   },
   sms: {
     baseUrl: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
@@ -167,6 +168,14 @@ const config = {
     saveSmsTemplates: "/smsTemplates/save", //新增一条数据
     modifySmsTemplates:"/smsTemplates/modify",//修改一条数据
     deleteInBatch: "/smsTemplates/deleteInBatch" //批量删除客户权益信息
+  },
+  file: {
+    baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
+    queryCouponBatchByPage: "/file/couponBatch",   //分页查询券码导入批次
+    queryCouponCodeFailedBypage: "/file/couponCodeFailed",   //分页查询券码导入失败记录
+    downloadFile: "/file/download",   //下载模板文件
+    fileUpload: "/file/fileUpload",   //上传文件
+    multifileUpload: "/file/multifileUpload",   //多文件上传
   }
 };
 axios.config = config;
