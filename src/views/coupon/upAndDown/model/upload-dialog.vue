@@ -76,6 +76,8 @@
             this.loading = false;
             if (response.code && response.code == '200') {
               this.status = '成功';
+            } else {
+              this.status = '未知错误';
             }
           },
           uploadFail(err, file, fileList) {
