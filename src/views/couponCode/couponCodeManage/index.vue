@@ -6,26 +6,26 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="券码" prop="couponCode">
-              <el-input v-model="pagerQuery.couponCode"></el-input>
+              <el-input v-model="pagerQuery.couponCode" clearable ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="适用分公司" prop="branch">
-              <el-select v-model="pagerQuery.branch" style="width: 100%">
+              <el-select v-model="pagerQuery.branch" clearable style="width: 100%">
                 <el-option v-for="para in branch" :key="para.key" :label="para.value" :value="para.key"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="代理商" prop="agent">
-              <el-select v-model="pagerQuery.agent" style="width: 100%">
+              <el-select v-model="pagerQuery.agent" clearable style="width: 100%">
                 <el-option v-for="para in agent" :key="para.key" :label="para.value" :value="para.key"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="券码类型" prop="couponCodeType">
-              <el-select v-model="pagerQuery.couponCodeType" style="width: 100%">
+              <el-select v-model="pagerQuery.couponCodeType" clearable style="width: 100%">
                 <el-option v-for="para in couponCodeType" :key="para.key" :label="para.value" :value="para.key"></el-option>
               </el-select>
             </el-form-item>
@@ -42,12 +42,12 @@
           </el-col>-->
           <el-col :span="6">
             <el-form-item label="领用人" prop="receiverName">
-              <el-input v-model="pagerQuery.receiverName"></el-input>
+              <el-input v-model="pagerQuery.receiverName" clearable ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="批次号" prop="batchNumber">
-              <el-input v-model="pagerQuery.batchNumber"></el-input>
+              <el-input v-model="pagerQuery.batchNumber" clearable ></el-input>
             </el-form-item>
           </el-col>
 
