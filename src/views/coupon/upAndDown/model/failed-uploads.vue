@@ -59,15 +59,16 @@
         </el-form>-->
         <div style="padding: 0 20px">
           <el-table header-cell-class-name="user-table-header" :data="tableData" tooltip-effect="dark" stripe @selection-change="tableSelectionChange">
-            <el-table-column type="selection" width="55" />
+            <!--<el-table-column type="selection" width="55" />-->
             <el-table-column prop="batchId" label="批次"></el-table-column>
             <el-table-column prop="importTime" label="导入时间" />
             <el-table-column prop="couponType" label="券码类型" />
-            <el-table-column prop="agentCode" label="代理商"></el-table-column>
-            <el-table-column prop="applicableBranch" label="适用分公司"></el-table-column>
-            <el-table-column prop="couponCode" label="券码"></el-table-column>
-            <el-table-column prop="startTime" label="有效起期"></el-table-column>
-            <el-table-column prop="endTime" label="有效止期"></el-table-column>
+            <el-table-column prop="agentCode" label="代理商(非空)"></el-table-column>
+            <el-table-column prop="applicableBranch" label="适用分公司(非空)"></el-table-column>
+            <el-table-column prop="couponCode" label="券码(非空)"></el-table-column>
+            <el-table-column prop="couponName" label="券码名称"></el-table-column>
+            <el-table-column prop="startTime" label="有效起期(非空)"></el-table-column>
+            <el-table-column prop="endTime" label="有效止期(非空)"></el-table-column>
             <!--<el-table-column label="操作" width="150px">
               <template slot-scope="scope">
                 <span title="复制" style="padding: 10px; cursor: pointer; color: #5683bf;" @click="userButtonClick('copy', scope.row)">
