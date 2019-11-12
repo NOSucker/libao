@@ -38,6 +38,11 @@ const router = new VueRouter({
       component: () => import(/* webpackChunkName: "about" */ "../views/demo/About.vue")
     },
     {
+      path: "/couponCodeManage",
+      name: "couponCodeManage",
+      component: () => import(/* webpackChunkName: "about" */ "../views/couponCode/couponCodeManage/index.vue")
+    },
+    {
       path: "/redirect/:path*",
       hidden: true,
       component: {
@@ -58,7 +63,7 @@ const router = new VueRouter({
   userRoutes: [],
 
   //也为tomcat下打包后存放的路径，跟路径为tomcat的webApps
-  base:'/app/'
+  base: "/app/"
 });
 
 // var routerLoading = null;
@@ -80,7 +85,7 @@ router.beforeEach((to, from, next) => {
     store.state.usercode = to.query.usercode;
   }
   // console.log(store.state.usercode, router.currentRoute.query.usercode)
-  if (store.state.usercode && store.state.usercode !== '') {
+  if (store.state.usercode && store.state.usercode !== "") {
     //自带静态的三个路由页面
     if (router.options.userRoutes.length <= 0) {
       //加载权限菜单
@@ -91,31 +96,29 @@ router.beforeEach((to, from, next) => {
         "requestType": "GET"
       }*/
       let params = {
-        "requestUrl": axios.config.menu.baseUrl + axios.config.menu.selectAllMenuByUser + '/' + theUserCode,
-        "requestType": "GET"
-      }
-      axios
-        .post(axios.config.service.baseURL + axios.config.service.transitInterface, params)
-        .then(response => {
-          if (JSON.parse(response.data.responseStr).success) {
-            let permissionRouteList = routerCreater(JSON.parse(response.data.responseStr).result[0].children);
-            //放进去没得用
-            /*permissionRouteList.forEach(e => {
+        requestUrl: axios.config.menu.baseUrl + axios.config.menu.selectAllMenuByUser + "/" + theUserCode,
+        requestType: "GET"
+      };
+      axios.post(axios.config.service.baseURL + axios.config.service.transitInterface, params).then(response => {
+        if (JSON.parse(response.data.responseStr).success) {
+          let permissionRouteList = routerCreater(JSON.parse(response.data.responseStr).result[0].children);
+          //放进去没得用
+          /*permissionRouteList.forEach(e => {
               router.options.routes.push(e);
             });*/
-            Object.assign(router.options.userRoutes, permissionRouteList)
-            // router.options.userRoutes = permissionRouteList;
-            // console.log('前置钩子执行了');
-          } else {
-            console.log('查询菜单权限失败');
-          }
-        });
+          Object.assign(router.options.userRoutes, permissionRouteList);
+          // router.options.userRoutes = permissionRouteList;
+          // console.log('前置钩子执行了');
+        } else {
+          console.log("查询菜单权限失败");
+        }
+      });
     }
     next();
-  } else if (to.path !== '/login') {
+  } else if (to.path !== "/login") {
     next();
   } else {
-    next({path: '/login', params: {oldPath: to.path}});     //
+    next({ path: "/login", params: { oldPath: to.path } }); //
   }
 });
 
@@ -196,7 +199,7 @@ export function routerCreater(arr) {
   arr.forEach(e => {
     let routeObjNew = JSON.parse(JSON.stringify(routeObj));
     routeObjNew.path = e.menuPath;
-    routeObjNew.name = e.menuPath ? e.menuPath.replace(/^\/(.*)/, '$1') : '';
+    routeObjNew.name = e.menuPath ? e.menuPath.replace(/^\/(.*)/, "$1") : "";
     routeObjNew.meta.title = e.menuName;
     routeObjNew.meta.icon = e.menuIcon;
     routeObjNew.component = lazyLoading(e.url);
