@@ -178,6 +178,14 @@ const config = {
     modifySmsTemplates: "/smsTemplates/modify", //修改一条数据
     deleteInBatch: "/smsTemplates/deleteInBatch" //批量删除客户权益信息
   },
+  couponCodeManage: {
+    baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
+    queryCouponCodeType: "/platform/serivce/queryCouponCodeType",//查询券码类型
+    queryAgent: "/platform/serivce/queryAgent",//查询代理商
+    queryBranch: "/platform/serivce/queryBranch",//查询适用分公司
+    queryAllCouponCode:"/platform/serivce/couponCodeQuery",//券码管理分页查询
+    updateCouponCode:"/platform/serivce/couponCodeUpdate"//根据主键更新券码
+  },
   file: {
     baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
     queryCouponBatchByPage: "/file/couponBatch",   //分页查询券码导入批次
