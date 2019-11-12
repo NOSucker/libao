@@ -48,6 +48,12 @@ export default [
     component: () => import("../views/smsMass/smsMass")
   },
   {
+    path: "/couponCodeManage",
+    name: "couponCodeManage",
+    meta: { icon: "couponCode-manage", title: "券码管理" },
+    component: () => import("../views/couponCode/couponCodeManage")
+  },
+  {
     path: "/coupon",
     name: "coupon",
     meta: { icon: "comment-solid", title: "券码导入" },
