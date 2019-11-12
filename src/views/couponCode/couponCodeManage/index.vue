@@ -41,8 +41,8 @@
             </el-form-item>
           </el-col>-->
           <el-col :span="6">
-            <el-form-item label="领用人" prop="receiver">
-              <el-input v-model="pagerQuery.receiver"></el-input>
+            <el-form-item label="领用人" prop="receiverName">
+              <el-input v-model="pagerQuery.receiverName"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -144,7 +144,7 @@
           couponCode: null,
           agent: null,
           branch: null,
-          receiver:null,
+          receiverName:null,
           registerDate: null,
           expirationDate: null,
           couponCodeType: null,
