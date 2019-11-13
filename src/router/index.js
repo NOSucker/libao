@@ -30,6 +30,11 @@ const router = new VueRouter({
       component: () => import("../views/demo/Unlogun.vue")
     },
     {
+      path: "/outLogin",
+      name:"outLogin",
+      component: () => import("../views/saa/outLogin/index.vue")
+    },
+    {
       path: "/about",
       name: "about",
       // route level code-splitting
