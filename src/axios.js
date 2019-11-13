@@ -104,6 +104,8 @@ const config = {
     setUserRoleDate: "/platform/serivce/setDate", //设置过期日期
     getValidateCode: "/validateCode/validateCode",  //获取验证码
     logout: "/platform/serivce/logout",   //用户登出
+    queryAllUserIsOnline:"/platform/serivce/userOutLoginQuery",//查询所有在线的用户
+    setUserLoginStatus:"/platform/serivce/setUserLoginStatus"//清除登陆用户状态
   },
   organ: {
     baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
