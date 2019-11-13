@@ -326,7 +326,6 @@
           }
           if (this.type === "query") {
             this.editDialogTitle = "用户详情";
-            console.log(77777775, this.userData);
             if (this.userData.stafftype == 0) {
               this.$set(this.postData, "stafftype", "正式");
             } else {
