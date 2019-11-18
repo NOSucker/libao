@@ -58,5 +58,11 @@ export default [
     name: "coupon",
     meta: { icon: "coupon-import", title: "券码导入" },
     component: () => import("../views/coupon/upAndDown")
+  },
+  {
+    path:"/outLogin",
+    name:"outLogin",
+    meta: { icon: "outLogin",title:"清除用户" },
+    component: () => import("../views/saa/outLogin")
   }
 ];

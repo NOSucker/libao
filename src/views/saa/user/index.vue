@@ -6,17 +6,17 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="用户代码" prop="userCode">
-              <el-input v-model="pagerQuery.userCode"></el-input>
+              <el-input v-model="pagerQuery.userCode" clearable ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="用户名称" prop="userName">
-              <el-input v-model="pagerQuery.userName"></el-input>
+              <el-input v-model="pagerQuery.userName" clearable ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="性别" prop="sex">
-              <el-select v-model="pagerQuery.sex" style="width: 100%">
+              <el-select v-model="pagerQuery.sex" clearable style="width: 100%">
                 <el-option label="男" value="男"></el-option>
                 <el-option label="女" value="女"></el-option>
               </el-select>
@@ -24,14 +24,14 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="用户来源" prop="userSource">
-              <el-select v-model="pagerQuery.userSource" style="width: 100%">
+              <el-select v-model="pagerQuery.userSource" clearable style="width: 100%">
                 <el-option label="CRM" value="CRM"></el-option>
                 <el-option label="电销" value="电销"></el-option>
                 <el-option label="四川分公司" value="四川分公司"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+     <!--     <el-col :span="6">
             <el-form-item label="注册日期" prop="registerDate">
               <el-date-picker v-model="pagerQuery.registerDate" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%"></el-date-picker>
             </el-form-item>
@@ -40,7 +40,7 @@
             <el-form-item label="到期日期" prop="expirationDate">
               <el-date-picker v-model="pagerQuery.expirationDate" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%"></el-date-picker>
             </el-form-item>
-          </el-col>
+          </el-col>-->
 
           <el-col :span="6">
             <el-button style="margin-left: 100px" type="primary" @click="queryData">查询</el-button>
