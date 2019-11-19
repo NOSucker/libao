@@ -65,13 +65,13 @@
           <el-table-column prop="agentCode" label="代理商" />
           <el-table-column prop="couponType" label="券码类型" />
           <el-table-column prop="receiverName" label="领用人" />
-          <el-table-column prop="batchId" label="批次号" />
-          <el-table-column prop="startTime" label="有效日期始">
+          <el-table-column prop="batchId" label="批次号" width="120" />
+          <el-table-column prop="startTime" label="有效日期始" width="120">
             <template slot-scope="scope">
               {{ scope.row.startTime | dataFilter("yyyy年MM月dd日") }}
             </template>
           </el-table-column>
-          <el-table-column prop="endTime" label="有效日期止">
+          <el-table-column prop="endTime" label="有效日期止" width="120">
             <template slot-scope="scope">
               {{ scope.row.endTime | dataFilter("yyyy年MM月dd日") }}
             </template>
