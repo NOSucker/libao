@@ -26,13 +26,13 @@ export default [
   {
     path: "/policyPermissionConfig",
     name: "policyPermissionConfigAuth",
-    meta: { icon: "component", title: "尊客会校验规则配置认证" },
+    meta: { icon: "vip-customer", title: "尊客会校验规则配置认证" },
     component: () => import("../views/permissionConfig/policyPermissionConfig")
   },
   {
     path: "/rightsAndInterests",
     name: "rightsAndInterestsAuth",
-    meta: { icon: "lock", title: "客户权益查询认证" },
+    meta: { icon: "client-rights", title: "客户权益查询认证" },
     component: () => import("../views/rightsAndInterests/rightsAndInterests")
   },
   {
@@ -56,7 +56,7 @@ export default [
   {
     path: "/coupon",
     name: "coupon",
-    meta: { icon: "comment-solid", title: "券码导入" },
+    meta: { icon: "coupon-import", title: "券码导入" },
     component: () => import("../views/coupon/upAndDown")
   },
   {

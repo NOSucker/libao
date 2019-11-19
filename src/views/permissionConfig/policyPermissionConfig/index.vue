@@ -44,8 +44,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-button style="margin-left: 20px" type="primary" @click="queryData" icon="el-icon-search">查询</el-button>
-            <el-button @click="resetAndQueryData" icon="el-icon-refresh">重置</el-button>
+            <el-button style="margin-left: 20px" type="primary" @click="queryData">查询</el-button>
+            <el-button @click="resetAndQueryData">重置</el-button>
           </el-col>
         </el-row>
       </el-form>

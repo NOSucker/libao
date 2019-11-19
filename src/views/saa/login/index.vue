@@ -30,7 +30,8 @@
                     </svg>
                   </el-input>
                 </el-form-item>
-                <el-form-item prop="code">
+                <!--暂时不要验证码-->
+                <!--<el-form-item prop="code">
                   <el-input v-model="formLogin.code" type="text" placeholder="- - - -">
                     <svg slot="prepend" class="svg-icon">
                       <use :xlink:href="'#icon-iconmonstr-shield-27'" />
@@ -39,7 +40,7 @@
                       <img class="login-code" @click="getValidateCode" :src="validatePic" />
                     </template>
                   </el-input>
-                </el-form-item>
+                </el-form-item>-->
                 <el-button size="default" style="width: 100%" type="primary" class="button-login" @click="submit">登录</el-button>
               </el-form>
             </el-card>
@@ -67,15 +68,15 @@ export default {
       formLogin: {
         userCode: "",
         password: "",
-        code: "",
+        // code: "",
         cip: "",
         cname: "",
       },
       rules: {
         userCode: [{ required: true, message: "请输入用户名", trigger: "blur" }],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-        code: [{ required: true, message: "请输入验证码", trigger: "blur" },
-          {validator: this.validCode, trigger: "blur"}]
+        /*code: [{ required: true, message: "请输入验证码", trigger: "blur" },
+          {validator: this.validCode, trigger: "blur"}]*/
       }
     };
   },
@@ -89,7 +90,7 @@ export default {
     this.formLogin.cname = returnCitySN['cname'];
     if (!this.$store.state.usercode) {
       this.loginVisible = true;
-      this.getValidateCode();
+      // this.getValidateCode();
     }
     this.$store.subscribe(mutation => {
       if (mutation.type == "app/SET_LOGIN_DATA" && !mutation.payload) {
@@ -116,12 +117,13 @@ export default {
           }
         });
     },
-    validCode (rule, value, callback){
+    //暂时不要验证码
+    /*validCode (rule, value, callback){
       if (value.toUpperCase() !== this.validateCode.toUpperCase()){
         return callback( new Error( '验证码错误' ));
       }
       callback();
-    },
+    },*/
     submit() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {

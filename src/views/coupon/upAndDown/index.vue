@@ -50,7 +50,7 @@
           "/>
       </div>
     </div>
-    <upload-dialog v-model="uploadDialogVisible"></upload-dialog>
+    <upload-dialog v-model="uploadDialogVisible"  @query-data="queryData"></upload-dialog>
     <failed-uploads v-model="failedUploadDialogVisible" :data="batchCode"></failed-uploads>
   </div>
 </template>

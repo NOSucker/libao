@@ -15,8 +15,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-button style="margin-left: 20px" type="primary" @click="queryRoleList" icon="el-icon-search">查询</el-button>
-            <el-button @click="resetRoleForm('roleForm')" icon="el-icon-refresh">重置</el-button>
+            <el-button style="margin-left: 20px" type="primary" @click="queryRoleList">查询</el-button> <!--icon="el-icon-search"-->
+            <el-button @click="resetRoleForm('roleForm')">重置</el-button>  <!--icon="el-icon-refresh"-->
           </el-col>
         </el-row>
       </el-form>
