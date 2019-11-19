@@ -156,10 +156,18 @@
         },
         editDialogTitle: "",
         validateRules: {
-          password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-          userCode: [{ required: true, message: "请输入用户代码", trigger: "blur" }, { min: 6, max: 20, message: "长度在 8 到 20 个字符", trigger: "blur" }],
-          userName: [{ required: true, message: "请输入用户姓名", trigger: "blur" }, { min: 2, max: 24, message: "长度在 2 到 24 个字符", trigger: "blur" }],
-          organId: [{ required: true, message: "请选择组织机构", trigger: "blur" }]
+          /*password: [{ required: true, message: "请输入密码", trigger: "blur" }],*/
+          userCode: [{ required: true, message: "请输入用户代码", trigger: "blur" }],
+          userName: [{ required: true, message: "请输入用户姓名", trigger: "blur" }],
+          organId: [{ required: true, message: "请选择组织机构", trigger: "blur" }],
+          sex: [{ required: true, message: "请选择性别", trigger: "blur" }],
+          vain: [{ required: true, message: "请选择是否有效", trigger: "blur" }],
+          monitor: [{required: true, message: "请选择是否班长", trigger: "blur"}],
+          stafftype: [{required: true, message: "请选择员工类型", trigger: "blur"}],
+          expirationDate: [{required: true, message: "请设置过期日期", trigger: "blur"}],
+          telephone: [{required: true, message: "请填写电话", trigger: "blur"}],
+          userSource: [{required: true, message: "请选择用户来源", trigger: "blur"}]
+
         },
         userSkillsGroup: [],
         userSource: [],
@@ -312,6 +320,9 @@
         this.postData = {};
         if (this.type === "new") {
           this.editDialogTitle = "新增用户";
+          this.$set(this.postData, "monitor", "否");
+          this.$set(this.postData, "stafftype", "正式");
+          this.$set(this.postData, "vain", "是");
         }
         if (this.type !== "new") {
           this.postData = JSON.parse(JSON.stringify(this.userData));
