@@ -58,13 +58,13 @@
           </el-button>
         </el-row>
         <el-table header-cell-class-name="user-table-header" :data="tableData" tooltip-effect="dark" stripe @selection-change="tableSelectionChange">
-          <el-table-column type="selection" width="55" />
+          <el-table-column type="selection" width="50" />
           <el-table-column prop="userCode" label="用户代码" />
           <el-table-column prop="userName" label="用户名称" />
           <el-table-column prop="monitor" label="班长" />
           <el-table-column prop="init" label="初始化" />
           <el-table-column prop="userSource" label="用户来源" />
-          <el-table-column prop="registerDate" label="注册时间">
+          <el-table-column prop="registerDate" label="注册时间" width="120">
             <template slot-scope="scope">
               {{ scope.row.registerDate | dataFilter("yyyy年MM月dd日") }}
             </template>
