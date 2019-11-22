@@ -52,7 +52,7 @@
           </el-col>
 
           <el-col :span="6">
-            <el-button style="margin-left: 100px" type="primary" @click="queryData">查询</el-button>
+            <el-button style="margin-left: 20px" type="primary" @click="queryData">查询</el-button>
             <el-button @click="$refs.userForm.resetFields()">重置</el-button>
           </el-col>
         </el-row>
