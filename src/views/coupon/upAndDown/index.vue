@@ -154,7 +154,7 @@
             let link = document.createElement('a')
             link.style.display = 'none'
             link.href = url
-            link.setAttribute('download', '券码模板.xlsx')
+            link.setAttribute('download', '券码模板.xls')
 
             document.body.appendChild(link)
             link.click()

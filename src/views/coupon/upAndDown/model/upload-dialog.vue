@@ -6,7 +6,7 @@
       :visible.sync="showUploadDialog"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
-      width="21%"
+      width="30%"
       @open="dialogOpen">
       <el-upload
         class="upload-demo"
@@ -104,5 +104,8 @@
   }
   .el-upload-return__tip {
     color: red;
+  }
+  .upload-demo {
+    width: 100%
   }
 </style>
