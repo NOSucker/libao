@@ -14,12 +14,12 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="用户名" prop="userName">
-              <el-input v-model="postData.userName"></el-input>
+              <el-input v-model="postData.userName" :disabled="ortherOption"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="用户代码" prop="userCode">
-              <el-input v-model="postData.userCode"></el-input>
+              <el-input v-model="postData.userCode" :disabled=userCodeStatus ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -32,48 +32,48 @@
                 :value="1"
                 :default-props="options.organName"
                 :default-check-nodes="showTreeData"
-                :disabled="type === 'view'"
+                :disabled="ortherOption"
                 @fromChild="getChild"
               ></select-tree>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="手机号码" prop="mobile">
-              <el-input v-model="postData.mobile"></el-input>
+              <el-input v-model="postData.mobile" :disabled="ortherOption"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="电话" prop="telephone">
-              <el-input v-model="postData.telephone"></el-input>
+              <el-input v-model="postData.telephone" :disabled="ortherOption"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="电子邮箱" prop="email">
-              <el-input v-model="postData.email"></el-input>
+              <el-input v-model="postData.email" :disabled="ortherOption"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="证件号码" prop="idCardNo">
-              <el-input v-model="postData.idCardNo" style="background: #FFFFFF !important;"></el-input>
+              <el-input v-model="postData.idCardNo" :disabled="ortherOption" style="background: #FFFFFF !important;"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="性别" prop="sex">
-              <el-select v-model="postData.sex" style="width: 100%">
+              <el-select v-model="postData.sex" :disabled="ortherOption" style="width: 100%">
                 <el-option v-for="para in userSex" :key="para.key" :label="para.value" :value="para.key"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="有效" prop="vain">
-              <el-select v-model="postData.vain" style="width: 100%">
+              <el-select v-model="postData.vain" :disabled="ortherOption" style="width: 100%">
                 <el-option v-for="para in userVain" :key="para.key" :label="para.value" :value="para.key"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="班长" prop="monitor">
-              <el-select v-model="postData.monitor" style="width: 100%">
+              <el-select v-model="postData.monitor" :disabled="ortherOption" style="width: 100%">
                 <el-option v-for="para in userVain" :key="para.key" :label="para.value" :value="para.key"></el-option>
               </el-select>
             </el-form-item>
@@ -81,23 +81,23 @@
 
           <el-col :span="8">
             <el-form-item label="出生年月" prop="birthday">
-              <el-date-picker v-model="postData.birthday" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%"></el-date-picker>
+              <el-date-picker v-model="postData.birthday" :disabled="ortherOption" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%"></el-date-picker>
             </el-form-item>
           </el-col>
 
           <el-col :span="8">
             <el-form-item label="过期日期" prop="expirationDate">
-              <el-date-picker v-model="postData.expirationDate" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%"></el-date-picker>
+              <el-date-picker v-model="postData.expirationDate" :disabled="ortherOption" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="办公室电话" prop="officephone">
-              <el-input v-model="postData.officephone"></el-input>
+              <el-input v-model="postData.officephone" :disabled="ortherOption" ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="员工类型" prop="stafftype">
-              <el-select v-model="postData.stafftype" style="width: 100%">
+              <el-select v-model="postData.stafftype" :disabled="ortherOption" style="width: 100%">
                 <el-option label="正式" value="正式"></el-option>
                 <el-option label="试用" value="试用"></el-option>
               </el-select>
@@ -105,19 +105,19 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="邮件签名" prop="emailsignature">
-              <el-input v-model="postData.emailsignature"></el-input>
+              <el-input v-model="postData.emailsignature" :disabled="ortherOption" ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="技能组" prop="skillsGroup">
-              <el-select v-model="postData.skillsGroup" style="width: 100%">
+              <el-select v-model="postData.skillsGroup" :disabled="ortherOption" style="width: 100%">
                 <el-option v-for="para in userSkillsGroup" :key="para.key" :label="para.value" :value="para.key"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="用户来源" prop="userSource">
-              <el-select v-model="postData.userSource" style="width: 100%">
+              <el-select v-model="postData.userSource" :disabled="ortherOption" style="width: 100%">
                 <el-option v-for="para in userSource" :key="para.key" :label="para.value" :value="para.key"></el-option>
               </el-select>
             </el-form-item>
@@ -154,6 +154,8 @@
           id: ''*/
           //value-format="yyyy-MM-dd"
         },
+        userCodeStatus: false,
+        ortherOption:false,
         editDialogTitle: "",
         validateRules: {
           /*password: [{ required: true, message: "请输入密码", trigger: "blur" }],*/
@@ -165,7 +167,6 @@
           monitor: [{required: true, message: "请选择是否班长", trigger: "blur"}],
           stafftype: [{required: true, message: "请选择员工类型", trigger: "blur"}],
           expirationDate: [{required: true, message: "请设置过期日期", trigger: "blur"}],
-          telephone: [{required: true, message: "请填写电话", trigger: "blur"}],
           userSource: [{required: true, message: "请选择用户来源", trigger: "blur"}]
 
         },
@@ -320,23 +321,44 @@
         this.postData = {};
         if (this.type === "new") {
           this.editDialogTitle = "新增用户";
+          this.userCodeStatus = false;
+          this.ortherOption = false;
           this.$set(this.postData, "monitor", "否");
           this.$set(this.postData, "stafftype", "正式");
           this.$set(this.postData, "vain", "是");
+          this.$set(this.postData, "userSource", "CRM");
+          this.$set(this.postData, "expirationDate", "2099-12-31 23:59:59");
         }
         if (this.type !== "new") {
           this.postData = JSON.parse(JSON.stringify(this.userData));
           if (this.type === "edit") {
             this.editDialogTitle = "修改用户";
+            this.userCodeStatus = true ;
+            this.ortherOption = false ;
+            if (this.userData.stafftype == 0) {
+              this.$set(this.postData, "stafftype", "正式");
+            } else {
+              this.$set(this.postData, "stafftype", "试用");
+            }
           }
           if (this.type === "copy") {
             this.editDialogTitle = "复制添加用户";
+            this.ortherOption = false;
             this.$set(this.postData, "userCode", null);
             this.$set(this.postData, "userName", null);
             this.$set(this.postData, "password", null);
+            this.userCodeStatus = false;
+            if (this.userData.stafftype == 0) {
+              this.$set(this.postData, "stafftype", "正式");
+            } else {
+              this.$set(this.postData, "stafftype", "试用");
+            }
+
           }
           if (this.type === "query") {
             this.editDialogTitle = "用户详情";
+            this.userCodeStatus = true;
+            this.ortherOption = true;
             if (this.userData.stafftype == 0) {
               this.$set(this.postData, "stafftype", "正式");
             } else {
