@@ -65,7 +65,6 @@
                 ></el-button>
               </template>
             </el-table-column>
-            >
           </el-table>
           <el-pagination
             :current-page.sync="pagerQuery.pageNum"
@@ -83,7 +82,6 @@
         </div>
       </div>
     </el-dialog>
-    >
     <insert-role
       v-model="editDialogVisiblel"
       :get-user-id="roleUserData"
