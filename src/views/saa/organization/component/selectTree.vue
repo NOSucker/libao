@@ -1,7 +1,7 @@
 <template>
   <el-select
     class="ld-select"
-    clearable
+    :clearable="option"
     :value="chooseNodes"
     filterable
     :filter-method="remoteMethod"
@@ -13,6 +13,7 @@
     <el-option :value="valueTitle">
       <el-tree
         ref="selectTree"
+        v-if=conStatus
         :show-checkbox="true"
         accordion
         :check-strictly="true"
@@ -88,7 +89,9 @@
       return {
         valueId: this.value, // 初始值
         valueTitle: "",
-        chooseNodes: []
+        chooseNodes: [],
+        option:true,
+        conStatus:true
       };
     },
     watch: {
@@ -210,11 +213,11 @@
       },
       // 清除选中
       clearHandle() {
-        this.valueTitle = "";
-        this.remoteMethod(this.valueTitle);
+        this.chooseNodes = null;
+        this.remoteMethod(this.chooseNodes);
       },
       remoteMethod(val) {
-        this.valueTitle = val;
+        this.chooseNodes = val;
         this.$refs.selectTree.filter(val);
       },
       filterNode(value, data) {
@@ -228,10 +231,11 @@
           this.chooseNodes = this.$refs.selectTree.getCheckedKeys().concat(this.$refs.selectTree.getHalfCheckedKeys());
           this.$emit("fromChild", this.chooseNodes);
           this.$emit("fromChildMannger", this.chooseNodes);
+          this.conStatus = false;
         } else {
           this.chooseNodes = this.$refs.selectTree.getCheckedKeys().concat(this.$refs.selectTree.getHalfCheckedKeys());
-
           this.$emit("fromChild", this.chooseNodes);
+          this.conStatus = false;
         }
       }
     }
