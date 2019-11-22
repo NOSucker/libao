@@ -2,19 +2,19 @@
   <div v-loading="queryLoading">
     <h2 style="background: #f8fbff;font-size: 14px;padding: 10px;margin-bottom: 0;">用户管理</h2>
     <div style="background: #fff; padding-top: 10px">
-      <el-form ref="userForm" :model="pagerQuery" label-width="30%" style=" border-bottom: 1px solid #eee;">
+      <el-form ref="userForm" :model="pagerQuery" label-width="40%" style=" border-bottom: 1px solid #eee;">
         <el-row>
-          <el-col :span="6">
+          <el-col :span="4">
             <el-form-item label="用户代码" prop="userCode">
               <el-input v-model="pagerQuery.userCode" clearable ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="4">
             <el-form-item label="用户名称" prop="userName">
               <el-input v-model="pagerQuery.userName" clearable ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item label="性别" prop="sex">
               <el-select v-model="pagerQuery.sex" clearable style="width: 100%">
                 <el-option label="男" value="男"></el-option>
@@ -22,7 +22,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item label="用户来源" prop="userSource">
               <el-select v-model="pagerQuery.userSource" clearable style="width: 100%">
                 <el-option label="CRM" value="CRM"></el-option>
@@ -42,8 +42,8 @@
             </el-form-item>
           </el-col>-->
 
-          <el-col :span="6">
-            <el-button style="margin-left: 100px" type="primary" @click="queryData">查询</el-button>
+          <el-col :span="5">
+            <el-button style="margin-left: 20px" type="primary" @click="queryData">查询</el-button>
             <el-button @click="$refs.userForm.resetFields()">重置</el-button>
           </el-col>
         </el-row>
@@ -111,7 +111,7 @@
       :type="editStatus"
       :user-data="editData"
       @role-edit-close="
-        pagerQuery._pageNo = 1;
+        pagerQuery.pageNum = 1;
         queryData();
       "></edit-user>
     <role-user v-model="roleDialogVisible" :type="roleUserStatus" :role-user-data="roleUserData" :click-param="clickParam"></role-user>
@@ -223,6 +223,7 @@ export default {
     },
     userButtonClick(type, data) {
       this.editData = data;
+      console.log(325441541779,data);
       this.editStatus = type;
       this.editDialogVisible = true;
     },
