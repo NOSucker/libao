@@ -25,7 +25,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-button style="margin-left: 100px" type="primary" @click="queryUserInOrgan">查询</el-button>
+              <el-button style="margin-left: 20px" type="primary" @click="queryUserInOrgan">查询</el-button>
             </el-col>
           </el-row>
         </el-form>
@@ -126,8 +126,6 @@
         this.tableSelection = selection;
       },
       updateOrgan(){
-            console.log(330303030,this.tableSelection);
-            console.log(99999999,this.organData);
             let param = {
               userList:this.tableSelection,//存放所选用户的数组
               organId:this.organData.organId//存放当前所选机构的id
