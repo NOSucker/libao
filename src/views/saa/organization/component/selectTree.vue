@@ -231,11 +231,11 @@
           this.chooseNodes = this.$refs.selectTree.getCheckedKeys().concat(this.$refs.selectTree.getHalfCheckedKeys());
           this.$emit("fromChild", this.chooseNodes);
           this.$emit("fromChildMannger", this.chooseNodes);
-          this.conStatus = false;
+        //  this.conStatus = false;
         } else {
           this.chooseNodes = this.$refs.selectTree.getCheckedKeys().concat(this.$refs.selectTree.getHalfCheckedKeys());
           this.$emit("fromChild", this.chooseNodes);
-          this.conStatus = false;
+         // this.conStatus = false;
         }
       }
     }
