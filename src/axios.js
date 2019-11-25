@@ -135,11 +135,13 @@ const config = {
   service: {
     baseURL: process.env.VUE_APP_DEV_BASE_URL,
     //统一桥接接口
-    // transitInterface: "/platform/service/transitInterface"
-    transitInterface: "/platform/transitInterface/transitInterface/transit",
+    /*transitInterface: "/platform/transitInterface/transitInterface/transit",
     insertsNewByXuanBird: "/platform/transitInterface/transitInterface/insertsNewByXuanBird",
     uploadFile: "/platform/transitInterface/transitInterface/uploadFile",
-    downloadFile: "/platform/transitInterface/transitInterface/downloadFile"
+    downloadFile: "/platform/transitInterface/transitInterface/downloadFile"*/
+    transitInterface: "/demo/transit",
+    uploadFile: "/demo/uploadFile",
+    downloadFile: "/demo/downloadFile"
   },
   sms: {
     baseUrl: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
