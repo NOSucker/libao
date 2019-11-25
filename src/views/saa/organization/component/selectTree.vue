@@ -1,7 +1,8 @@
 <template>
   <el-select
     class="ld-select"
-    clearable
+    ref="select"
+    :clearable="option"
     :value="chooseNodes"
     filterable
     :filter-method="remoteMethod"
@@ -88,7 +89,9 @@
       return {
         valueId: this.value, // 初始值
         valueTitle: "",
-        chooseNodes: []
+        chooseNodes: [],
+        option:true,
+        isShowTree:false
       };
     },
     watch: {
@@ -210,11 +213,11 @@
       },
       // 清除选中
       clearHandle() {
-        this.valueTitle = "";
-        this.remoteMethod(this.valueTitle);
+        this.chooseNodes = null;
+        this.remoteMethod(this.chooseNodes);
       },
       remoteMethod(val) {
-        this.valueTitle = val;
+        this.chooseNodes = val;
         this.$refs.selectTree.filter(val);
       },
       filterNode(value, data) {
@@ -228,10 +231,13 @@
           this.chooseNodes = this.$refs.selectTree.getCheckedKeys().concat(this.$refs.selectTree.getHalfCheckedKeys());
           this.$emit("fromChild", this.chooseNodes);
           this.$emit("fromChildMannger", this.chooseNodes);
+          this.$refs.select.blur();
+          //this.conStatus = false;
         } else {
           this.chooseNodes = this.$refs.selectTree.getCheckedKeys().concat(this.$refs.selectTree.getHalfCheckedKeys());
-
           this.$emit("fromChild", this.chooseNodes);
+          this.$refs.select.blur();
+          //this.conStatus = false;
         }
       }
     }
@@ -268,7 +274,7 @@
 
   .ld-select_tree {
     text-align: right;
-    padding-right: 20px;
+    padding-right: 5px;
     position: absolute;
     bottom: 10px;
     right: -4px;

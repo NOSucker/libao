@@ -58,15 +58,15 @@
             </el-row>
             <el-row>
               <el-col :span="10">
-                <el-form-item label="可咨询组" prop="consultationGroup">
-                  <select-tree v-model="organizationData.refereeOrganId" :model="organizationData.refereeOrganId" :options="selectTreeData" :default-props="organTreeData.organName" :value="1"
+                <el-form-item label="可咨询组" prop="consultationGroup" >
+                  <select-tree ref="id1"  v-model="organizationData.refereeOrganId" :model="organizationData.refereeOrganId" :options="selectTreeData" :default-props="organTreeData.organName" :value="1"
                                :default-check-nodes="showTreeData" :disabled="pageModel === 'view'" @fromChild="getChild">
                   </select-tree>
                 </el-form-item>
               </el-col>
               <el-col :span="10">
                 <el-form-item label="可管理组" prop="manngerGroup">
-                  <select-tree v-model="organizationData.controllableId" :model="organizationData.controllableId" :options="selectTreeData" :value="1"
+                  <select-tree ref="id2" v-model="organizationData.controllableId" :model="organizationData.controllableId" :options="selectTreeData" :value="1"
                                :default-props="organTreeData.organName" :default-check-nodes="showTreeData" :disabled="pageModel === 'view'" @fromChildMannger="getChildMannger">
                   </select-tree>
                 </el-form-item>
@@ -391,6 +391,8 @@ export default {
             })
             .finally(() => {
               this.submitLoading = false;
+              this.$refs.id1.clearHandle();
+              this.$refs.id2.clearHandle();
             });
         }
       });

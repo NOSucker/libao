@@ -3,11 +3,11 @@
     <h2 style="background: #f8fbff;font-size: 14px;padding: 10px;margin-bottom: 0;">清除用户</h2>
     <div style="background: #fff; padding-top: 10px">
       <div style="padding: 20px">
-        <el-row style="margin-bottom: 15px;">
+       <!-- <el-row style="margin-bottom: 15px;">
           <el-button type="danger" :disabled="deleteDisabled" icon="el-icon-delete" @click="deleteUser">
-            清除
+            剔除
           </el-button>
-        </el-row>
+        </el-row>-->
         <el-table header-cell-class-name="user-table-header" :data="tableData" tooltip-effect="dark" stripe @selection-change="tableSelectionChange">
           <el-table-column type="selection" width="55" />
           <el-table-column prop="theNumber" label="序号" />
@@ -18,14 +18,14 @@
               {{ scope.row.lastLoginDate | dataFilter("yyyy年MM月dd日 hh时mm分ss秒") }}
             </template>
           </el-table-column>
-          <el-table-column prop="onLock" label="解锁" />
-    <!--      <el-table-column label="操作" width="150px">
-            <template slot-scope="scope">
-              <span title="修改" style="padding: 10px; cursor: pointer; color: #5683bf;" @click="userButtonClick('edit', scope.row)">
-                <i class="el-icon-edit"></i>
-              </span>
-            </template>
-          </el-table-column>-->
+      <el-table-column label="剔除" width="150px">
+        <template >
+          <el-button
+            size="mini"
+            icon="el-icon-remove"
+            @click="deleteUser"></el-button>
+        </template>
+          </el-table-column>
         </el-table>
         <el-pagination
           :current-page.sync="pagerQuery.pageNum"
@@ -63,6 +63,9 @@
     },
     data() {
       return {
+        allSelect: {
+          value: []
+        },
         clickParam: false, //用于点击角色查询当前用户的角色
         value1: null,
         tableData: [],
@@ -122,7 +125,7 @@
         this.tableSelection = selection;
       },
       deleteUser() {
-        this.$confirm("此操作将使所选数据强制下线, 是否继续?", "提示", {
+        this.$confirm("此操作将使所选用户强制下线, 是否继续?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning",
@@ -130,17 +133,18 @@
         })
           .then(() => {
             if (this.tableSelection.length < 1) {
-              this.$message.warning("请您选中需要删除的数据后再进行操作");
+              this.$message.warning("请您选中需要下线的用户后再进行操作");
               return;
             }
             let needDelUser = [];
             this.tableSelection.forEach(select => {
               needDelUser.push(select.userLoginStatusId);
             });
+            this.allSelect.value=needDelUser;
             let delParams = {
               requestUrl: this.$axios.config.user.baseURL + this.$axios.config.user.setUserLoginStatus,
               requestType: "POST",
-              requestBody: JSON.stringify(needDelUser)
+              requestBody: JSON.stringify(this.allSelect)
             };
             console.log(5252555514,delParams.requestBody);
             this.queryLoading = true;
@@ -148,7 +152,7 @@
               .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, delParams)
               .then(response => {
                 if (JSON.parse(response.data.responseStr).success) {
-                  this.$message.success("数据清除成功！");
+                  this.$message.success("用户下线成功！");
                   this.queryData();
                 } else {
                   this.$message.error(JSON.parse(response.data.responseStr).msg);
