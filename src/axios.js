@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Message } from "element-ui";
+import store from "./store/index";
 
 const config = {
   sdd: {
@@ -105,7 +106,8 @@ const config = {
     getValidateCode: "/validateCode/validateCode",  //获取验证码
     logout: "/platform/serivce/logout",   //用户登出
     queryAllUserIsOnline:"/platform/serivce/userOutLoginQuery",//查询所有在线的用户
-    setUserLoginStatus:"/platform/serivce/setUserLoginStatus"//清除登陆用户状态
+    setUserLoginStatus:"/platform/serivce/setUserLoginStatus",//清除登陆用户状态
+    IsTheUserOutLogin:"/platform/serivce/isOutLogin"//判断该用户是否已经被剔除下线
   },
   organ: {
     baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
@@ -207,7 +209,42 @@ axios.defaults.baseURL = process.env.VUE_APP_BASE_URL; // 根据环境变量设�
 axios.interceptors.request.use(
   config => {
     // 在请求发送之前做一些处理，让每个请求携带JWT token-- ['Authorization'] 请根据实际情况自行修改
-    config.headers["Authorization"] = "Bearer " + (localStorage.getItem("loginData") ? JSON.parse(localStorage.getItem("loginData")).accessToken : "");
+   // console.log(6336325555,store.state.usercode);
+   /* if(store.state.usercode){
+    //  config.headers['Authorization'] = store.state.usercode;
+      isTheUserOutLogin:{
+        let loginStatusParams = {
+          requestUrl: axios.config.user.baseURL + axios.config.user.IsTheUserOutLogin,
+          requestType: "POST",
+          requestBody: JSON.stringify(store.state.usercode)
+        };
+      //  console.log(5252555514,loginStatusParams.requestBody);
+      //  this.queryLoading = true;
+        axios
+          .post(axios.config.service.baseURL + axios.config.service.transitInterface, loginStatusParams)
+          .then(response => {
+            if (JSON.parse(response.data.responseStr).result.dataList=0) {
+              this.$message.success("调用成功");
+              console.log(666552566,JSON.parse(response.data.responseStr).result.dataList);
+            } else {
+              this.$message.error(JSON.parse(response.data.responseStr).msg);
+            }
+          })
+      }
+    /!*  var param={
+           userData:store.state.usercode
+        }
+        axios({
+            url:'http://127.0.0.1:9001/platform/serivce/isOutLogin',
+            method:'post',
+            data:{serchParam:JSON.stringify(param)},
+            callback:(result)=>{
+              console.log(result);
+            }
+
+         })*!/
+
+    }*/
     return config;
   },
   error => {
@@ -221,16 +258,23 @@ axios.interceptors.request.use(
  * 响应拦截器
  */
 axios.interceptors.response.use(
-  response =>
+  response => {
+
+
+
     // 这个“status状态码”和“statusText状态信息”是和后端约定的，需前后端严格按照规范来处理
     // if(response.data && response.data.status !== 0){
     //     Message({
     //         message: response.data.statusText ? response.data.statusText : '请求后台服务出错，请重试或者联系管理员！',
     //         type: "error",
     //         duration: 5000
-    //     });
+    //        });
     // }
-    response,
+    if(store.state.usercode) {
+      console.log(63367777777, store.state.usercode);
+    }
+   return response;
+  },
   error => {
     // 后台请求错误处理，这里可以埋点
     if (error && error.response) {
