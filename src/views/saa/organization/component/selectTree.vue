@@ -1,6 +1,7 @@
 <template>
   <el-select
     class="ld-select"
+    ref="select"
     :clearable="option"
     :value="chooseNodes"
     filterable
@@ -13,7 +14,6 @@
     <el-option :value="valueTitle">
       <el-tree
         ref="selectTree"
-        v-if=conStatus
         :show-checkbox="true"
         accordion
         :check-strictly="true"
@@ -91,7 +91,7 @@
         valueTitle: "",
         chooseNodes: [],
         option:true,
-        conStatus:true
+        isShowTree:false
       };
     },
     watch: {
@@ -231,11 +231,13 @@
           this.chooseNodes = this.$refs.selectTree.getCheckedKeys().concat(this.$refs.selectTree.getHalfCheckedKeys());
           this.$emit("fromChild", this.chooseNodes);
           this.$emit("fromChildMannger", this.chooseNodes);
-        //  this.conStatus = false;
+          this.$refs.select.blur();
+          //this.conStatus = false;
         } else {
           this.chooseNodes = this.$refs.selectTree.getCheckedKeys().concat(this.$refs.selectTree.getHalfCheckedKeys());
           this.$emit("fromChild", this.chooseNodes);
-         // this.conStatus = false;
+          this.$refs.select.blur();
+          //this.conStatus = false;
         }
       }
     }
@@ -272,7 +274,7 @@
 
   .ld-select_tree {
     text-align: right;
-    padding-right: 20px;
+    padding-right: 5px;
     position: absolute;
     bottom: 10px;
     right: -4px;
