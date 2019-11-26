@@ -178,13 +178,13 @@ export default {
       this.$axios
         .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageParams)
         .then(response => {
-          this.tableData = JSON.parse(response.data.responseStr).result.dataList;
-          this.totalCount = JSON.parse(response.data.responseStr).result.totalCount;
+          this.tableData = response.data.result.result.dataList;
+          this.totalCount = response.data.result.result.totalCount;
         });
       let urls = this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface;
       this.initParams.requestUrl = this.oldurl+"/root";
       this.$axios.post(urls, this.initParams).then(response => {
-        (this.smsTemplateConfigs = JSON.parse(response.data.responseStr).result);
+        (this.smsTemplateConfigs = response.data.result.result);
       });
     /*} else {
       this.$router.push({path: '/unlogun'})
@@ -205,8 +205,8 @@ export default {
       this.$axios
         .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageParams)
         .then(response => {
-          this.tableData = JSON.parse(response.data.responseStr).result.dataList;
-          this.totalCount = JSON.parse(response.data.responseStr).result.totalCount;
+          this.tableData = response.data.result.result.dataList;
+          this.totalCount = response.data.result.result.totalCount;
         })
         .finally(() => {
           this.queryLoading = false;
@@ -252,11 +252,11 @@ export default {
         this.$axios
           .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, delParams)
           .then(response => {
-            if (JSON.parse(response.data.responseStr).success) {
+            if (response.data.result.success) {
               this.$message.success("数据删除成功！");
               this.queryData();
             } else {
-              this.$message.error(JSON.parse(response.data.responseStr).msg);
+              this.$message.error(response.data.result.msg);
             }
           })
           .finally(() => {
@@ -273,7 +273,7 @@ export default {
       let urls = this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface;
       this.initParams.requestUrl = this.oldurl+"/"+val;
       this.$axios.post(urls, this.initParams).then(response => {
-        (this.smsTemplateConfigsTwo = JSON.parse(response.data.responseStr).result);
+        (this.smsTemplateConfigsTwo = response.data.result.result);
        // this.setThirdStatus(document.getElementById("secondStatus").value);
       });
     },
@@ -281,7 +281,7 @@ export default {
       let urls = this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface;
       this.initParams.requestUrl = this.oldurl+"/"+val;
       this.$axios.post(urls, this.initParams).then(response => {
-        (this.smsTemplateConfigsThree = JSON.parse(response.data.responseStr).result);
+        (this.smsTemplateConfigsThree = response.data.result.result);
       });
     }
   }

@@ -292,10 +292,10 @@ export default {
       this.$axios
         .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
         .then(response => {
-          if (JSON.parse(response.data.responseStr).success) {
-            this.menuNodeList = JSON.parse(response.data.responseStr).result;
+          if (response.data.result.success) {
+            this.menuNodeList = response.data.result.result;
           } else {
-            this.$message.error(JSON.parse(response.data.responseStr).msg);
+            this.$message.error(response.data.result.msg);
           }
         });
     },
@@ -360,11 +360,11 @@ export default {
           // .get(this.$axios.config.saa.baseURL + this.$axios.config.saa.getMenuWithUser.format({ userCode: theUserCode }))
             .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
             .then(response => {
-              if (JSON.parse(response.data.responseStr).success) {
+              if (response.data.result.success) {
                 if (node.data.menuId || node.data) {
                   // 第一次应该不会执行到这里 但是为了安全写一下
-                  if (JSON.parse(response.data.responseStr) && JSON.parse(response.data.responseStr).result && JSON.parse(response.data.responseStr).result.length > 0) {
-                    this.menuTreeData = JSON.parse(response.data.responseStr).result;
+                  if (response.data.result && response.data.result.result && response.data.result.result.length > 0) {
+                    this.menuTreeData = response.data.result.result;
                   } else {
                     resolve([]);
                   }
@@ -372,7 +372,7 @@ export default {
                   resolve(response.data.data);
                 }
               } else {
-                this.$message.error(JSON.parse(response.data.responseStr).msg);
+                this.$message.error(response.data.result.msg);
               }
             })
             .catch(() => {
@@ -388,10 +388,10 @@ export default {
           // .get(this.$axios.config.saa.baseURL + this.$axios.config.saa.getSubMenu.format({ taskCode: node.data.taskCode }))
             .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
             .then(response => {
-              if (JSON.parse(response.data.responseStr).success) {
+              if (response.data.result.success) {
                 if (node.data && node.data.menuId) {
-                  if (JSON.parse(response.data.responseStr) && JSON.parse(response.data.responseStr).result && JSON.parse(response.data.responseStr).result.length > 0) {
-                    resolve(JSON.parse(response.data.responseStr).result);
+                  if (response.data.result && response.data.result.result && response.data.result.result.length > 0) {
+                    resolve(response.data.result.result);
                   } else {
                     resolve([]);
                   }
@@ -399,7 +399,7 @@ export default {
                   resolve(response.data.data);
                 }
               } else {
-                this.$message.error(JSON.parse(response.data.responseStr).msg);
+                this.$message.error(response.data.result.msg);
               }
             })
             .catch(() => {
@@ -476,11 +476,11 @@ export default {
           this.$axios
             .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
             .then(res => {
-              if (JSON.parse(res.data.responseStr).success) {
+              if (res.data.result.success) {
                 this.$message.success("删除成功!");
                 this.handleTreeData();
               } else {
-                this.$message.success(JSON.parse(res.data.responseStr).msg);
+                this.$message.success(res.data.result.msg);
               }
             })
             .finally(() => {
@@ -508,10 +508,10 @@ export default {
           /*.get(this.$axios.config.saa.baseURL + this.$axios.config.saa.getMenuWithUser.format({ userCode: theUserCode }))*/
           .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
           .then(response => {
-            if (JSON.parse(response.data.responseStr).success) {
-              this.menuTreeData = JSON.parse(response.data.responseStr).result;
+            if (response.data.result.success) {
+              this.menuTreeData = response.data.result.result;
             } else {
-              this.$message.error(JSON.parse(response.data.responseStr).msg);
+              this.$message.error(response.data.result.msg);
             }
           })
           .finally(() => {
@@ -528,17 +528,17 @@ export default {
         this.$axios
           .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
           .then(response => {
-            if (JSON.parse(response.data.responseStr).success) {
-              if (JSON.parse(response.data.responseStr) && JSON.parse(response.data.responseStr).result && JSON.parse(response.data.responseStr).result.length > 0) {
+            if (response.data.result.success) {
+              if (response.data.result && response.data.result.result && response.data.result.result.length > 0) {
                 let currentNode = this.$refs.menuTree.getNode(currentTask);
                 currentNode.childNodes.splice(0, currentNode.childNodes.length);
-                this.$refs.menuTree.updateKeyChildren(currentTask, JSON.parse(response.data.responseStr).result);
+                this.$refs.menuTree.updateKeyChildren(currentTask, response.data.result.result);
               } else {
                 this.$refs.menuTree.updateKeyChildren(currentTask, []);
               }
               this.pageModel = "view";
             } else {
-              this.$message.error(JSON.parse(response.data.responseStr).msg);
+              this.$message.error(response.data.result.msg);
             }
           })
           .catch(err => {
@@ -587,11 +587,11 @@ export default {
           this.$axios
             .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, PostData)
             .then(response => {
-              if (JSON.parse(response.data.responseStr).success) {
+              if (response.data.result.success) {
                 this.$message.success("操作成功!");
                 this.handleTreeData();
               } else {
-                this.$message.error(JSON.parse(response.data.responseStr).msg);
+                this.$message.error(response.data.result.msg);
               }
             })
             .finally(() => {
@@ -618,7 +618,7 @@ export default {
       this.$axios
         .post(this.$axios.config.saa.baseURL + this.$axios.config.saa.updateMenu, PostData)
         .then(response => {
-          if (response.data.status === 0) {
+          if (response.data.result.success) {
             this.$message.success("操作成功!");
             this.handleTreeData();
           } else {

@@ -190,12 +190,12 @@ export default {
       this.$axios
         .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, postParam)
         .then(response => {
-          if (JSON.parse(response.data.responseStr).success) {
+          if (response.data.result.success) {
             this.$message.success("成员添加成功!");
             this.$emit("add-user-close");
             this.$emit("input", false);
           } else {
-            this.$message.error(JSON.parse(response.data.responseStr).msg);
+            this.$message.error(response.data.result.msg);
           }
         })
         .finally(() => {
@@ -213,9 +213,9 @@ export default {
       this.$axios
         .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageUserParams)
         .then(response => {
-          if (JSON.parse(response.data.responseStr).repCode === 'success') {
-            this.usersData = JSON.parse(response.data.responseStr).result.dataList;
-            this.totalCount = JSON.parse(response.data.responseStr).result.totalCount;
+          if (response.data.result.repCode === 'success') {
+            this.usersData = response.data.result.result.dataList;
+            this.totalCount = response.data.result.result.totalCount;
           } else {
             this.$message.error('系统异常，分页查询失败');
           }
@@ -231,11 +231,11 @@ export default {
       this.$axios
         .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageUserRoleParams)
         .then(response => {
-          if (JSON.parse(response.data.responseStr).success) {
-            this.existingUsersData = JSON.parse(response.data.responseStr).result.dataList;
-            this.totalCount = JSON.parse(response.data.responseStr).result.totalCount;
+          if (response.data.result.success) {
+            this.existingUsersData = response.data.result.result.dataList;
+            this.totalCount = response.data.result.result.totalCount;
           } else {
-            this.$message.error(JSON.parse(response.data.responseStr).msg);
+            this.$message.error(response.data.result.msg);
           }
         })
         .finally(() => {
@@ -295,12 +295,12 @@ export default {
           this.$axios
             .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, delParams)
             .then(response => {
-              if (JSON.parse(response.data.responseStr).success) {
+              if (response.data.result.success) {
                 this.$message.success("删除成功!");
                 this.$emit("add-user-close");
                 this.$emit("input", false);
               } else {
-                this.$message.error(JSON.parse(response.data.responseStr).msg);
+                this.$message.error(response.data.result.msg);
               }
             })
             .finally(() => {

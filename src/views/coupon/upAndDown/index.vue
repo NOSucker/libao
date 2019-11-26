@@ -111,8 +111,8 @@
             this.$axios
               .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageParams)
               .then(response => {
-                this.tableData = JSON.parse(response.data.responseStr).result.dataList;
-                this.totalCount = JSON.parse(response.data.responseStr).result.totalCount;
+                this.tableData = response.data.result.result.dataList;
+                this.totalCount = response.data.result.result.totalCount;
               })
               .finally(() => {
                 this.queryLoading = false;

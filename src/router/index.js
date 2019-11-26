@@ -105,8 +105,8 @@ router.beforeEach((to, from, next) => {
         requestType: "GET"
       };
       axios.post(axios.config.service.baseURL + axios.config.service.transitInterface, params).then(response => {
-        if (JSON.parse(response.data.responseStr).success) {
-          let permissionRouteList = routerCreater(JSON.parse(response.data.responseStr).result[0].children);
+        if (response.data.result.success) {
+          let permissionRouteList = routerCreater(response.data.result.result[0].children);
           //放进去没得用
           /*permissionRouteList.forEach(e => {
               router.options.routes.push(e);

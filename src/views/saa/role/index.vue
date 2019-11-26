@@ -150,11 +150,11 @@ export default {
       this.$axios
         .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageParams)
         .then(response => {
-          if (JSON.parse(response.data.responseStr).success) {
-            this.roleTableData = JSON.parse(response.data.responseStr).result.dataList;
-            this.totalCount = JSON.parse(response.data.responseStr).result.totalCount;
+          if (response.data.result.success) {
+            this.roleTableData = response.data.result.result.dataList;
+            this.totalCount = response.data.result.result.totalCount;
           } else {
-            this.$message.error(JSON.parse(response.data.responseStr).msg);
+            this.$message.error(response.data.result.msg);
           }
         })
         .finally(() => {
@@ -170,10 +170,10 @@ export default {
       this.$axios
         .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
         .then(response => {
-          if (JSON.parse(response.data.responseStr).success) {
-            this.organFilterList = JSON.parse(response.data.responseStr).result;
+          if (response.data.result.success) {
+            this.organFilterList = response.data.result.result;
           } else {
-            this.$message.error(JSON.parse(response.data.responseStr).msg);
+            this.$message.error(response.data.result.msg);
           }
         });
     },
@@ -199,10 +199,10 @@ export default {
       this.$axios
         .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, params)
         .then(response => {
-        if (JSON.parse(response.data.responseStr).success) {
-          this.userTaskTree = JSON.parse(response.data.responseStr).result;
+        if (response.data.result.success) {
+          this.userTaskTree = response.data.result.result;
         } else {
-          this.$message.error(JSON.parse(response.data.responseStr).msg);
+          this.$message.error(response.data.result.msg);
         }
       });
     },
@@ -227,11 +227,11 @@ export default {
         this.$axios
           .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
           .then(response => {
-            if (JSON.parse(response.data.responseStr).success) {
+            if (response.data.result.success) {
               this.$message.success("角色删除成功！");
               this.queryRoleList();
             } else {
-              this.$message.error(JSON.parse(response.data.responseStr).msg);
+              this.$message.error(response.data.result.msg);
             }
           })
           .finally(() => {

@@ -179,12 +179,12 @@ export default {
       this.$axios
         .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
         .then(response => {
-          if (JSON.parse(response.data.responseStr).success) {
+          if (response.data.result.success) {
             this.$message.success((this.type === "edit" ? "角色更新" : "角色添加") + "成功!");
             this.$emit("role-edit-close");
             this.$emit("input", false);
           } else {
-            this.$message.error(JSON.parse(response.data.responseStr).msg);
+            this.$message.error(response.data.result.msg);
           }
         })
         .finally(() => {

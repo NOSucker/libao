@@ -233,9 +233,9 @@ export default {
     };
     var urls = this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface;
     this.$axios.post(urls, initParams).then(response => {
-      (this.customerAreas = JSON.parse(response.data.responseStr).result.customerAreas),
-        (this.levelTypeLists = JSON.parse(response.data.responseStr).result.levelTypeList),
-        (this.carUseTypes = JSON.parse(response.data.responseStr).result.carUseTypeList);
+      (this.customerAreas = response.data.result.result.customerAreas),
+        (this.levelTypeLists = response.data.result.result.levelTypeList),
+        (this.carUseTypes = response.data.result.result.carUseTypeList);
     });
   },
   methods: {
@@ -276,7 +276,7 @@ export default {
               data: this.type == "new" ? insertParams : updateParams
             })
             .then(response => {
-              if (JSON.parse(response.data.responseStr).success != true) {
+              if (response.data.result.success != true) {
                 this.$message({
                   showClose: true,
                   duration: 10000,

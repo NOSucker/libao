@@ -170,10 +170,10 @@
           }
           this.$axios.post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
             .then(response => {
-              if (JSON.parse(response.data.responseStr).success) {
-                this.insuranceList = JSON.parse(response.data.responseStr).result;
+              if (response.data.result.success) {
+                this.insuranceList = response.data.result.result;
               } else {
-                this.$message.error(JSON.parse(response.data.responseStr).msg);
+                this.$message.error(response.data.result.msg);
               }
           });
         },
@@ -184,10 +184,10 @@
           }
           this.$axios.post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
             .then(response => {
-              if (JSON.parse(response.data.responseStr).success) {
-                this.customerLevelList = JSON.parse(response.data.responseStr).result;
+              if (response.data.result.success) {
+                this.customerLevelList = response.data.result.result;
               } else {
-                this.$message.error(JSON.parse(response.data.responseStr).msg);
+                this.$message.error(response.data.result.msg);
               }
             });
         },
@@ -198,10 +198,10 @@
           }
           this.$axios.post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
             .then(response => {
-              if (JSON.parse(response.data.responseStr).success) {
-                this.branchList = JSON.parse(response.data.responseStr).result;
+              if (response.data.result.success) {
+                this.branchList = response.data.result.result;
               } else {
-                this.$message.error(JSON.parse(response.data.responseStr).msg);
+                this.$message.error(response.data.result.msg);
               }
             });
         },
@@ -214,10 +214,10 @@
           }
           this.$axios.post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
             .then(response => {
-              if (JSON.parse(response.data.responseStr).success) {
-                this.thirdLevelOrgList = JSON.parse(response.data.responseStr).result;
+              if (response.data.result.success) {
+                this.thirdLevelOrgList = response.data.result.result;
               } else {
-                this.$message.error(JSON.parse(response.data.responseStr).msg);
+                this.$message.error(response.data.result.msg);
               }
             });
 
@@ -241,13 +241,13 @@
           }
           this.$axios.post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
             .then(response => {
-              if (JSON.parse(response.data.responseStr).success) {
-                this.smsTypeList = JSON.parse(response.data.responseStr).result;
+              if (response.data.result.success) {
+                this.smsTypeList = response.data.result.result;
                 //默认加载第一个短信类型
                 this.formData.smsType = this.smsTypeList[0].id;
                 this.querySmsTemplateList();
               } else {
-                this.$message.error(JSON.parse(response.data.responseStr).msg);
+                this.$message.error(response.data.result.msg);
               }
             });
         },
@@ -261,8 +261,8 @@
           }
           this.$axios.post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
             .then(response => {
-              if (JSON.parse(response.data.responseStr).success) {
-                this.smsTemplateList = JSON.parse(response.data.responseStr).result;
+              if (response.data.result.success) {
+                this.smsTemplateList = response.data.result.result;
                 //默认选中第一个模板
                 this.formData.smsTemplate = this.smsTemplateList[0].smsTheme;
                 //查询模板之后，默认加载第一个模板到发送内容
@@ -276,7 +276,7 @@
                 });
 
               } else {
-                this.$message.error(JSON.parse(response.data.responseStr).msg);
+                this.$message.error(response.data.result.msg);
               }
             });
         },
@@ -288,13 +288,13 @@
           }
           this.$axios.post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
             .then(response => {
-              if (JSON.parse(response.data.responseStr).success) {
-                let data = JSON.parse(response.data.responseStr).result;
+              if (response.data.result.success) {
+                let data = response.data.result.result;
                 this.formData.smsTemplates.field4 = data.orgList[0].showName;
                 this.formData.smsTemplates.field5 = this.smsTypeList[0].showName;
                 this.formData.smsTemplates.field6 = data.itemList[0].showName;
               } else {
-                this.$message.error(JSON.parse(response.data.responseStr).msg);
+                this.$message.error(response.data.result.msg);
               }
             });
         },
@@ -317,7 +317,7 @@
                   data: params
                 })
                 .then(response => {
-                  if (JSON.parse(response.data.responseStr).success != true) {
+                  if (response.data.result.success != true) {
                     this.$message({
                       showClose: true,
                       duration: 10000,
@@ -327,7 +327,7 @@
                   } else {
                     // this.$message.success("保存成功！");
                     this.$refs.smsForm.clearValidate();
-                    this.open(JSON.parse(response.data.responseStr));
+                    this.open(response.data.result);
                   }
                 })
                 .finally(() => {
@@ -360,7 +360,7 @@
                 data: params
               })
               .then(response => {
-                if (response.data.code != '200') {
+                if (!response.data.result.success) {
                   this.$message({
                     showClose: true,
                     duration: 10000,

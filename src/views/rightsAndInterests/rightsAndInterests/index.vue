@@ -189,8 +189,8 @@ export default {
     /*.post(this.$axios.config.rightsAndInterests.baseURL + this.$axios.config.rightsAndInterests.queryAllByParamsNew, this.pagerQuery)*/
       .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageParams)
       .then(response => {
-        this.tableData = JSON.parse(response.data.responseStr).result.dataList;
-        this.totalCount = JSON.parse(response.data.responseStr).result.totalCount;
+        this.tableData = response.data.result.result.dataList;
+        this.totalCount = response.data.result.result.totalCount;
       })
       .finally(() => {
       this.queryLoading = false;
@@ -201,7 +201,7 @@ export default {
         "requestType": "GET"
       }*/
       this.$axios.post(urls, this.initParams).then(response => {
-        (this.subList = JSON.parse(response.data.responseStr).result.customerAreas), (this.levelTypeLists = JSON.parse(response.data.responseStr).result.levelTypeList);
+        (this.subList = response.data.result.result.customerAreas), (this.levelTypeLists = response.data.result.result.levelTypeList);
       });
     /*} else {
       this.$router.push({path: '/unlogun'})
@@ -249,8 +249,8 @@ export default {
         /*.post(this.$axios.config.rightsAndInterests.baseURL + this.$axios.config.rightsAndInterests.queryAllByParamsNew, this.pagerQuery)*/
         .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageParams)
         .then(response => {
-          this.tableData = JSON.parse(response.data.responseStr).result.dataList;
-          this.totalCount = JSON.parse(response.data.responseStr).result.totalCount;
+          this.tableData = response.data.result.result.dataList;
+          this.totalCount = response.data.result.result.totalCount;
         })
         .finally(() => {
           this.queryLoading = false;
@@ -296,11 +296,11 @@ export default {
         this.$axios
           .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, delParams)
           .then(response => {
-            if (JSON.parse(response.data.responseStr).success) {
+            if (response.data.result.success) {
               this.$message.success("数据删除成功！");
               this.queryData();
             } else {
-              this.$message.error(JSON.parse(response.data.responseStr).msg);
+              this.$message.error(response.data.result.msg);
             }
           })
           .finally(() => {

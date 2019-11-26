@@ -108,7 +108,7 @@ export default {
         "requestType": "GET"
     };
     this.$axios.post(urls, initParamsfirst).then(response => {
-      (this.smsTemplateConfigs = JSON.parse(response.data.responseStr).result);
+      (this.smsTemplateConfigs = response.data.result.result);
     });
   },
   methods: {
@@ -139,7 +139,7 @@ export default {
               data: this.type == "edit" ? updateParams : insertParams
             })
             .then(response => {
-              if (JSON.parse(response.data.responseStr).success != true) {
+              if (response.data.result.success != true) {
                 this.$message({
                   showClose: true,
                   duration: 10000,
@@ -172,21 +172,21 @@ export default {
       let urls = this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface;
       this.initParams.requestUrl = this.oldurl+"/"+val;
       this.$axios.post(urls, this.initParams).then(response => {
-        (this.smsTemplateConfigsTwo = JSON.parse(response.data.responseStr).result);
+        (this.smsTemplateConfigsTwo = response.data.result.result);
       });
     },
     setThirdStatus(val){
       let urls = this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface;
       this.initParams.requestUrl = this.oldurl+"/"+val;
       this.$axios.post(urls, this.initParams).then(response => {
-        (this.smsTemplateConfigsThree = JSON.parse(response.data.responseStr).result);
+        (this.smsTemplateConfigsThree = response.data.result.result);
       });
     },
     initinfo(){
       let urls = this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface;
       this.initParams.requestUrl = this.oldurl+"/"+this.userData.field1;
       this.$axios.post(urls, this.initParams).then(response => {
-        (this.smsTemplateConfigsTwo = JSON.parse(response.data.responseStr).result);
+        (this.smsTemplateConfigsTwo = response.data.result.result);
         this.setThirdStatus(this.userData.field2);
       });
     },
