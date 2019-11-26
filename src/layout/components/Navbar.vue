@@ -55,11 +55,11 @@ export default {
         this.$axios
           .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, params)
           .then(response => {
-            if (JSON.parse(response.data.responseStr).success) {
+            if (response.data.result.success) {
               this.$router.push({path: '/login'});
               this.$store.state.usercode = '';
             } else {
-              this.$message.error(JSON.parse(response.data.responseStr).msg);
+              this.$message.error(response.data.result.msg);
             }
           })
           .finally(() => {

@@ -152,7 +152,8 @@ const config = {
     querySendingSesCounts: "/sms/querySendingSesCounts", //查询发送信息条数
     querySmsTypeList: "/sms/querySmsTypeList", //查询短信类型
     querySmsTemplateList: "/sms/querySmsTemplateList", //根据类型查询短信模板
-    queryOtherData: "/sms/queryOtherData" //查询其他关键信息
+    queryOtherData: "/sms/queryOtherData", //查询其他关键信息
+    sendSmsMass: "/sms/sendSmsMass"  //群发短信
   },
   menu: {
     baseUrl: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,

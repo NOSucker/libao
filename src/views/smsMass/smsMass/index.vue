@@ -348,12 +348,16 @@
             center: true
           }).then(() => {
             //确认发送信息请求
-
+            let params = {
+              "requestUrl": this.$axios.config.sms.baseUrl + this.$axios.config.sms.sendSmsMass,
+              "requestType": "POST",
+              "requestBody": JSON.stringify(this.formData)
+            }
             this.$axios
               .request({
                 method: "post",
-                url: this.$axios.config.service.baseURL + this.$axios.config.service.insertsNewByXuanBird,
-                data: this.formData
+                url: this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface,
+                data: params
               })
               .then(response => {
                 if (response.data.code != '200') {

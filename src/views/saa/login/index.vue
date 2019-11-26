@@ -136,8 +136,8 @@ export default {
           this.$axios
             .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
             .then(response => {
-              if (JSON.parse(response.data.responseStr).success) {
-                this.$store.state.usercode = JSON.parse(response.data.responseStr).result.userCode;
+              if (response.data.result.success) {
+                this.$store.state.usercode = response.data.result.result.userCode;
                 this.$message.success("登录成功");
                 if (this.$store.state.usercode && this.$store.state.usercode !== '') {
                   //自带静态的三个路由页面
@@ -156,8 +156,8 @@ export default {
                     this.$axios
                       .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, params)
                       .then(response => {
-                        if (JSON.parse(response.data.responseStr).success) {
-                          let permissionRouteList = this.routerCreater(JSON.parse(response.data.responseStr).result[0].children);
+                        if (response.data.result.success) {
+                          let permissionRouteList = this.routerCreater(response.data.result.result[0].children);
                           Object.assign(this.$router.options.userRoutes, permissionRouteList);
                           setTimeout(() => {
                             this.sidebar.opened = true;
