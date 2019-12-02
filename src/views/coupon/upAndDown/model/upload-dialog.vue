@@ -74,7 +74,7 @@
           },
           uploadSuccess(response, file, fileList) {
             this.loading = false;
-            if (response.code && response.code == '200') {
+            if (response.success) {
               this.status = '成功';
               this.$emit("query-data");
             } else {

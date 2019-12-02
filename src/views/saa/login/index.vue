@@ -136,7 +136,7 @@ export default {
           this.$axios
             .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
             .then(response => {
-              if (response.data.result.success) {
+              if (response.data.result && response.data.result.success) {
                 this.$store.state.usercode = response.data.result.result.userCode;
                 this.$message.success("登录成功");
                 if (this.$store.state.usercode && this.$store.state.usercode !== '') {
@@ -175,7 +175,7 @@ export default {
                   this.$router.push({path: '/#'});
                 }
               } else {
-                this.$message.error(JSON.parse(response.data.responseStr).msg);
+                this.$message.error(response.data.result.msg);
               }
             })
             .catch(error => {

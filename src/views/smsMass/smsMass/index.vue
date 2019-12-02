@@ -317,17 +317,18 @@
                   data: params
                 })
                 .then(response => {
-                  if (response.data.result.success != true) {
+                  console.log(12121,response.data.result.success)
+                  if (response.data.result && response.data.result.success) {
+                    // this.$message.success("保存成功！");
+                    this.$refs.smsForm.clearValidate();
+                    this.open(response.data.result);
+                  } else {
                     this.$message({
                       showClose: true,
                       duration: 10000,
                       message: "操作失败",
                       type: "error"
                     });
-                  } else {
-                    // this.$message.success("保存成功！");
-                    this.$refs.smsForm.clearValidate();
-                    this.open(response.data.result);
                   }
                 })
                 .finally(() => {

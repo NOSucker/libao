@@ -139,9 +139,10 @@ const config = {
     insertsNewByXuanBird: "/platform/transitInterface/transitInterface/insertsNewByXuanBird",
     uploadFile: "/platform/transitInterface/transitInterface/uploadFile",
     downloadFile: "/platform/transitInterface/transitInterface/downloadFile"*/
-    transitInterface: "/demo/transit",
-    uploadFile: "/demo/uploadFile",
-    downloadFile: "/demo/downloadFile"
+    login: "/web/login",
+    transitInterface: "/actuator/transit",
+    uploadFile: "/actuator/uploadFile",
+    downloadFile: "/actuator/downloadFile"
   },
   sms: {
     baseUrl: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
