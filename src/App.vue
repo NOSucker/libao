@@ -31,19 +31,35 @@ export default {
     logout() {
       if (this.$store.state.usercode && this.$store.state.usercode !== '') {
         this.userData.userCode = this.$store.state.usercode;
-        let params = {
+        /*let params = {
           "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.logout,
           "requestType": "POST",
           "requestBody": JSON.stringify(this.userData)
-        }
-        this.$axios
+        };*/
+        let param = {
+          "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.logout,
+          "username": this.userData.userCode,
+          "requestBody": JSON.stringify(this.userData)
+        };
+        const Qs = require('qs');
+        this.$axios.request({
+          url: this.$axios.config.service.baseURL + this.$axios.config.service.logout,
+          method: 'post',
+          headers: {
+            'Content-Type':'application/x-www-form-urlencoded'
+          },
+          data: Qs.stringify(param)
+        }).then(response => {
+          console.log(2222222,response)
+        });
+        /*this.$axios
           .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, params)
           .then(response => {
             // console.log(333333333333,response)
           })
           .finally(() => {
 
-          });
+          });*/
       }
     },
     beforeunloadHandler (e) {

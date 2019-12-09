@@ -47,7 +47,33 @@ export default {
         type: 'info',
         center: true
       }).then(() => {
-        let params = {
+        let param = {
+          "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.logout,
+          "username": this.$store.state.usercode,
+          "requestBody": JSON.stringify({userCode: this.$store.state.usercode})
+        };
+        const Qs = require('qs');
+        this.$axios.request({
+          url: this.$axios.config.service.baseURL + this.$axios.config.service.logout,
+          method: 'post',
+          headers: {
+            'Content-Type':'application/x-www-form-urlencoded'
+          },
+          data: Qs.stringify(param)
+        }).then(response => {
+          if (response.data.result.success) {
+            this.$router.push({path: '/login'});
+            this.$store.state.usercode = '';
+          } else {
+            if (response.data.result.msg) {
+              this.$message.error(response.data.result.msg);
+            } else {
+              this.$message.error(response.data.msg);
+            }
+
+          }
+        });
+        /*let params = {
           "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.logout,
           "requestType": "POST",
           "requestBody": JSON.stringify({userCode: this.$store.state.usercode})
@@ -64,7 +90,7 @@ export default {
           })
           .finally(() => {
 
-          });
+          });*/
       }).catch(() => {
         this.$message({
           type: 'info',

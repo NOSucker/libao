@@ -130,11 +130,71 @@ export default {
           let param = {
             "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.login,
             "requestType": "POST",
+            "username": this.formLogin.userCode,
+            "password": this.formLogin.password,
             "requestBody": JSON.stringify(this.formLogin)
           }
+          const Qs = require('qs');
           this.loginLoading = true;
-          this.$axios
-            .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, param)
+          this.$axios.request({
+            url: this.$axios.config.service.baseURL + this.$axios.config.service.login,
+            method: 'post',
+            headers: {
+              'Content-Type':'application/x-www-form-urlencoded'
+            },
+            data: Qs.stringify(param)
+          }).then(response => {
+            if (response.data.result && response.data.result.success && response.data.success) {
+              this.$store.state.usercode = response.data.result.result.userCode;
+              if (this.$store.state.usercode && this.$store.state.usercode !== '') {
+                //自带静态的三个路由页面
+                if (this.$router.options.userRoutes.length <= 0) {
+                  //加载权限菜单
+                  const theUserCode = this.$store.state.usercode;
+                  /*let parentId = '/menu5acfcbb1cfbc4c3e9247db3325210b06';
+                  let param = {
+                    "requestUrl": this.$axios.config.menu.baseUrl + this.$axios.config.menu.queryMenuByParentId + parentId,
+                    "requestType": "GET"
+                  }*/
+                  let params = {
+                    "requestUrl": this.$axios.config.menu.baseUrl + this.$axios.config.menu.selectAllMenuByUser + '/' + theUserCode,
+                    "requestType": "GET"
+                  }
+                  this.$axios
+                    .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, params)
+                    .then(response => {
+                      if (response.data.result.success) {
+                        let permissionRouteList = this.routerCreater(response.data.result.result[0].children);
+                        Object.assign(this.$router.options.userRoutes, permissionRouteList);
+                        setTimeout(() => {
+                          this.sidebar.opened = true;
+                        }, 500);
+                      } else {
+                        if (response.data.result) {
+                          this.$message.error(response.data.result.msg);
+                        } else {
+                          this.$message.error(response.data.msg);
+                        }
+                      }
+                    });
+                }
+              }
+              this.loginVisible = false;
+              if (this.$router.app.$router.currentRoute.params.oldPath) {
+                this.$router.push({path: this.$router.app.$router.currentRoute.params.oldPath});
+              } else {
+                this.$router.push({path: '/#'});
+              }
+            } else {
+              this.$message.error(response.data.result.msg)
+            }
+          }).catch(error => {
+            console.log(error);
+          }).finally(() => {
+            this.loginLoading = false;
+          });
+          /*this.$axios
+            .post(this.$axios.config.service.baseURL + this.$axios.config.service.login, param)
             .then(response => {
               if (response.data.result && response.data.result.success) {
                 this.$store.state.usercode = response.data.result.result.userCode;
@@ -144,11 +204,11 @@ export default {
                   if (this.$router.options.userRoutes.length <= 0) {
                     //加载权限菜单
                     const theUserCode = this.$store.state.usercode;
-                    /*let parentId = '/menu5acfcbb1cfbc4c3e9247db3325210b06';
+                    /!*let parentId = '/menu5acfcbb1cfbc4c3e9247db3325210b06';
                     let param = {
                       "requestUrl": this.$axios.config.menu.baseUrl + this.$axios.config.menu.queryMenuByParentId + parentId,
                       "requestType": "GET"
-                    }*/
+                    }*!/
                     let params = {
                       "requestUrl": this.$axios.config.menu.baseUrl + this.$axios.config.menu.selectAllMenuByUser + '/' + theUserCode,
                       "requestType": "GET"
@@ -183,7 +243,7 @@ export default {
             })
             .finally(() => {
               this.loginLoading = false;
-            });
+            });*/
         }
       });
     },

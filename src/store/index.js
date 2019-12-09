@@ -15,7 +15,8 @@ store = new Vuex.Store({
   state: {
     baseCodeCache: {},
     user: true,
-    usercode: ''
+    usercode: '',
+    authorization: '',
   },
   mutations: {
     SET_BASE_CODE: (state, data) => {

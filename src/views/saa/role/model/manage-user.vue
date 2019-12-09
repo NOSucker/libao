@@ -150,7 +150,7 @@ export default {
         "requestBody": ""
       },
       pageUserParams: {
-        "requestUrl": this.$axios.config.user.baseURL + this.$axios.config.user.userQuery,
+        "requestUrl": this.$axios.config.role.baseURL + this.$axios.config.role.queryUserNotRoledByPage,
         "requestType": "POST",
         "requestBody": ""
       },
@@ -213,7 +213,7 @@ export default {
       this.$axios
         .post(this.$axios.config.service.baseURL + this.$axios.config.service.transitInterface, this.pageUserParams)
         .then(response => {
-          if (response.data.result.repCode === 'success') {
+          if (response.data.result.success) {
             this.usersData = response.data.result.result.dataList;
             this.totalCount = response.data.result.result.totalCount;
           } else {

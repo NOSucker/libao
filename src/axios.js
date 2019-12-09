@@ -139,7 +139,8 @@ const config = {
     insertsNewByXuanBird: "/platform/transitInterface/transitInterface/insertsNewByXuanBird",
     uploadFile: "/platform/transitInterface/transitInterface/uploadFile",
     downloadFile: "/platform/transitInterface/transitInterface/downloadFile"*/
-    login: "/web/login",
+    login: "/login",
+    logout: "/logout",
     transitInterface: "/actuator/transit",
     uploadFile: "/actuator/uploadFile",
     downloadFile: "/actuator/downloadFile"
@@ -176,7 +177,8 @@ const config = {
     saveOrUpdate: "/role/saveOrUpdate", //新增/修改角色及其菜单权限
     queryUserRoleByPage: "/role/queryUserRoleByPage", //分页查询用户角色
     deleteUserRole: "/role/deleteUserRole", //批量删除用户角色
-    saveUserRole: "/role/saveUserRole" //保存用户角色
+    saveUserRole: "/role/saveUserRole", //保存用户角色
+    queryUserNotRoledByPage: "/role/queryUserNotRoledByPage" //分页查询暂未分配某个角色的用户
   },
   smsTemplates: {
     baseURL: process.env.VUE_APP_DEV_BASE_XUANBIRD_URL,
@@ -214,6 +216,9 @@ axios.interceptors.request.use(
   config => {
     // 在请求发送之前做一些处理，让每个请求携带JWT token-- ['Authorization'] 请根据实际情况自行修改
    // console.log(6336325555,store.state.usercode);
+    if (store.state.usercode) {
+      config.headers['Authorization'] = store.state.usercode;
+    }
    /* if(store.state.usercode){
     //  config.headers['Authorization'] = store.state.usercode;
       isTheUserOutLogin:{
@@ -263,7 +268,9 @@ axios.interceptors.request.use(
  */
 axios.interceptors.response.use(
   response => {
-
+    if (response.headers.authorization) {
+      store.state.authorization = response.headers.authorization;
+    }
 
 
     // 这个“status状态码”和“statusText状态信息”是和后端约定的，需前后端严格按照规范来处理
